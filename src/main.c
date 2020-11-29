@@ -17,11 +17,11 @@ typedef struct etudiant
 
 etudiant *tete_etudiant = NULL;
 
-typedef struct instructeur
+typedef struct formateur
 {
     info *info;
-    struct instructeur *next;
-} instructeur;
+    struct formateur *next;
+} formateur;
 
 etudiant *creer_etudiant( char nom[], char prenom[] )
 {
@@ -33,9 +33,9 @@ etudiant *creer_etudiant( char nom[], char prenom[] )
     return e;
 }
 
-instructeur *creer_instructeur( char nom[], char prenom[] )
+formateur *creer_formateur( char nom[], char prenom[] )
 {
-    instructeur *i = ( instructeur * ) calloc( sizeof( instructeur ), sizeof( instructeur ) );
+    formateur *i = ( formateur * ) calloc( sizeof( formateur ), sizeof( formateur ) );
     i->info = ( info * ) calloc( sizeof( info ), sizeof( info ) );
     strcpy( i->info->nom, nom );
     strcpy( i->info->prenom, prenom );
