@@ -31,6 +31,12 @@ personne *creer_personne( char nom[], char prenom[], int formateur )
     return e;
 }
 
+void afficher_personne( personne *p )
+{
+    personne *tmp = p;
+    printf( "%s %s %s\n", tmp->nom, tmp->prenom, p->formateur ? "Formateur" : "Étudiant" );
+}
+
 /*                                 FIN PERSONNE                              */
 
 /*****************************************************************************/
@@ -211,68 +217,120 @@ int main( void )
 {
     printf( "Projet par Giorgio Caculli et Jedrzej Tyranowski\n" );
 
-    personne *e1 = creer_personne( "Caculli", "Giorgio", 0 );
-    personne *e2 = creer_personne( "Tyranowski", "Jedrzej", 0 );
-    personne *e3 = creer_personne( "Lambert", "Guillaume", 0 );
-    personne *e4 = creer_personne( "Taminiau", "Tanguy", 0 );
+    FILE *fdat_f = fopen( "formation.dat", "r" );
+    FILE *fdat_p = fopen( "personne.dat", "r" );
+    FILE *fdat_v = fopen( "ville.dat", "r" );
 
-    personne *i1 = creer_personne( "Colmant", "Aurélien", 1 );
-    personne *i2 = creer_personne( "Carpentier", "Jean-Michel", 1 );
-    personne *i3 = creer_personne( "Palermo", "Orlando", 1 );
-    personne *i4 = creer_personne( "Mercier", "Pierre", 1 );
-    personne *i5 = creer_personne( "Servais", "Michel", 1 );
+    ville *villes[50];
+    formation *formations[50];
+    personne *personnes[100];
 
-    formation *f1 = creer_formation( "Langage C", 10.0 );
-    formation *f2 = creer_formation( "Technologies internet", 150.25 );
-    formation *f3 = creer_formation( "Mathematique", 250.45 );
-    formation *f4 = creer_formation( "Programmation Orientee Objet", 152.57 );
-    formation *f5 = creer_formation( "Communication en Langue Francaise", 347.85 );
+    int i = 0;
 
-    ajouter_formation( f1, i2 );
-    ajouter_formation( f2, i4 );
-    ajouter_formation( f3, i3 );
-    ajouter_formation( f4, i1 );
-    ajouter_formation( f5, i5 );
-    ajouter_formation( f1, e1 );
-    ajouter_formation( f2, e1 );
-    ajouter_formation( f3, e1 );
-    ajouter_formation( f4, e1 );
-    ajouter_formation( f5, e1 );
-    ajouter_formation( f1, e2 );
-    ajouter_formation( f2, e2 );
-    ajouter_formation( f3, e2 );
-    ajouter_formation( f4, e2 );
-    ajouter_formation( f5, e2 );
-    ajouter_formation( f1, e3 );
-    ajouter_formation( f2, e3 );
-    ajouter_formation( f3, e3 );
-    ajouter_formation( f4, e3 );
-    ajouter_formation( f5, e3 );
-    ajouter_formation( f1, e4 );
-    ajouter_formation( f2, e4 );
-    ajouter_formation( f3, e4 );
-    ajouter_formation( f4, e4 );
-    ajouter_formation( f5, e4 );
+    while( !feof( fdat_p ) )
+    {
+        char nom[50], prenom[50];
+        int formateur, nb_formations;
+        fscanf( fdat_p, "%s %s %d %d", nom, prenom, &formateur, &nb_formations );
+        personnes[i] = creer_personne( nom, prenom, formateur );
+        personnes[i]->nb_formations = nb_formations;
+        int j;
+        for( j = 0; j < nb_formations; j++ )
+        {
+            fscanf( fdat_p, "%d", &personnes[i]->formations[j] );
+        }
+        i += 1;
+    }
 
-    ville *v1 = creer_ville( "Mons" );
-    ville *v2 = creer_ville( "Namur" );
+    int nb_personnes = i - 1;
 
-    ajouter_ville( v1, f1 );
-    ajouter_ville( v1, f2 );
-    ajouter_ville( v1, f3 );
-    ajouter_ville( v1, f4 );
-    ajouter_ville( v2, f1 );
-    ajouter_ville( v2, f2 );
-    ajouter_ville( v2, f5 );
+    printf( "\nLISTE FICHIER personne.dat\n" );
 
-    afficher_ville( v1 );
-    afficher_ville( v2 );
+    for( i = 0; i < nb_personnes; i++ )
+    {
+        afficher_personne( personnes[i] );
+    }
 
-    afficher_formation( f1 );
-    afficher_formation( f2 );
-    afficher_formation( f3 );
-    afficher_formation( f4 );
-    afficher_formation( f5 );
+    i = 0;
+
+    while( !feof( fdat_f ) )
+    {
+        int id;
+        float prix;
+        char nom_formation[50];
+        fscanf( fdat_f, "%d %f ", &id, &prix );
+        fgets( nom_formation, 50, fdat_f );
+        int j;
+        for( j = 0; j < 50; j++ )
+        {
+            if( nom_formation[j] == '\n' )
+            {
+                nom_formation[j] = '\0';
+            }
+        }
+        formations[i] = creer_formation( nom_formation, prix );
+        formations[i]->id = i + 1;
+        i += 1;
+    }
+
+    int nb_formations = i - 1;
+
+    for( i = 0; i < nb_personnes; i++ )
+    {
+        int j;
+        for( j = 0; j < nb_formations; j++ )
+        {
+            int k;
+            for( k = 0; k < personnes[i]->nb_formations; k++ )
+            {
+                if( personnes[i]->formations[k] == formations[j]->id )
+                {
+                    ajouter_formation( formations[j], personnes[i] );
+                }
+            }
+        }
+    }
+
+    printf( "\nLISTE FICHIER formation.dat\n" );
+
+    for( i = 0; i < nb_formations; i++ )
+    {
+        afficher_formation( formations[i] );
+    }
+
+    i = 0;
+
+    while( !feof( fdat_v ) )
+    {
+        char nom_ville[50];
+        int tot_formations;
+        fscanf( fdat_v, "%s %d", nom_ville, &tot_formations );
+        villes[i] = creer_ville( nom_ville );
+        int j;
+        for( j = 0; j < tot_formations; j++ )
+        {
+            int id_formation;
+            fscanf( fdat_v, "%d", &id_formation );
+            int k;
+            for( k = 0; k < nb_formations; k++ )
+            {
+                if( formations[k]->id == id_formation )
+                {
+                    ajouter_ville( villes[i], formations[k] );
+                }
+            }
+        }
+        i += 1;
+    }
+
+    int nb_villes = i - 1;
+
+    printf( "\nLISTE FICHIER ville.dat\n" );
+
+    for( i = 0; i < nb_villes; i++ )
+    {
+        afficher_ville( villes[i] );
+    }
 
     /*menu();*/
 

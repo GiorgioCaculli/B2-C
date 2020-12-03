@@ -7,6 +7,8 @@ typedef struct personne
     char nom[50];
     char prenom[50];
     int formateur;
+    int nb_formations;
+    int formations[30];
 } personne;
 
 typedef struct noeud_formation
@@ -17,6 +19,7 @@ typedef struct noeud_formation
 
 typedef struct formation
 {
+    int id;
     char nom[50];
     float prix;
     struct formation *prerequis[10];
