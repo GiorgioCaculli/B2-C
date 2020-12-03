@@ -1,68 +1,60 @@
+#include "main.h"
+
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
-typedef struct info
-{
-    int id;
-    char nom[50];
-    char prenom[50];
-} info;
+/*****************************************************************************/
+/*                                     STRUCTS                               */
 
-typedef struct etudiant
-{
-    info *info;
-    struct etudiant *next;
-} etudiant;
+/* TODO: Remplacer les structs dans le fichier main.h ici. */
 
-typedef struct formateur
-{
-    info *info;
-    struct formateur *next;
-} formateur;
+/*                                    FIN STRUCTS                            */
+/*****************************************************************************/
 
-etudiant *creer_etudiant( char nom[], char prenom[] )
+/*****************************************************************************/
+/*                                    PERSONNE                               */
+/*
+ * Creation d'une personne.
+ * Ici on crée le pointeur pour la personne qui va contenir:
+ * Son nom
+ * Son prénom
+ * Une valeur 0 ou 1 si la personne est un formateur ou pas
+ */
+personne *creer_personne( char nom[], char prenom[], int formateur )
 {
-    etudiant *e = ( etudiant * ) calloc( sizeof( etudiant ), sizeof( etudiant ) );
-    e->info = ( info * ) calloc( sizeof( info ), sizeof( info ) );
-    strcpy( e->info->nom, nom );
-    strcpy( e->info->prenom, prenom );
-    e->next = NULL;
+    personne *e = ( personne * ) calloc( sizeof( personne ), sizeof( personne ) );
+    strcpy( e->nom, nom );
+    strcpy( e->prenom, prenom );
+    e->formateur = formateur;
     return e;
 }
 
-formateur *creer_formateur( char nom[], char prenom[] )
-{
-    formateur *f = ( formateur * ) calloc( sizeof( formateur ), sizeof( formateur ) );
-    f->info = ( info * ) calloc( sizeof( info ), sizeof( info ) );
-    strcpy( f->info->nom, nom );
-    strcpy( f->info->prenom, prenom );
-    f->next = NULL;
-    return f;
-}
+/*                                 FIN PERSONNE                              */
 
-typedef struct noeud_formation
-{
-    etudiant *e;
-    struct noeud_formation *next;
-} noeud_formation;
-
-noeud_formation *creer_noeud_formation( etudiant *e )
+/*****************************************************************************/
+/*                                     FORMATION                             */
+/*
+ * Création du noeud formation
+ * Ici on crée le noeud pour la formation qui va contenir:
+ * l'étudiant qui participera à la formation
+ */
+noeud_formation *creer_noeud_formation( personne *p )
 {
     noeud_formation *tmp = ( noeud_formation * ) calloc( sizeof( noeud_formation ), sizeof( noeud_formation) );
-    tmp->e = e;
+    tmp->p = p;
     tmp->next = NULL;
     return tmp;
 }
 
-typedef struct formation
-{
-    char nom[50];
-    float prix;
-    struct formation *prerequis[10];
-    struct noeud_formation *head;
-} formation;
-
+/*
+ * Création de la formation
+ * Ici on crée un pointeur pour la formation qui va contenir:
+ * Le nom de la formation
+ * Son prix
+ * Un enchaînement de noeuds de formation
+ */
 formation *creer_formation( char nom[], float prix )
 {
     formation *tmp = ( formation * ) calloc( sizeof( formation), sizeof( formation ) );
@@ -73,13 +65,54 @@ formation *creer_formation( char nom[], float prix )
     return tmp;
 }
 
+void ajouter_formation( formation *f, personne *p )
+{
+    noeud_formation *nf = creer_noeud_formation( p );
+    if( f->head == NULL )
+    {
+        f->head = nf;
+        return;
+    }
+    nf->next = f->head;
+    f->head = nf;
+}
+
+void afficher_formation( formation *f )
+{
+    formation *tmp = f;
+    noeud_formation *tmpnf = tmp->head;
+    printf( "Nom formation: %s - Prix: %.2f\n", tmp->nom, tmp->prix );
+    printf( "Participants dans la formation: %s\n", tmp->nom );
+    printf( "Formateurs:\n" );
+    while( tmpnf != NULL )
+    {
+        if( tmpnf->p->formateur == 1 )
+        {
+            printf( "%s %s", tmpnf->p->nom, tmpnf->p->prenom );
+            if( tmpnf != NULL ) printf( "\n" );
+        }
+        tmpnf = tmpnf->next;
+    }
+    tmpnf = tmp->head;
+    printf( "Étudiants:\n" );
+    while( tmpnf != NULL )
+    {
+        if( tmpnf->p->formateur == 0 )
+        {
+            printf( "%s %s", tmpnf->p->nom, tmpnf->p->prenom );
+            if( tmpnf != NULL ) printf( "\n" );
+        }
+        tmpnf = tmpnf->next;
+    }
+    printf( "\n" );
+}
+
+/*                             FIN FORMATION                                 */
+/*****************************************************************************/
+
 /*****************************************************************************/
 /*                                VILLE                                      */
-typedef struct noeud_ville
-{
-    formation *f;
-    struct noeud_ville *next;
-} noeud_ville;
+
 
 noeud_ville *creer_noeud_ville( formation *f )
 {
@@ -88,12 +121,6 @@ noeud_ville *creer_noeud_ville( formation *f )
     nv->next = NULL;
     return nv;
 }
-
-typedef struct ville
-{
-    char nom[50];
-    struct noeud_ville *head;
-} ville;
 
 ville *creer_ville( char nom[] )
 {
@@ -134,20 +161,98 @@ void afficher_ville( ville *v )
 /*                             FIN VILLE                                     */
 /*****************************************************************************/
 
+/*****************************************************************************/
+/*                           FONCTIONS GENERALES                             */
+
+void afficher_options()
+{
+    printf( "1: Afficher\n" );
+    printf( "2: Créer\n" );
+    printf( "3: Ajouter\n" );
+    printf( "4: Supprimer\n" );
+    printf( "5: Remplacer\n" );
+    printf( "0: Quitter\n" );
+    printf( "Que voudriez vous faire ? " );
+}
+
+/*
+ * Menu permettant à l'utilisateur d'intéragir avec le programme
+ */
+int menu()
+{
+    int choix;
+    do
+    {
+        afficher_options();
+        scanf( "%d", &choix );
+        while ( choix < 0 || choix > 5 )
+        {
+            afficher_options();
+            scanf( "%d", &choix );
+        }
+        switch ( choix )
+        {
+            case 1: printf( "Afficher" );
+                break;
+            case 2: printf( "Créer" );
+                break;
+            case 3: printf( "Ajouter" );
+                break;
+            default:
+                printf( "Option %d - INVALIDE\n", choix );
+                break;
+        }
+
+    } while ( choix != 0 );
+    return 0;
+}
+
 int main( void )
 {
     printf( "Projet par Giorgio Caculli et Jedrzej Tyranowski\n" );
 
-    /*etudiant *e1 = creer_etudiant( "Caculli", "Giorgio" );
-    etudiant *e2 = creer_etudiant( "Tyranowski", "Jedrzej" );
-    etudiant *e3 = creer_etudiant( "Lambert", "Guillaume" );
-    etudiant *e4 = creer_etudiant( "Taminiau", "Tanguy" );*/
+    personne *e1 = creer_personne( "Caculli", "Giorgio", 0 );
+    personne *e2 = creer_personne( "Tyranowski", "Jedrzej", 0 );
+    personne *e3 = creer_personne( "Lambert", "Guillaume", 0 );
+    personne *e4 = creer_personne( "Taminiau", "Tanguy", 0 );
+
+    personne *i1 = creer_personne( "Colmant", "Aurélien", 1 );
+    personne *i2 = creer_personne( "Carpentier", "Jean-Michel", 1 );
+    personne *i3 = creer_personne( "Palermo", "Orlando", 1 );
+    personne *i4 = creer_personne( "Mercier", "Pierre", 1 );
+    personne *i5 = creer_personne( "Servais", "Michel", 1 );
 
     formation *f1 = creer_formation( "Langage C", 10.0 );
     formation *f2 = creer_formation( "Technologies internet", 150.25 );
     formation *f3 = creer_formation( "Mathematique", 250.45 );
     formation *f4 = creer_formation( "Programmation Orientee Objet", 152.57 );
     formation *f5 = creer_formation( "Communication en Langue Francaise", 347.85 );
+
+    ajouter_formation( f1, i2 );
+    ajouter_formation( f2, i4 );
+    ajouter_formation( f3, i3 );
+    ajouter_formation( f4, i1 );
+    ajouter_formation( f5, i5 );
+    ajouter_formation( f1, e1 );
+    ajouter_formation( f2, e1 );
+    ajouter_formation( f3, e1 );
+    ajouter_formation( f4, e1 );
+    ajouter_formation( f5, e1 );
+    ajouter_formation( f1, e2 );
+    ajouter_formation( f2, e2 );
+    ajouter_formation( f3, e2 );
+    ajouter_formation( f4, e2 );
+    ajouter_formation( f5, e2 );
+    ajouter_formation( f1, e3 );
+    ajouter_formation( f2, e3 );
+    ajouter_formation( f3, e3 );
+    ajouter_formation( f4, e3 );
+    ajouter_formation( f5, e3 );
+    ajouter_formation( f1, e4 );
+    ajouter_formation( f2, e4 );
+    ajouter_formation( f3, e4 );
+    ajouter_formation( f4, e4 );
+    ajouter_formation( f5, e4 );
 
     ville *v1 = creer_ville( "Mons" );
     ville *v2 = creer_ville( "Namur" );
@@ -162,6 +267,14 @@ int main( void )
 
     afficher_ville( v1 );
     afficher_ville( v2 );
+
+    afficher_formation( f1 );
+    afficher_formation( f2 );
+    afficher_formation( f3 );
+    afficher_formation( f4 );
+    afficher_formation( f5 );
+
+    /*menu();*/
 
     return 0;
 }
