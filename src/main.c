@@ -139,6 +139,49 @@ void ajouter_formation( formation *f, personne *p )
     f->head = nf;
 }
 
+int supprimer_personne( formation *f, char nom[], char prenom[] )
+{
+    formation *tmpf = f;
+    noeud_formation *tmp = NULL;
+    if( f == NULL )
+    {
+        printf( "Formation pas trouvée\n" );
+        return 0;
+    }
+    noeud_formation *headf = tmpf->head;
+    if( headf == NULL )
+    {
+        return 0;
+    }
+    if( strcmp( f->head->p->nom, nom ) == 0 && strcmp( f->head->p->prenom, prenom ) == 0 )
+    {
+        tmp = f->head->next;
+        free( f->head );
+        f->head = tmp;
+        return 1;
+    }
+    while( headf != NULL )
+    {
+        if( headf->next == NULL )
+        {
+            if( strcmp( headf->p->nom, nom ) == 0 && strcmp( headf->p->prenom, prenom ) == 0 )
+            {
+                return 1;
+            }
+            return 0;
+        }
+        if( strcmp( headf->next->p->nom, nom ) == 0 && strcmp( headf->next->p->prenom, prenom ) == 0 )
+        {
+            tmp = headf->next;
+            headf->next = tmp->next;
+            free( tmp );
+            return 1;
+        }
+        headf = headf->next;
+    }
+    return 0;
+}
+
 void afficher_formation( formation *f )
 {
     formation *tmp = f;
@@ -254,6 +297,92 @@ void ajouter_ville( ville *v, formation *f )
     }
     nv->next = v->head;
     v->head = nv;
+}
+
+int supprimer_formation( ville *v, char nom_formation[] )
+{
+    ville *tmpv = v;
+    noeud_ville *tmp = NULL;
+    if( v == NULL )
+    {
+        printf( "Formation pas trouvée\n" );
+        return 0;
+    }
+    noeud_ville *headv = tmpv->head;
+    if( headv == NULL )
+    {
+        return 0;
+    }
+    if( strcmp( v->head->f->nom, nom_formation ) == 0 )
+    {
+        tmp = v->head->next;
+        free( v->head );
+        v->head = tmp;
+        return 1;
+    }
+    while( headv != NULL )
+    {
+        if( headv->next == NULL )
+        {
+            if( strcmp( headv->f->nom, nom_formation ) == 0 )
+            {
+                return 1;
+            }
+            return 0;
+        }
+        if( strcmp( headv->next->f->nom, nom_formation ) == 0 )
+        {
+            tmp = headv->next;
+            headv->next = tmp->next;
+            free( tmp );
+            return 1;
+        }
+        headv = headv->next;
+    }
+    return 0;
+}
+
+int supprimer_ville( db_ville *db, char nom_ville[] )
+{
+    db_ville *tmpdb = db;
+    noeud_db_ville *tmp = NULL;
+    if( db == NULL )
+    {
+        printf( "Ville pas trouvée\n" );
+        return 0;
+    }
+    noeud_db_ville *headdb = tmpdb->head;
+    if( headdb == NULL )
+    {
+        return 0;
+    }
+    if( strcmp( db->head->v->nom, nom_ville ) == 0 )
+    {
+        tmp = db->head->next;
+        free( db->head );
+        db->head = tmp;
+        return 1;
+    }
+    while( headdb != NULL )
+    {
+        if( headdb->next == NULL )
+        {
+            if( strcmp( headdb->v->nom, nom_ville ) == 0 )
+            {
+                return 1;
+            }
+            return 0;
+        }
+        if( strcmp( headdb->next->v->nom, nom_ville ) == 0 )
+        {
+            tmp = headdb->next;
+            headdb->next = tmp->next;
+            free( tmp );
+            return 1;
+        }
+        headdb = headdb->next;
+    }
+    return 0;
 }
 
 void afficher_ville( ville *v )
@@ -398,7 +527,8 @@ int main( void )
             break;
         }
         ajouter_db_personne( dbp, creer_personne( nom, prenom, formateur ) );
-        get_personne(dbp, nom, prenom, formateur )->nb_formations = nb_formations;
+        get_personne( dbp, nom, prenom, formateur )->nb_formations = nb_formations;
+        get_personne( dbp, nom, prenom, formateur )->id = i + 1;
         int j;
         for( j = 0; j < nb_formations; j++ )
         {
