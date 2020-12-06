@@ -93,6 +93,7 @@ personne *get_personne( db_personne *db, char nom[], char prenom[], int formateu
 }
 
 /*                                 FIN PERSONNE                              */
+/*****************************************************************************/
 
 /*****************************************************************************/
 /*                                     FORMATION                             */
@@ -270,9 +271,6 @@ void afficher_ville( ville *v )
     }
     printf( "\n" );
 }
-
-/*                             FIN VILLE                                     */
-/*****************************************************************************/
 
 noeud_db_ville *creer_noeud_db_ville( ville *v )
 {
