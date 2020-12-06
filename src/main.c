@@ -37,6 +37,61 @@ void afficher_personne( personne *p )
     printf( "%s %s %s\n", tmp->nom, tmp->prenom, p->formateur ? "Formateur" : "Étudiant" );
 }
 
+noeud_db_personne *creer_noeud_db_personne( personne *p )
+{
+    noeud_db_personne *nd = ( noeud_db_personne * ) calloc( sizeof( noeud_db_personne ), sizeof( noeud_db_personne ) );
+    nd->p = p;
+    nd->next = NULL;
+    return nd;
+}
+
+db_personne *creer_db_personne()
+{
+    db_personne *db = ( db_personne * ) calloc( sizeof( db_personne ), sizeof( db_personne ) );
+    db->head = NULL;
+    return db;
+}
+
+void ajouter_db_personne( db_personne *db, personne *p )
+{
+    noeud_db_personne *ndb = creer_noeud_db_personne( p );
+    while( db->head == NULL )
+    {
+        db->head = ndb;
+        return;
+    }
+    ndb->next = db->head;
+    db->head = ndb;
+}
+
+void afficher_db_personne( db_personne *db )
+{
+    db_personne *tmpdb = db;
+    noeud_db_personne *tmpndb = tmpdb->head;
+    while( tmpndb != NULL )
+    {
+        afficher_personne( tmpndb->p );
+        tmpndb = tmpndb->next;
+    }
+}
+
+personne *get_personne( db_personne *db, char nom[], char prenom[], int formateur )
+{
+    db_personne *tmpdb = db;
+    noeud_db_personne *tmpndb = tmpdb->head;
+    while( tmpndb != NULL )
+    {
+        if( strcmp( tmpndb->p->nom, nom ) == 0 &&
+        strcmp( tmpndb->p->prenom, prenom ) == 0 &&
+        tmpndb->p->formateur == formateur )
+        {
+            return tmpndb->p;
+        }
+        tmpndb = tmpndb->next;
+    }
+    return NULL;
+}
+
 /*                                 FIN PERSONNE                              */
 
 /*****************************************************************************/
@@ -113,12 +168,64 @@ void afficher_formation( formation *f )
     printf( "\n" );
 }
 
+noeud_db_formation *creer_noeud_db_formation( formation *f )
+{
+    noeud_db_formation *ndb = ( noeud_db_formation * ) calloc( sizeof( noeud_db_formation ), sizeof( noeud_db_formation ) );
+    ndb->f = f;
+    ndb->next = NULL;
+    return ndb;
+}
+
+db_formation *creer_db_formation()
+{
+    db_formation *db = ( db_formation * ) calloc( sizeof( db_formation ), sizeof( db_formation ) );
+    db->head = NULL;
+    return db;
+}
+
+void ajouter_db_formation( db_formation *db, formation *f )
+{
+    noeud_db_formation *ndb = creer_noeud_db_formation( f );
+    if( db->head == NULL )
+    {
+        db->head = ndb;
+        return;
+    }
+    ndb->next = db->head;
+    db->head = ndb;
+}
+
+void afficher_db_formation( db_formation *db )
+{
+    db_formation *tmpdb = db;
+    noeud_db_formation *tmpndb = tmpdb->head;
+    while( tmpndb != NULL )
+    {
+        afficher_formation( tmpndb->f );
+        tmpndb = tmpndb->next;
+    }
+}
+
+formation *get_formation( db_formation *db, char nom_formation[] )
+{
+    db_formation *tmpdb = db;
+    noeud_db_formation *tmpndb = tmpdb->head;
+    while( tmpndb != NULL )
+    {
+        if( strcmp( tmpndb->f->nom, nom_formation ) == 0 )
+        {
+            return tmpndb->f;
+        }
+        tmpndb = tmpndb->next;
+    }
+    return NULL;
+}
+
 /*                             FIN FORMATION                                 */
 /*****************************************************************************/
 
 /*****************************************************************************/
 /*                                VILLE                                      */
-
 
 noeud_ville *creer_noeud_ville( formation *f )
 {
@@ -162,6 +269,62 @@ void afficher_ville( ville *v )
         if( tmpnv != NULL ) printf( "\n" );
     }
     printf( "\n" );
+}
+
+/*                             FIN VILLE                                     */
+/*****************************************************************************/
+
+noeud_db_ville *creer_noeud_db_ville( ville *v )
+{
+    noeud_db_ville *nd = ( noeud_db_ville * ) calloc( sizeof( noeud_db_ville ), sizeof( noeud_db_ville ) );
+    nd->v = v;
+    nd->next = NULL;
+    return nd;
+}
+
+db_ville *creer_db_ville()
+{
+    db_ville *db = ( db_ville * ) calloc( sizeof( db_ville ), sizeof( db_ville ) );
+    db->head = NULL;
+    return db;
+}
+
+void ajouter_db_ville( db_ville *db, ville *v )
+{
+    noeud_db_ville *ndb = creer_noeud_db_ville( v );
+    if( db->head == NULL )
+    {
+        db->head = ndb;
+        return;
+    }
+    ndb->next = db->head;
+    db->head = ndb;
+}
+
+void afficher_db_ville( db_ville *db )
+{
+    db_ville *tmpdb = db;
+    noeud_db_ville *tmpndb = tmpdb->head;
+    while( tmpndb != NULL )
+    {
+        afficher_ville( tmpndb->v );
+        tmpndb = tmpndb->next;
+    }
+}
+
+ville *get_ville( db_ville *db, char nom_ville[] )
+{
+    db_ville *tmpdb = db;
+    noeud_db_ville *tmpndb = tmpdb->head;
+    while( tmpndb != NULL )
+    {
+        if( strcmp( tmpndb->v->nom, nom_ville ) == 0 )
+        {
+            return tmpndb->v;
+        }
+        tmpndb = tmpndb->next;
+    }
+    return NULL;
 }
 
 /*                             FIN VILLE                                     */
@@ -221,9 +384,9 @@ int main( void )
     FILE *fdat_p = fopen( "personne.dat", "r" );
     FILE *fdat_v = fopen( "ville.dat", "r" );
 
-    ville *villes[50];
-    formation *formations[50];
-    personne *personnes[100];
+    db_ville *dbv = creer_db_ville();
+    db_personne *dbp = creer_db_personne();
+    db_formation *dbf = creer_db_formation();
 
     int i = 0;
 
@@ -232,24 +395,23 @@ int main( void )
         char nom[50], prenom[50];
         int formateur, nb_formations;
         fscanf( fdat_p, "%s %s %d %d", nom, prenom, &formateur, &nb_formations );
-        personnes[i] = creer_personne( nom, prenom, formateur );
-        personnes[i]->nb_formations = nb_formations;
+        if( feof( fdat_p ) )
+        {
+            break;
+        }
+        ajouter_db_personne( dbp, creer_personne( nom, prenom, formateur ) );
+        get_personne(dbp, nom, prenom, formateur )->nb_formations = nb_formations;
         int j;
         for( j = 0; j < nb_formations; j++ )
         {
-            fscanf( fdat_p, "%d", &personnes[i]->formations[j] );
+            fscanf( fdat_p, "%d", &get_personne(dbp, nom, prenom, formateur )->formations[j] );
         }
         i += 1;
     }
 
-    int nb_personnes = i - 1;
-
     printf( "\nLISTE FICHIER personne.dat\n" );
 
-    for( i = 0; i < nb_personnes; i++ )
-    {
-        afficher_personne( personnes[i] );
-    }
+    afficher_db_personne( dbp );
 
     i = 0;
 
@@ -260,6 +422,10 @@ int main( void )
         char nom_formation[50];
         fscanf( fdat_f, "%d %f ", &id, &prix );
         fgets( nom_formation, 50, fdat_f );
+        if( feof( fdat_f ) )
+        {
+            break;
+        }
         int j;
         for( j = 0; j < 50; j++ )
         {
@@ -268,35 +434,36 @@ int main( void )
                 nom_formation[j] = '\0';
             }
         }
-        formations[i] = creer_formation( nom_formation, prix );
-        formations[i]->id = i + 1;
+        ajouter_db_formation( dbf, creer_formation( nom_formation, prix ) );
+        get_formation( dbf, nom_formation )->id = i + 1;
         i += 1;
     }
 
-    int nb_formations = i - 1;
+    db_personne *tmpdbp = dbp;
+    noeud_db_personne *tmpndbp = tmpdbp->head;
 
-    for( i = 0; i < nb_personnes; i++ )
+    while( tmpndbp != NULL )
     {
-        int j;
-        for( j = 0; j < nb_formations; j++ )
+        db_formation *tmpdbf = dbf;
+        noeud_db_formation *tmpndbf = tmpdbf->head;
+        while( tmpndbf != NULL )
         {
-            int k;
-            for( k = 0; k < personnes[i]->nb_formations; k++ )
+            int j;
+            for( j = 0; j < tmpndbp->p->nb_formations; j++ )
             {
-                if( personnes[i]->formations[k] == formations[j]->id )
+                if( tmpndbp->p->formations[j] == tmpndbf->f->id )
                 {
-                    ajouter_formation( formations[j], personnes[i] );
+                    ajouter_formation( get_formation( dbf, tmpndbf->f->nom ), tmpndbp->p );
                 }
             }
+            tmpndbf = tmpndbf->next;
         }
+        tmpndbp = tmpndbp->next;
     }
 
     printf( "\nLISTE FICHIER formation.dat\n" );
 
-    for( i = 0; i < nb_formations; i++ )
-    {
-        afficher_formation( formations[i] );
-    }
+    afficher_db_formation( dbf );
 
     i = 0;
 
@@ -305,32 +472,33 @@ int main( void )
         char nom_ville[50];
         int tot_formations;
         fscanf( fdat_v, "%s %d", nom_ville, &tot_formations );
-        villes[i] = creer_ville( nom_ville );
+        if( feof( fdat_v ) )
+        {
+            break;
+        }
+        ajouter_db_ville( dbv, creer_ville( nom_ville) );
         int j;
         for( j = 0; j < tot_formations; j++ )
         {
             int id_formation;
             fscanf( fdat_v, "%d", &id_formation );
-            int k;
-            for( k = 0; k < nb_formations; k++ )
+            db_formation *tmpdbf = dbf;
+            noeud_db_formation *tmpndbf = tmpdbf->head;
+            while( tmpndbf != NULL )
             {
-                if( formations[k]->id == id_formation )
+                if( tmpndbf->f->id == id_formation )
                 {
-                    ajouter_ville( villes[i], formations[k] );
+                    ajouter_ville( get_ville(dbv, nom_ville), tmpndbf->f );
                 }
+                tmpndbf = tmpndbf->next;
             }
         }
         i += 1;
     }
 
-    int nb_villes = i - 1;
-
     printf( "\nLISTE FICHIER ville.dat\n" );
 
-    for( i = 0; i < nb_villes; i++ )
-    {
-        afficher_ville( villes[i] );
-    }
+    afficher_db_ville( dbv );
 
     /*menu();*/
 

@@ -11,6 +11,17 @@ typedef struct personne
     int formations[30];
 } personne;
 
+typedef struct noeud_db_personne
+{
+    personne *p;
+    struct noeud_db_personne *next;
+} noeud_db_personne;
+
+typedef struct db_personne
+{
+    noeud_db_personne *head;
+} db_personne;
+
 typedef struct noeud_formation
 {
     personne *p;
@@ -23,8 +34,19 @@ typedef struct formation
     char nom[50];
     float prix;
     struct formation *prerequis[10];
-    struct noeud_formation *head;
+    noeud_formation *head;
 } formation;
+
+typedef struct noeud_db_formation
+{
+    formation *f;
+    struct noeud_db_formation *next;
+} noeud_db_formation;
+
+typedef struct db_formation
+{
+    noeud_db_formation *head;
+} db_formation;
 
 typedef struct noeud_ville
 {
@@ -35,7 +57,18 @@ typedef struct noeud_ville
 typedef struct ville
 {
     char nom[50];
-    struct noeud_ville *head;
+    noeud_ville *head;
 } ville;
+
+typedef struct noeud_db_ville
+{
+    ville *v;
+    struct noeud_db_ville *next;
+} noeud_db_ville;
+
+typedef struct db_ville
+{
+    noeud_db_ville *head;
+} db_ville;
 
 #endif //B2_C_MAIN_H
