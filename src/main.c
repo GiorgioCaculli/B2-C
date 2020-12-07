@@ -498,6 +498,22 @@ int menu_manipulation( int manipulation, char choix[], db_ville *v, db_formation
                 afficher_db_personne( p );
             }
             break;
+        case 2:
+            if( strcmp(choix, "ville" ) == 0 )
+            {
+                char nom[50];
+                printf( "Nom de la ville: " );
+                scanf( "%s", nom );
+                ajouter_db_ville( v, creer_ville( nom ) );
+            }
+            if( strcmp( choix, "formation" ) == 0 )
+            {
+
+            }
+            if( strcmp( choix, "personne" ) == 0 )
+            {
+                afficher_db_personne( p );
+            }
     }
     return 0;
 }
