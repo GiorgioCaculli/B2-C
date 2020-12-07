@@ -1,0 +1,27 @@
+ville.dat
+ville
+ -> char[50] nom de la ville
+ -> formation à stocker
+
+formation.dat
+formation
+ -> int id identité de la formation
+ -> char[50] nom de la formation
+ -> float prix le prix de la formation
+ -> int duree durée en heure par an de la formation
+ -> char jours (lundi, mardi, ...) vecteurs avec les jours de la semaine où le cours a lieu
+ -> int prerequis vecteurs contentant les cours a avoir réussi pour suivre le cours
+ -> personne qui participe dans la formation (noeuds)
+
+personne.dat
+personne
+ -> int id identité de la personne
+ -> char nom[50] le nom de la personne
+ -> char prenom[50] le prénom de la personne
+ -> int formateur 1 si formateur - 0 si étudiant
+ -> int formations[30] vecteurs contenant les formations à suivre au cours de l'année
+ -> int nb_formations le nombre de formations auquel la personne participe
+ -> int reduction 1 si réduction de 10% 0 pas de réduction
+ -> char jours (lundi, mardi, ...) vecteur content les jours auquel une personne est disponible
+
+
