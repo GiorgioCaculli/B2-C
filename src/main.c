@@ -543,7 +543,31 @@ int menu_manipulation( int manipulation, char choix[], db_ville *v, db_formation
             }
             if( strcmp( choix, "personne" ) == 0 )
             {
-                afficher_db_personne( p );
+                getchar();
+                char nom[50], prenom[50], choix_formateur[4];
+                int formateur;
+                printf( "Nom de la personne: " );
+                scanf( "%s", nom );
+                printf( "Prénom de la personne: " );
+                scanf( "%s", prenom );
+                printf( "Est-ce que cette personne est une formateur ? (o/n) " );
+                scanf( "%s", choix_formateur );
+                if( strcmp( choix_formateur, "o" ) == 0 || strcmp( choix_formateur, "oui" ) == 0 )
+                {
+                    formateur = 1;
+                }
+                else
+                {
+                    formateur = 0;
+                }
+                personne *tmp = get_personne( p, nom, prenom, formateur );
+                if( tmp == NULL )
+                {
+                    ajouter_db_personne( p, creer_personne( nom, prenom, formateur ) );
+                } else
+                {
+                    printf( "Personne déjà existente\n" );
+                }
             }
     }
     return 0;

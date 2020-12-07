@@ -1,3 +1,6 @@
+build/
+.idea/
+
 # http://www.gnu.org/software/automake
 
 Makefile.in
