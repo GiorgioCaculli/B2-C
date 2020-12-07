@@ -9,6 +9,8 @@ typedef struct personne
     int formateur;
     int nb_formations;
     int formations[30];
+    char jours[7][9];
+    int reduction;
 } personne;
 
 typedef struct noeud_db_personne
@@ -33,7 +35,9 @@ typedef struct formation
     int id;
     char nom[50];
     float prix;
-    struct formation *prerequis[10];
+    char jours[7][9];
+    int duree;
+    int prerequis[10];
     noeud_formation *head;
 } formation;
 

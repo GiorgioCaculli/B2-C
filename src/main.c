@@ -82,8 +82,8 @@ personne *get_personne( db_personne *db, char nom[], char prenom[], int formateu
     while( tmpndb != NULL )
     {
         if( strcmp( tmpndb->p->nom, nom ) == 0 &&
-        strcmp( tmpndb->p->prenom, prenom ) == 0 &&
-        tmpndb->p->formateur == formateur )
+            strcmp( tmpndb->p->prenom, prenom ) == 0 &&
+            tmpndb->p->formateur == formateur )
         {
             return tmpndb->p;
         }
@@ -460,7 +460,7 @@ ville *get_ville( db_ville *db, char nom_ville[] )
 /*****************************************************************************/
 /*                           FONCTIONS GENERALES                             */
 
-void afficher_options()
+void afficher_options_menu()
 {
     printf( "1: Afficher\n" );
     printf( "2: Créer\n" );
@@ -468,37 +468,110 @@ void afficher_options()
     printf( "4: Supprimer\n" );
     printf( "5: Remplacer\n" );
     printf( "0: Quitter\n" );
-    printf( "Que voudriez vous faire ? " );
+    printf( "Que voudriez-vous faire ? " );
 }
 
-/*
- * Menu permettant à l'utilisateur d'intéragir avec le programme
- */
-int menu()
+void afficher_options_choix()
+{
+    printf( "1. Personne\n" );
+    printf( "2. Formation\n" );
+    printf( "3. Ville\n" );
+    printf( "0. Retour\n" );
+    printf( "Quelle partie voudriez-vous manipuler ? ");
+}
+
+int menu_manipulation( int manipulation, char choix[], db_ville *v, db_formation *f, db_personne *p )
+{
+    switch( manipulation )
+    {
+        case 1:
+            if( strcmp(choix, "ville" ) == 0 )
+            {
+                afficher_db_ville( v );
+            }
+            if( strcmp( choix, "formation" ) == 0 )
+            {
+                afficher_db_formation( f );
+            }
+            if( strcmp( choix, "personne" ) == 0 )
+            {
+                afficher_db_personne( p );
+            }
+            break;
+    }
+    return 0;
+}
+
+int menu_choix( int manipulation, db_ville *v, db_formation *f, db_personne *p )
 {
     int choix;
     do
     {
-        afficher_options();
+        afficher_options_choix();
         scanf( "%d", &choix );
-        while ( choix < 0 || choix > 5 )
+        switch( choix )
         {
-            afficher_options();
-            scanf( "%d", &choix );
-        }
-        switch ( choix )
-        {
-            case 1: printf( "Afficher" );
+            case 1:
+                printf( "Personne\n" );
+                menu_manipulation( manipulation, "personne", v, f, p );
                 break;
-            case 2: printf( "Créer" );
+            case 2:
+                printf( "Formation\n" );
+                menu_manipulation( manipulation, "formation", v, f, p );
                 break;
-            case 3: printf( "Ajouter" );
+            case 3:
+                printf( "Ville\n" );
+                menu_manipulation( manipulation, "ville", v, f, p );
+                break;
+            case 0:
                 break;
             default:
                 printf( "Option %d - INVALIDE\n", choix );
                 break;
         }
+    } while( choix != 0 );
+    return 0;
+}
 
+/*
+ * Menu permettant à l'utilisateur d'intéragir avec le programme
+ */
+int menu( db_ville *v, db_formation *f, db_personne *p )
+{
+    int choix;
+    do
+    {
+        afficher_options_menu();
+        scanf( "%d", &choix );
+        switch ( choix )
+        {
+            case 1:
+                printf( "Afficher\n" );
+                menu_choix( 1, v, f, p );
+                break;
+            case 2:
+                printf( "Créer\n" );
+                menu_choix( 2, v, f, p );
+                break;
+            case 3:
+                printf( "Ajouter\n" );
+                menu_choix( 3, v, f, p );
+                break;
+            case 4:
+                printf( "Supprimer\n" );
+                menu_choix( 4, v, f, p );
+                break;
+            case 5:
+                printf( "Remplacer\n" );
+                menu_choix( 5, v, f, p );
+                break;
+            case 0:
+                printf( "Quitter\n" );
+                exit( 0 );
+            default:
+                printf( "Option %d - INVALIDE\n", choix );
+                break;
+        }
     } while ( choix != 0 );
     return 0;
 }
@@ -628,7 +701,7 @@ int main( void )
 
     afficher_db_ville( dbv );
 
-    /*menu();*/
+    menu( dbv, dbf, dbp );
 
     return 0;
 }
