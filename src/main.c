@@ -501,14 +501,45 @@ int menu_manipulation( int manipulation, char choix[], db_ville *v, db_formation
         case 2:
             if( strcmp(choix, "ville" ) == 0 )
             {
+                getchar();
                 char nom[50];
                 printf( "Nom de la ville: " );
-                scanf( "%s", nom );
-                ajouter_db_ville( v, creer_ville( nom ) );
+                fgets( nom, 50, stdin );
+                if( strlen( nom ) > 0 && nom[ strlen( nom ) - 1 ] == '\n' )
+                {
+                    nom[ strlen( nom ) - 1 ] = '\0';
+                }
+                ville *tmp = get_ville( v, nom );
+                if( tmp == NULL )
+                {
+                    ajouter_db_ville( v, creer_ville( nom ) );
+                } else
+                {
+                    printf( "Ville déjà existente\n" );
+                }
             }
             if( strcmp( choix, "formation" ) == 0 )
             {
-
+                getchar();
+                char nom[50];
+                float prix;
+                printf( "Nom de la formation: " );
+                fgets( nom, 50, stdin );
+                if( strlen( nom ) > 0 && nom[ strlen( nom ) - 1 ] == '\n' )
+                {
+                    nom[ strlen( nom ) - 1 ] = '\0';
+                }
+                formation *tmp = get_formation( f, nom );
+                if( tmp == NULL )
+                {
+                    printf( "Coût de la formation: " );
+                    scanf( "%f", &prix );
+                    ajouter_db_formation( f, creer_formation( nom, prix ) );
+                }
+                else
+                {
+                    printf( "Formation déjà existente\n" );
+                }
             }
             if( strcmp( choix, "personne" ) == 0 )
             {
@@ -719,5 +750,8 @@ int main( void )
 
     menu( dbv, dbf, dbp );
 
+    fclose( fdat_p );
+    fclose( fdat_f );
+    fclose( fdat_v );
     return 0;
 }
