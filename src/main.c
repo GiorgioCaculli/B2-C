@@ -269,195 +269,6 @@ formation *get_formation( db_formation *db, char nom_formation[] )
 /*****************************************************************************/
 
 /*****************************************************************************/
-/*                                VILLE                                      */
-
-noeud_ville *creer_noeud_ville( formation *f )
-{
-    noeud_ville *nv = ( noeud_ville * ) calloc( sizeof( noeud_ville ), sizeof( noeud_ville ) );
-    nv->f = f;
-    nv->next = NULL;
-    return nv;
-}
-
-ville *creer_ville( char nom[] )
-{
-    ville *v = ( ville * ) calloc( sizeof( ville ), sizeof( ville ) );
-    strcpy( v->nom, nom );
-    v->head = NULL;
-    return v;
-}
-
-void ajouter_ville( ville *v, formation *f )
-{
-    noeud_ville *nv = creer_noeud_ville( f );
-    if( v->head == NULL )
-    {
-        v->head = nv;
-        return;
-    }
-    nv->next = v->head;
-    v->head = nv;
-}
-
-int supprimer_formation( ville *v, char nom_formation[] )
-{
-    ville *tmpv = v;
-    noeud_ville *tmp = NULL;
-    if( v == NULL )
-    {
-        printf( "Formation pas trouvée\n" );
-        return 0;
-    }
-    noeud_ville *headv = tmpv->head;
-    if( headv == NULL )
-    {
-        return 0;
-    }
-    if( strcmp( v->head->f->nom, nom_formation ) == 0 )
-    {
-        tmp = v->head->next;
-        free( v->head );
-        v->head = tmp;
-        return 1;
-    }
-    while( headv != NULL )
-    {
-        if( headv->next == NULL )
-        {
-            if( strcmp( headv->f->nom, nom_formation ) == 0 )
-            {
-                return 1;
-            }
-            return 0;
-        }
-        if( strcmp( headv->next->f->nom, nom_formation ) == 0 )
-        {
-            tmp = headv->next;
-            headv->next = tmp->next;
-            free( tmp );
-            return 1;
-        }
-        headv = headv->next;
-    }
-    return 0;
-}
-
-int supprimer_ville( db_ville *db, char nom_ville[] )
-{
-    db_ville *tmpdb = db;
-    noeud_db_ville *tmp = NULL;
-    if( db == NULL )
-    {
-        printf( "Ville pas trouvée\n" );
-        return 0;
-    }
-    noeud_db_ville *headdb = tmpdb->head;
-    if( headdb == NULL )
-    {
-        return 0;
-    }
-    if( strcmp( db->head->v->nom, nom_ville ) == 0 )
-    {
-        tmp = db->head->next;
-        free( db->head );
-        db->head = tmp;
-        return 1;
-    }
-    while( headdb != NULL )
-    {
-        if( headdb->next == NULL )
-        {
-            if( strcmp( headdb->v->nom, nom_ville ) == 0 )
-            {
-                return 1;
-            }
-            return 0;
-        }
-        if( strcmp( headdb->next->v->nom, nom_ville ) == 0 )
-        {
-            tmp = headdb->next;
-            headdb->next = tmp->next;
-            free( tmp );
-            return 1;
-        }
-        headdb = headdb->next;
-    }
-    return 0;
-}
-
-void afficher_ville( ville *v )
-{
-    ville *tmp = v;
-    noeud_ville *tmpnv = tmp->head;
-    printf( "Nom ville: %s\n", tmp->nom );
-    printf( "Formations dans %s\n", tmp->nom );
-    printf( "%-50s %-5s\n", "Nom", "Prix");
-    while( tmpnv != NULL )
-    {
-        printf( "%-50s %6.2f", tmpnv->f->nom, tmpnv->f->prix );
-        tmpnv = tmpnv->next;
-        if( tmpnv != NULL ) printf( "\n" );
-    }
-    printf( "\n" );
-}
-
-noeud_db_ville *creer_noeud_db_ville( ville *v )
-{
-    noeud_db_ville *nd = ( noeud_db_ville * ) calloc( sizeof( noeud_db_ville ), sizeof( noeud_db_ville ) );
-    nd->v = v;
-    nd->next = NULL;
-    return nd;
-}
-
-db_ville *creer_db_ville()
-{
-    db_ville *db = ( db_ville * ) calloc( sizeof( db_ville ), sizeof( db_ville ) );
-    db->head = NULL;
-    return db;
-}
-
-void ajouter_db_ville( db_ville *db, ville *v )
-{
-    noeud_db_ville *ndb = creer_noeud_db_ville( v );
-    if( db->head == NULL )
-    {
-        db->head = ndb;
-        return;
-    }
-    ndb->next = db->head;
-    db->head = ndb;
-}
-
-void afficher_db_ville( db_ville *db )
-{
-    db_ville *tmpdb = db;
-    noeud_db_ville *tmpndb = tmpdb->head;
-    while( tmpndb != NULL )
-    {
-        afficher_ville( tmpndb->v );
-        tmpndb = tmpndb->next;
-    }
-}
-
-ville *get_ville( db_ville *db, char nom_ville[] )
-{
-    db_ville *tmpdb = db;
-    noeud_db_ville *tmpndb = tmpdb->head;
-    while( tmpndb != NULL )
-    {
-        if( strcmp( tmpndb->v->nom, nom_ville ) == 0 )
-        {
-            return tmpndb->v;
-        }
-        tmpndb = tmpndb->next;
-    }
-    return NULL;
-}
-
-/*                             FIN VILLE                                     */
-/*****************************************************************************/
-
-/*****************************************************************************/
 /*                           FONCTIONS GENERALES                             */
 
 void afficher_options_menu()
@@ -475,20 +286,15 @@ void afficher_options_choix()
 {
     printf( "1. Personne\n" );
     printf( "2. Formation\n" );
-    printf( "3. Ville\n" );
     printf( "0. Retour\n" );
     printf( "Quelle partie voudriez-vous manipuler ? ");
 }
 
-int menu_manipulation( int manipulation, char choix[], db_ville *v, db_formation *f, db_personne *p )
+int menu_manipulation( int manipulation, char choix[], db_formation *f, db_personne *p )
 {
     switch( manipulation )
     {
         case 1:
-            if( strcmp(choix, "ville" ) == 0 )
-            {
-                afficher_db_ville( v );
-            }
             if( strcmp( choix, "formation" ) == 0 )
             {
                 afficher_db_formation( f );
@@ -499,25 +305,6 @@ int menu_manipulation( int manipulation, char choix[], db_ville *v, db_formation
             }
             break;
         case 2:
-            if( strcmp(choix, "ville" ) == 0 )
-            {
-                getchar();
-                char nom[50];
-                printf( "Nom de la ville: " );
-                fgets( nom, 50, stdin );
-                if( strlen( nom ) > 0 && nom[ strlen( nom ) - 1 ] == '\n' )
-                {
-                    nom[ strlen( nom ) - 1 ] = '\0';
-                }
-                ville *tmp = get_ville( v, nom );
-                if( tmp == NULL )
-                {
-                    ajouter_db_ville( v, creer_ville( nom ) );
-                } else
-                {
-                    printf( "Ville déjà existente\n" );
-                }
-            }
             if( strcmp( choix, "formation" ) == 0 )
             {
                 getchar();
@@ -573,7 +360,7 @@ int menu_manipulation( int manipulation, char choix[], db_ville *v, db_formation
     return 0;
 }
 
-int menu_choix( int manipulation, db_ville *v, db_formation *f, db_personne *p )
+int menu_choix( int manipulation, db_formation *f, db_personne *p )
 {
     int choix;
     do
@@ -584,15 +371,15 @@ int menu_choix( int manipulation, db_ville *v, db_formation *f, db_personne *p )
         {
             case 1:
                 printf( "Personne\n" );
-                menu_manipulation( manipulation, "personne", v, f, p );
+                menu_manipulation( manipulation, "personne", f, p );
                 break;
             case 2:
                 printf( "Formation\n" );
-                menu_manipulation( manipulation, "formation", v, f, p );
+                menu_manipulation( manipulation, "formation", f, p );
                 break;
             case 3:
                 printf( "Ville\n" );
-                menu_manipulation( manipulation, "ville", v, f, p );
+                menu_manipulation( manipulation, "ville", f, p );
                 break;
             case 0:
                 break;
@@ -607,7 +394,7 @@ int menu_choix( int manipulation, db_ville *v, db_formation *f, db_personne *p )
 /*
  * Menu permettant à l'utilisateur d'intéragir avec le programme
  */
-int menu( db_ville *v, db_formation *f, db_personne *p )
+int menu( db_formation *f, db_personne *p )
 {
     int choix;
     do
@@ -618,23 +405,23 @@ int menu( db_ville *v, db_formation *f, db_personne *p )
         {
             case 1:
                 printf( "Afficher\n" );
-                menu_choix( 1, v, f, p );
+                menu_choix( 1, f, p );
                 break;
             case 2:
                 printf( "Créer\n" );
-                menu_choix( 2, v, f, p );
+                menu_choix( 2, f, p );
                 break;
             case 3:
                 printf( "Ajouter\n" );
-                menu_choix( 3, v, f, p );
+                menu_choix( 3, f, p );
                 break;
             case 4:
                 printf( "Supprimer\n" );
-                menu_choix( 4, v, f, p );
+                menu_choix( 4, f, p );
                 break;
             case 5:
                 printf( "Remplacer\n" );
-                menu_choix( 5, v, f, p );
+                menu_choix( 5, f, p );
                 break;
             case 0:
                 printf( "Quitter\n" );
@@ -653,9 +440,7 @@ int main( void )
 
     FILE *fdat_f = fopen( "formation.dat", "r" );
     FILE *fdat_p = fopen( "personne.dat", "r" );
-    FILE *fdat_v = fopen( "ville.dat", "r" );
 
-    db_ville *dbv = creer_db_ville();
     db_personne *dbp = creer_db_personne();
     db_formation *dbf = creer_db_formation();
 
@@ -737,45 +522,9 @@ int main( void )
 
     afficher_db_formation( dbf );
 
-    i = 0;
-
-    while( !feof( fdat_v ) )
-    {
-        char nom_ville[50];
-        int tot_formations;
-        fscanf( fdat_v, "%s %d", nom_ville, &tot_formations );
-        if( feof( fdat_v ) )
-        {
-            break;
-        }
-        ajouter_db_ville( dbv, creer_ville( nom_ville) );
-        int j;
-        for( j = 0; j < tot_formations; j++ )
-        {
-            int id_formation;
-            fscanf( fdat_v, "%d", &id_formation );
-            db_formation *tmpdbf = dbf;
-            noeud_db_formation *tmpndbf = tmpdbf->head;
-            while( tmpndbf != NULL )
-            {
-                if( tmpndbf->f->id == id_formation )
-                {
-                    ajouter_ville( get_ville(dbv, nom_ville), tmpndbf->f );
-                }
-                tmpndbf = tmpndbf->next;
-            }
-        }
-        i += 1;
-    }
-
-    printf( "\nLISTE FICHIER ville.dat\n" );
-
-    afficher_db_ville( dbv );
-
-    menu( dbv, dbf, dbp );
+    menu( dbf, dbp );
 
     fclose( fdat_p );
     fclose( fdat_f );
-    fclose( fdat_v );
     return 0;
 }

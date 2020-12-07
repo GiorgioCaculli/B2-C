@@ -52,27 +52,4 @@ typedef struct db_formation
     noeud_db_formation *head;
 } db_formation;
 
-typedef struct noeud_ville
-{
-    formation *f;
-    struct noeud_ville *next;
-} noeud_ville;
-
-typedef struct ville
-{
-    char nom[50];
-    noeud_ville *head;
-} ville;
-
-typedef struct noeud_db_ville
-{
-    ville *v;
-    struct noeud_db_ville *next;
-} noeud_db_ville;
-
-typedef struct db_ville
-{
-    noeud_db_ville *head;
-} db_ville;
-
 #endif //B2_C_MAIN_H
