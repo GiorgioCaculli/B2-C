@@ -1,4 +1,4 @@
-#include "main.h"
+#include "CaculliTyranowski.h"
 
 #include <ctype.h>
 #include <stdio.h>
@@ -34,15 +34,7 @@ personne *creer_personne( char nom[], char prenom[], int formateur )
 void afficher_personne( personne *p )
 {
     personne *tmp = p;
-    printf( "%s %s %s\n", tmp->nom, tmp->prenom, p->formateur ? "Formateur" : "Étudiant" );
-}
-
-noeud_db_personne *creer_noeud_db_personne( personne *p )
-{
-    noeud_db_personne *nd = ( noeud_db_personne * ) calloc( sizeof( noeud_db_personne ), sizeof( noeud_db_personne ) );
-    nd->p = p;
-    nd->next = NULL;
-    return nd;
+    printf( "%s %s %s\n", tmp->nom, tmp->prenom, tmp->formateur ? "Formateur" : "Étudiant" );
 }
 
 db_personne *creer_db_personne()
@@ -54,7 +46,9 @@ db_personne *creer_db_personne()
 
 void ajouter_db_personne( db_personne *db, personne *p )
 {
-    noeud_db_personne *ndb = creer_noeud_db_personne( p );
+    noeud_db_personne *ndb = ( noeud_db_personne * ) calloc( sizeof( noeud_db_personne ), sizeof( noeud_db_personne ) );
+    ndb->p = p;
+    ndb->next = NULL;
     while( db->head == NULL )
     {
         db->head = ndb;
@@ -98,19 +92,6 @@ personne *get_personne( db_personne *db, char nom[], char prenom[], int formateu
 /*****************************************************************************/
 /*                                     FORMATION                             */
 /*
- * Création du noeud formation
- * Ici on crée le noeud pour la formation qui va contenir:
- * l'étudiant qui participera à la formation
- */
-noeud_formation *creer_noeud_formation( personne *p )
-{
-    noeud_formation *tmp = ( noeud_formation * ) calloc( sizeof( noeud_formation ), sizeof( noeud_formation) );
-    tmp->p = p;
-    tmp->next = NULL;
-    return tmp;
-}
-
-/*
  * Création de la formation
  * Ici on crée un pointeur pour la formation qui va contenir:
  * Le nom de la formation
@@ -122,14 +103,16 @@ formation *creer_formation( char nom[], float prix )
     formation *tmp = ( formation * ) calloc( sizeof( formation), sizeof( formation ) );
     strcpy( tmp->nom, nom );
     tmp->prix = prix;
-    /*tmp->prerequis = NULL;*/
+    //tmp->prerequis[10] = { 0 };
     tmp->head = NULL;
     return tmp;
 }
 
 void ajouter_formation( formation *f, personne *p )
 {
-    noeud_formation *nf = creer_noeud_formation( p );
+    noeud_formation *nf = ( noeud_formation * ) calloc( sizeof( noeud_formation ), sizeof( noeud_formation) );
+    nf->p = p;
+    nf->next = NULL;
     if( f->head == NULL )
     {
         f->head = nf;
@@ -212,14 +195,6 @@ void afficher_formation( formation *f )
     printf( "\n" );
 }
 
-noeud_db_formation *creer_noeud_db_formation( formation *f )
-{
-    noeud_db_formation *ndb = ( noeud_db_formation * ) calloc( sizeof( noeud_db_formation ), sizeof( noeud_db_formation ) );
-    ndb->f = f;
-    ndb->next = NULL;
-    return ndb;
-}
-
 db_formation *creer_db_formation()
 {
     db_formation *db = ( db_formation * ) calloc( sizeof( db_formation ), sizeof( db_formation ) );
@@ -229,7 +204,9 @@ db_formation *creer_db_formation()
 
 void ajouter_db_formation( db_formation *db, formation *f )
 {
-    noeud_db_formation *ndb = creer_noeud_db_formation( f );
+    noeud_db_formation *ndb = ( noeud_db_formation * ) calloc( sizeof( noeud_db_formation ), sizeof( noeud_db_formation ) );
+    ndb->f = f;
+    ndb->next = NULL;
     if( db->head == NULL )
     {
         db->head = ndb;
@@ -290,6 +267,115 @@ void afficher_options_choix()
     printf( "Quelle partie voudriez-vous manipuler ? ");
 }
 
+void menu_creer_formation( db_formation *f )
+{
+    db_formation *tmpdbf = f;
+    getchar();
+    char nom[50];
+    float prix;
+    printf( "Nom de la formation: " );
+    fgets( nom, 50, stdin );
+    if( strlen( nom ) > 0 && nom[ strlen( nom ) - 1 ] == '\n' )
+    {
+        nom[ strlen( nom ) - 1 ] = '\0';
+    }
+    formation *tmp = get_formation( f, nom );
+    if( tmp == NULL )
+    {
+        printf( "Coût de la formation: " );
+        scanf( "%f", &prix );
+        formation *tmpf = creer_formation( nom, prix );
+        tmpf->id = tmpdbf->head->f->id + 1;
+        ajouter_db_formation( tmpdbf, tmpf );
+    }
+    else
+    {
+        printf( "Formation déjà existente\n" );
+    }
+}
+
+void menu_creer_personne( db_personne *p )
+{
+    getchar();
+    char nom[50], prenom[50], choix_formateur[4];
+    int formateur;
+    printf( "Nom de la personne: " );
+    scanf( "%s", nom );
+    printf( "Prénom de la personne: " );
+    scanf( "%s", prenom );
+    printf( "Est-ce que cette personne est une formateur ? (o/n) " );
+    scanf( "%s", choix_formateur );
+    if( strcmp( choix_formateur, "o" ) == 0 || strcmp( choix_formateur, "oui" ) == 0 )
+    {
+        formateur = 1;
+    }
+    else
+    {
+        formateur = 0;
+    }
+    personne *tmp = get_personne( p, nom, prenom, formateur );
+    if( tmp == NULL )
+    {
+        ajouter_db_personne( p, creer_personne( nom, prenom, formateur ) );
+    } else
+    {
+        printf( "Personne déjà existente\n" );
+    }
+}
+
+void menu_ajouter_formation( db_formation *f, db_personne *p )
+{
+    getchar();
+    db_formation *tmpdbf =f;
+    noeud_db_formation *tmpndbf = tmpdbf->head;
+    db_personne *tmpdbp = p;
+    noeud_db_personne *tmpndbp = tmpdbp->head;
+    int i = 1;
+    int maxf = tmpndbf->f->id + 1;
+    int maxp = tmpndbp->p->id + 1;
+    while( tmpndbf != NULL )
+    {
+        printf( "%2d %s\n", i, tmpndbf->f->nom );
+        i += 1;
+        tmpndbf = tmpndbf->next;
+    }
+    tmpndbf = tmpdbf->head;
+    int cours;
+    printf( "À quel cours voudriez vous ajouter une personne? " );
+    scanf( "%d", &cours );
+    while( tmpndbf != NULL )
+    {
+        if( maxf - cours == tmpndbf->f->id )
+        {
+            printf( "Cours choisi: %s\n", tmpndbf->f->nom );
+            i = 1;
+            while( tmpndbp != NULL )
+            {
+                printf( "%2d ", i );
+                afficher_personne( tmpndbp->p );
+                i += 1;
+                tmpndbp = tmpndbp->next;
+            }
+            tmpndbp = tmpdbp->head;
+            int p;
+            printf( "Qui voudriez vous ajouter au cours de: %s? ", tmpndbf->f->nom );
+            scanf( "%d", &p );
+            while( tmpndbp != NULL )
+            {
+                if( maxp - p == tmpndbp->p->id )
+                {
+                    ajouter_formation( tmpndbf->f, tmpndbp->p );
+                    break;
+                }
+                tmpndbp = tmpndbp->next;
+            }
+            break;
+        }
+        tmpndbf = tmpndbf->next;
+    }
+    tmpndbf = tmpdbf->head;
+}
+
 int menu_manipulation( int manipulation, char choix[], db_formation *f, db_personne *p )
 {
     switch( manipulation )
@@ -307,55 +393,15 @@ int menu_manipulation( int manipulation, char choix[], db_formation *f, db_perso
         case 2:
             if( strcmp( choix, "formation" ) == 0 )
             {
-                getchar();
-                char nom[50];
-                float prix;
-                printf( "Nom de la formation: " );
-                fgets( nom, 50, stdin );
-                if( strlen( nom ) > 0 && nom[ strlen( nom ) - 1 ] == '\n' )
-                {
-                    nom[ strlen( nom ) - 1 ] = '\0';
-                }
-                formation *tmp = get_formation( f, nom );
-                if( tmp == NULL )
-                {
-                    printf( "Coût de la formation: " );
-                    scanf( "%f", &prix );
-                    ajouter_db_formation( f, creer_formation( nom, prix ) );
-                }
-                else
-                {
-                    printf( "Formation déjà existente\n" );
-                }
+                menu_creer_formation( f );
             }
             if( strcmp( choix, "personne" ) == 0 )
             {
-                getchar();
-                char nom[50], prenom[50], choix_formateur[4];
-                int formateur;
-                printf( "Nom de la personne: " );
-                scanf( "%s", nom );
-                printf( "Prénom de la personne: " );
-                scanf( "%s", prenom );
-                printf( "Est-ce que cette personne est une formateur ? (o/n) " );
-                scanf( "%s", choix_formateur );
-                if( strcmp( choix_formateur, "o" ) == 0 || strcmp( choix_formateur, "oui" ) == 0 )
-                {
-                    formateur = 1;
-                }
-                else
-                {
-                    formateur = 0;
-                }
-                personne *tmp = get_personne( p, nom, prenom, formateur );
-                if( tmp == NULL )
-                {
-                    ajouter_db_personne( p, creer_personne( nom, prenom, formateur ) );
-                } else
-                {
-                    printf( "Personne déjà existente\n" );
-                }
+                menu_creer_personne( p );
             }
+            break;
+        case 3:
+            break;
     }
     return 0;
 }
@@ -376,10 +422,6 @@ int menu_choix( int manipulation, db_formation *f, db_personne *p )
             case 2:
                 printf( "Formation\n" );
                 menu_manipulation( manipulation, "formation", f, p );
-                break;
-            case 3:
-                printf( "Ville\n" );
-                menu_manipulation( manipulation, "ville", f, p );
                 break;
             case 0:
                 break;
@@ -413,7 +455,7 @@ int menu( db_formation *f, db_personne *p )
                 break;
             case 3:
                 printf( "Ajouter\n" );
-                menu_choix( 3, f, p );
+                menu_ajouter_formation( f, p );
                 break;
             case 4:
                 printf( "Supprimer\n" );
@@ -449,28 +491,27 @@ int main( void )
     while( !feof( fdat_p ) )
     {
         char nom[50], prenom[50];
-        int formateur, nb_formations;
-        fscanf( fdat_p, "%s %s %d %d", nom, prenom, &formateur, &nb_formations );
+        int id, formateur, nb_formations;
+        fscanf( fdat_p, "%d %s %s %d %d", &id, nom, prenom, &formateur, &nb_formations );
         if( feof( fdat_p ) )
         {
             break;
         }
-        ajouter_db_personne( dbp, creer_personne( nom, prenom, formateur ) );
-        get_personne( dbp, nom, prenom, formateur )->nb_formations = nb_formations;
-        get_personne( dbp, nom, prenom, formateur )->id = i + 1;
+        personne *tmp = creer_personne( nom, prenom, formateur );
+        tmp->nb_formations = nb_formations;
+        tmp->id = id;
         int j;
         for( j = 0; j < nb_formations; j++ )
         {
-            fscanf( fdat_p, "%d", &get_personne(dbp, nom, prenom, formateur )->formations[j] );
+            fscanf( fdat_p, "%d", &tmp->formations[j] );
         }
+        ajouter_db_personne( dbp, tmp );
         i += 1;
     }
 
     printf( "\nLISTE FICHIER personne.dat\n" );
 
     afficher_db_personne( dbp );
-
-    i = 0;
 
     while( !feof( fdat_f ) )
     {
@@ -483,17 +524,13 @@ int main( void )
         {
             break;
         }
-        int j;
-        for( j = 0; j < 50; j++ )
+        if( strlen( nom_formation ) > 0 && nom_formation[ strlen( nom_formation ) - 1 ] == '\n' )
         {
-            if( nom_formation[j] == '\n' )
-            {
-                nom_formation[j] = '\0';
-            }
+            nom_formation[ strlen( nom_formation ) - 1 ] = '\0';
         }
-        ajouter_db_formation( dbf, creer_formation( nom_formation, prix ) );
-        get_formation( dbf, nom_formation )->id = i + 1;
-        i += 1;
+        formation *tmp = creer_formation( nom_formation, prix );
+        tmp->id = id;
+        ajouter_db_formation( dbf, tmp );
     }
 
     db_personne *tmpdbp = dbp;
