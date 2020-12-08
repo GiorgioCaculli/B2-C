@@ -1,0 +1,74 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage[french, onelanguage]{algorithm2e}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{algpseudocode}
+
+\geometry{
+a4paper,
+total={170mm,257mm},
+left=20mm,
+top=20mm,
+}
+
+\title{Documentation Mini Projet Langage C}
+\author{Caculli Giorgio \& Jedrzej Tyranowski}
+\date{\today}
+
+\begin{document}
+
+    \maketitle
+    \begin{abstract}
+    \end{abstract}
+
+    \newpage
+    \section{Structurogramme}
+    \begin{algorithm}[H]
+        \Begin{
+        Ouvrir personne.dat en lecture\;
+        Ouvrir formation.dat en lecture\;
+        \While{!feof(personne.dat)}{
+        lire nom, prenom, formateur nb\_formations\;
+        \If{feof(personne.dat)}{
+        break\;
+        }
+            ajouter\_db\_personne(dbp, creer\_personne(nom, prenom, formateur))\;
+            get\_personne(dbp, nom, prenom, formateur)$\rightarrow$nb\_formations = nb\_formations\;
+            get\_personne(dbp, nom, prenom, formateur)$\rightarrow$id = i + 1\;
+            \For{$j=0$ \KwTo nb\_formations}{
+            lire get\_personne(dbp, nom, prenom, formateur)$\rightarrow$formations[j]\;
+            }
+                i += 1\;
+        }
+            \While{!feof(formation.dat)}{
+            lire id, prix, nom\_formation\;
+            \If{feof(formation.dat)}{
+            break\;
+            }
+                ajouter\_db\_formation(dbf, creer\_formation(nom\_formation, prix))\;
+                get\_formation(dbf, nom\_formation)$\rightarrow$id = i + 1\;
+                i += 1\;
+            }
+                tmpdbp = dbp\;
+                tmpndbp = tmpdbp$\rightarrow$head\;
+        \While{tmpndb != NULL}{
+        tmpdbf = dbf\;
+        tmpndbf = tmpdbf$\rightarrow$head\;
+        \While{tmpndbf != NULL}{
+        \For{$j=0$ \KwTo tmpndb$\rightarrow$p$\rightarrow$nb\_formations}{
+        \If{tmpndbp$\rightarrow$p$\rightarrow$formations[j] = tmpndbf$\rightarrow$f$\rightarrow$id}{
+        ajouter\_formation(get\_formation(dbf, tmpndbf$\rightarrow$f$\rightarrow$nom), tmpndbp$\rightarrow$p)\;
+        }
+        tmpndbf = tmpndbf$\rightarrow$next\;
+        }
+        tmpndbp = tmpndbp$\rightarrow$next\;
+        }
+        }
+        menu(dbf, dbp)\;
+        }
+    \end{algorithm}
+
+\end{document}
