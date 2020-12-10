@@ -268,25 +268,24 @@ void ajouter_db_formation( db_formation *db, formation *f )
     db->head = ndb;
 }
 
-int supprimer_db_formation( db_formation *f, int id )
+int supprimer_db_formation( db_formation *dbf, int id )
 {
-    db_formation *tmpdbf = f;
+    db_formation *tmpdbf = dbf;
     noeud_db_formation *tmpndbf = tmpdbf->head;
     noeud_db_formation *tmp = NULL;
     if( tmpndbf == NULL )
     {
         return 0;
     }
-    if( f->head->f->id == id )
+    if( dbf->head->f->id == id )
     {
-        tmp = f->head->next;
-        free( f->head );
-        f->head = tmp;
+        tmp = dbf->head->next;
+        free( dbf->head );
+        dbf->head = tmp;
         return 1;
     }
     while( tmpndbf != NULL )
     {
-        printf( "%d\n", tmpndbf->f->id );
         if( tmpndbf->next == NULL )
         {
             if( tmpndbf->f->id == id )
@@ -297,7 +296,6 @@ int supprimer_db_formation( db_formation *f, int id )
         }
         if( tmpndbf->next->f->id == id )
         {
-            printf( "TRUE\n" );
             tmp = tmpndbf->next;
             tmpndbf->next = tmp->next;
             free( tmp->next );
@@ -477,8 +475,6 @@ void menu_supprimer( db_formation *f, db_personne *p )
     noeud_db_formation *tmpndbf = tmpdbf->head;
     db_personne *tmpdbp = p;
     noeud_db_personne *tmpndbp = tmpdbp->head;
-    int maxf = tmpndbf->f->id + 1;
-    int maxp = tmpndbp->p->id + 1;
     int choix;
     do
     {
@@ -543,10 +539,11 @@ void menu_supprimer( db_formation *f, db_personne *p )
                 while( tmpndbf != NULL )
                 {
                     formation *tmpf = tmpndbf->f;
-                    int id = maxf - idf;
-                    if( id == tmpf->id )
+                    if( idf == tmpf->id )
                     {
                         printf( "Formation supprimee: %s\n", tmpf->nom );
+                        supprimer_db_formation( tmpdbf, idf );
+                        break;
                     }
                     tmpndbf = tmpndbf->next;
                 }
