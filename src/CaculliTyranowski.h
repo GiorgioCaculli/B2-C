@@ -4,8 +4,8 @@
 typedef struct personne
 {
     int id;
-    char nom[50];
-    char prenom[50];
+    char nom[25];
+    char prenom[25];
     int formateur;
     int nb_formations;
     int formations[30];

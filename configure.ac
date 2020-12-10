@@ -22,7 +22,6 @@ AC_CONFIG_FILES([
 AC_CONFIG_LINKS([
     formation.dat:data/formation.dat
     personne.dat:data/personne.dat
-    ville.dat:data/ville.dat
 ])
 
 AC_OUTPUT
