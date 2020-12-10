@@ -105,6 +105,7 @@ void afficher_db_personne( db_personne *db )
     db_personne *tmpdb = db;
     noeud_db_personne *tmpndb = tmpdb->head;
     printf( "%2s %-25s %-25s %-9s\n", "ID", "Nom", "Prenom", "Statut" );
+    printf( "----------------------------------------------------------------\n" );
     while( tmpndb != NULL )
     {
         afficher_personne( tmpndb->p );
@@ -306,28 +307,28 @@ int supprimer_db_formation( db_formation *dbf, int id )
     return 0;
 }
 
-void afficher_db_formation( db_formation *db )
+void afficher_db_formation( db_formation *dbf )
 {
-    db_formation *tmpdb = db;
-    noeud_db_formation *tmpndb = tmpdb->head;
-    while( tmpndb != NULL )
+    db_formation *tmpdbf = dbf;
+    noeud_db_formation *tmpndbf = tmpdbf->head;
+    while( tmpndbf != NULL )
     {
-        afficher_formation( tmpndb->f );
-        tmpndb = tmpndb->next;
+        afficher_formation( tmpndbf->f );
+        tmpndbf = tmpndbf->next;
     }
 }
 
-formation *get_formation( db_formation *db, char nom_formation[] )
+formation *get_formation( db_formation *dbf, char nom_formation[] )
 {
-    db_formation *tmpdb = db;
-    noeud_db_formation *tmpndb = tmpdb->head;
-    while( tmpndb != NULL )
+    db_formation *tmpdbf = dbf;
+    noeud_db_formation *tmpndbf = tmpdbf->head;
+    while( tmpndbf != NULL )
     {
-        if( strcmp( tmpndb->f->nom, nom_formation ) == 0 )
+        if( strcmp( tmpndbf->f->nom, nom_formation ) == 0 )
         {
-            return tmpndb->f;
+            return tmpndbf->f;
         }
-        tmpndb = tmpndb->next;
+        tmpndbf = tmpndbf->next;
     }
     return NULL;
 }
@@ -360,7 +361,6 @@ void afficher_options_choix()
 void menu_creer_formation( db_formation *f )
 {
     db_formation *tmpdbf = f;
-    getchar();
     char nom[50];
     float prix;
     printf( "Nom de la formation: " );
@@ -387,7 +387,6 @@ void menu_creer_formation( db_formation *f )
 void menu_creer_personne( db_personne *p )
 {
     db_personne *tmpdbp = p;
-    getchar();
     char nom[25], prenom[25], choix_formateur[4];
     int formateur;
     printf( "Nom de la personne: " );
@@ -416,7 +415,6 @@ void menu_creer_personne( db_personne *p )
 
 void menu_ajouter_formation( db_formation *f, db_personne *p )
 {
-    getchar();
     db_formation *tmpdbf =f;
     noeud_db_formation *tmpndbf = tmpdbf->head;
     db_personne *tmpdbp = p;
@@ -469,137 +467,161 @@ void afficher_menu_suppression()
     printf ("Que voudriez vous faire? " );
 }
 
-void menu_supprimer( db_formation *f, db_personne *p )
+void menu_supprimer_personne( db_formation *dbf, db_personne *dbp )
 {
-    db_formation *tmpdbf = f;
+    int idp;
+    db_formation *tmpdbf = dbf;
     noeud_db_formation *tmpndbf = tmpdbf->head;
-    db_personne *tmpdbp = p;
+    db_personne *tmpdbp = dbp;
     noeud_db_personne *tmpndbp = tmpdbp->head;
+    while( tmpndbp != NULL )
+    {
+        personne *tmpp = tmpndbp->p;
+        printf( "%2d %s %s - %s\n", tmpp->id, tmpp->nom, tmpp->prenom, tmpp->formateur ? "Formateur" : "Étudiant" );
+        tmpndbp = tmpndbp->next;
+    }
+    tmpndbp = tmpdbp->head;
+    printf( "Quelle personne voudriez vous supprimer entierement ? " );
+    scanf( "%d", &idp );
+    getchar();
+    while( tmpndbf != NULL )
+    {
+        formation *tmpf = tmpndbf->f;
+        noeud_formation *tmpnf = tmpf->head;
+        while( tmpnf != NULL )
+        {
+            if( tmpnf->p->id == idp )
+            {
+                supprimer_personne_de_formation( tmpf, tmpnf->p->id );
+                break;
+            }
+            tmpnf = tmpnf->next;
+        }
+        tmpndbf = tmpndbf->next;
+    }
+    tmpndbf = tmpdbf->head;
+    tmpndbp = tmpdbp->head;
+    while( tmpndbp != NULL )
+    {
+        if( tmpndbp->p->id == idp )
+        {
+            supprimer_db_personne( tmpdbp, idp );
+            break;
+        }
+        tmpndbp = tmpndbp->next;
+    }
+    tmpndbf = tmpdbf->head;
+    tmpndbp = tmpdbp->head;
+}
+
+void menu_supprimer_formation( db_formation *dbf, db_personne *dbp )
+{
+    int idf;
+    db_formation *tmpdbf = dbf;
+    noeud_db_formation *tmpndbf = tmpdbf->head;
+    db_personne *tmpdbp = dbp;
+    noeud_db_personne *tmpndbp = tmpdbp->head;
+    while( tmpndbf != NULL )
+    {
+        formation *tmpf = tmpndbf->f;
+        printf( "%2d %s\n", tmpf->id, tmpf->nom );
+        tmpndbf = tmpndbf->next;
+    }
+    tmpndbf = tmpdbf->head;
+    printf( "Quelle formation voudriez vous supprimer? " );
+    scanf( "%d", &idf );
+    getchar();
+    while( tmpndbf != NULL )
+    {
+        formation *tmpf = tmpndbf->f;
+        if( idf == tmpf->id )
+        {
+            printf( "Formation supprimee: %s\n", tmpf->nom );
+            supprimer_db_formation( tmpdbf, idf );
+            break;
+        }
+        tmpndbf = tmpndbf->next;
+    }
+    tmpndbf = tmpdbf->head;
+}
+
+void menu_supprimer_personne_de_formation( db_formation *dbf, db_personne *dbp )
+{
+    int idf;
+    db_formation *tmpdbf = dbf;
+    noeud_db_formation *tmpndbf = tmpdbf->head;
+    db_personne *tmpdbp = dbp;
+    noeud_db_personne *tmpndbp = tmpdbp->head;
+    while( tmpndbf != NULL )
+    {
+        formation *tmpf = tmpndbf->f;
+        printf( "%2d %s\n", tmpf->id, tmpf->nom );
+        tmpndbf = tmpndbf->next;
+    }
+    tmpndbf = tmpdbf->head;
+    printf( "De quelle formation voudriez vous supprimer quelqu'un ? " );
+    scanf( "%d", &idf );
+    getchar();
+    while( tmpndbf != NULL )
+    {
+        if( idf == tmpndbf->f->id )
+        {
+            printf( "Cours choisi: %s\n", tmpndbf->f->nom );
+            formation *tmpf = tmpndbf->f;
+            noeud_formation *tmpnf = tmpf->head;
+            if( tmpnf == NULL )
+            {
+                printf( "La formation est vide\n" );
+                break;
+            }
+            while( tmpnf != NULL )
+            {
+                personne *tmpp = tmpnf->p;
+                printf( "%2d %s %s - %s\n", tmpp->id, tmpp->nom, tmpp->prenom, tmpp->formateur ? "Formateur" : "Étudiant" );
+                tmpnf = tmpnf->next;
+            }
+            tmpnf = tmpf->head;
+            printf( "Quelle personne voudriez vous supprimer de ce cours ? " );
+            int idp;
+            scanf( "%d", &idp );
+            getchar();
+            while( tmpnf != NULL )
+            {
+                personne *tmpp = tmpnf->p;
+                if( tmpp->id == idp )
+                {
+                    supprimer_personne_de_formation( tmpf, tmpp->id );
+                    afficher_formation( tmpf );
+                    break;
+                }
+                tmpnf = tmpnf->next;
+            }
+            tmpnf = tmpf->head;
+        }
+        tmpndbf = tmpndbf->next;
+    }
+    tmpndbf = tmpdbf->head;
+    tmpndbp = tmpdbp->head;
+}
+
+void menu_supprimer( db_formation *dbf, db_personne *dbp )
+{
     int choix;
     do
     {
         afficher_menu_suppression();
         scanf( "%d", &choix );
         getchar();
-        int idp;
-        int idf;
         switch( choix )
         {
             case 1:
-                while( tmpndbp != NULL )
-                {
-                    personne *tmpp = tmpndbp->p;
-                    printf( "%2d %s %s - %s\n", tmpp->id, tmpp->nom, tmpp->prenom, tmpp->formateur ? "Formateur" : "Étudiant" );
-                    tmpndbp = tmpndbp->next;
-                }
-                tmpndbp = tmpdbp->head;
-                printf( "Quelle personne voudriez vous supprimer entierement ? " );
-                scanf( "%d", &idp );
-                getchar();
-                while( tmpndbf != NULL )
-                {
-                    formation *tmpf = tmpndbf->f;
-                    noeud_formation *tmpnf = tmpf->head;
-                    while( tmpnf != NULL )
-                    {
-                        if( tmpnf->p->id == idp )
-                        {
-                            supprimer_personne_de_formation( tmpf, tmpnf->p->id );
-                            break;
-                        }
-                        tmpnf = tmpnf->next;
-                    }
-                    tmpndbf = tmpndbf->next;
-                }
-                tmpndbf = tmpdbf->head;
-                tmpndbp = tmpdbp->head;
-                while( tmpndbp != NULL )
-                {
-                    if( tmpndbp->p->id == idp )
-                    {
-                        supprimer_db_personne( tmpdbp, idp );
-                        break;
-                    }
-                    tmpndbp = tmpndbp->next;
-                }
-                tmpndbf = tmpdbf->head;
-                tmpndbp = tmpdbp->head;
+                menu_supprimer_personne( dbf, dbp );
                 break;
             case 2:
-                while( tmpndbf != NULL )
-                {
-                    formation *tmpf = tmpndbf->f;
-                    printf( "%2d %s\n", tmpf->id, tmpf->nom );
-                    tmpndbf = tmpndbf->next;
-                }
-                tmpndbf = tmpdbf->head;
-                printf( "Quelle formation voudriez vous supprimer? " );
-                scanf( "%d", &idf );
-                getchar();
-                while( tmpndbf != NULL )
-                {
-                    formation *tmpf = tmpndbf->f;
-                    if( idf == tmpf->id )
-                    {
-                        printf( "Formation supprimee: %s\n", tmpf->nom );
-                        supprimer_db_formation( tmpdbf, idf );
-                        break;
-                    }
-                    tmpndbf = tmpndbf->next;
-                }
-                tmpndbf = tmpdbf->head;
+                menu_supprimer_formation( dbf, dbp );
                 break;
             case 3:
-                while( tmpndbf != NULL )
-                {
-                    formation *tmpf = tmpndbf->f;
-                    printf( "%2d %s\n", tmpf->id, tmpf->nom );
-                    tmpndbf = tmpndbf->next;
-                }
-                tmpndbf = tmpdbf->head;
-                printf( "De quelle formation voudriez vous supprimer quelqu'un ? " );
-                scanf( "%d", &idf );
-                getchar();
-                while( tmpndbf != NULL )
-                {
-                    if( idf == tmpndbf->f->id )
-                    {
-                        printf( "Cours choisi: %s\n", tmpndbf->f->nom );
-                        formation *tmpf = tmpndbf->f;
-                        noeud_formation *tmpnf = tmpf->head;
-                        if( tmpnf == NULL )
-                        {
-                            printf( "La formation est vide\n" );
-                            break;
-                        }
-                        while( tmpnf != NULL )
-                        {
-                            personne *tmpp = tmpnf->p;
-                            printf( "%2d %s %s - %s\n", tmpp->id, tmpp->nom, tmpp->prenom, tmpp->formateur ? "Formateur" : "Étudiant" );
-                            tmpnf = tmpnf->next;
-                        }
-                        tmpnf = tmpf->head;
-                        printf( "Quelle personne voudriez vous supprimer de ce cours ? " );
-                        int idp;
-                        scanf( "%d", &idp );
-                        getchar();
-                        while( tmpnf != NULL )
-                        {
-                            personne *tmpp = tmpnf->p;
-                            if( tmpp->id == idp )
-                            {
-                                supprimer_personne_de_formation( tmpf, tmpp->id );
-                                afficher_formation( tmpf );
-                                break;
-                            }
-                            tmpnf = tmpnf->next;
-                        }
-                        tmpnf = tmpf->head;
-                    }
-                    tmpndbf = tmpndbf->next;
-                }
-                tmpndbf = tmpdbf->head;
-                tmpndbp = tmpdbp->head;
+                menu_supprimer_personne_de_formation( dbf, dbp );
                 break;
             default:
                 break;
@@ -670,8 +692,8 @@ int menu_choix( int manipulation, db_formation *f, db_personne *p )
  */
 int menu( db_formation *f, db_personne *p )
 {
-    FILE *fdat_f = fopen( "formation.dat", "r" );
-    FILE *fdat_p = fopen( "personne.dat", "r" );
+    FILE *fdat_f = fopen( "formation_out.dat", "w" );
+    FILE *fdat_p = fopen( "personne_out.dat", "w" );
     int choix;
     do
     {
@@ -708,20 +730,20 @@ int menu( db_formation *f, db_personne *p )
                 noeud_db_personne *tmpndbp = tmpdbp->head;
                 while( tmpndbf != NULL )
                 {
-                    //formation *tmpf = tmpndbf->f;
-                    //fprintf( fdat_f, "%02d %6.2f %-s\n", tmpf->id, tmpf->prix, tmpf->nom );
+                    formation *tmpf = tmpndbf->f;
+                    fprintf( fdat_f, "%02d %6.2f %-s\n", tmpf->id, tmpf->prix, tmpf->nom );
                     tmpndbf = tmpndbf->next;
                 }
                 while( tmpndbp != NULL )
                 {
                     personne *tmpp = tmpndbp->p;
-                    //fprintf( fdat_p, "%02d %-24s %-24s %d %d ", tmpp->id, tmpp->nom, tmpp->prenom, tmpp->formateur, tmpp->nb_formations );
+                    fprintf( fdat_p, "%02d %-24s %-24s %d %d ", tmpp->id, tmpp->nom, tmpp->prenom, tmpp->formateur, tmpp->nb_formations );
                     int i;
                     for( i = 0; i < tmpp->nb_formations; i++ )
                     {
-                        //fprintf( fdat_p, "%d ", tmpp->formations[i] );
+                        fprintf( fdat_p, "%d ", tmpp->formations[i] );
                     }
-                    //fprintf( fdat_p, "\n" );
+                    fprintf( fdat_p, "\n" );
                     tmpndbp =  tmpndbp->next;
                 }
                 fclose( fdat_f );
@@ -745,24 +767,36 @@ int main( void )
     db_personne *dbp = creer_db_personne();
     db_formation *dbf = creer_db_formation();
 
-    int i = 0;
+    int i = 1;
 
     while( !feof( fdat_p ) )
     {
         char nom[50], prenom[50];
-        int id, formateur, nb_formations;
-        fscanf( fdat_p, "%d %24s %24s %d %d", &id, nom, prenom, &formateur, &nb_formations );
+        int formateur;
+        fscanf( fdat_p, "%24s %24s %d", nom, prenom, &formateur );
         if( feof( fdat_p ) )
         {
             break;
         }
         personne *tmp = creer_personne( nom, prenom, formateur );
-        tmp->nb_formations = nb_formations;
-        tmp->id = id;
+        fscanf( fdat_p, "%d", &tmp->nb_formations );
+        tmp->id = i;
         int j;
-        for( j = 0; j < nb_formations; j++ )
+        for( j = 0; j < tmp->nb_formations; j++ )
         {
             fscanf( fdat_p, "%d", &tmp->formations[j] );
+        }
+        if(  formateur == 0 )
+        {
+            fscanf( fdat_p, "%d %d", &tmp->reduction, &tmp->val_reduction );
+        }
+        else if( formateur == 1 )
+        {
+            fscanf( fdat_p, "%d", &tmp->nb_jours_indisponible );
+            for( j = 0; j < tmp->nb_jours_indisponible; j++ )
+            {
+                fscanf( fdat_p, "%d", &tmp->jours_indisponible[j] );
+            }
         }
         ajouter_db_personne( dbp, tmp );
         i += 1;
@@ -772,12 +806,29 @@ int main( void )
 
     afficher_db_personne( dbp );
 
+    i = 1;
+
     while( !feof( fdat_f ) )
     {
-        int id;
+        int nb_prerequis, nb_jours;
         float prix;
         char nom_formation[50];
-        fscanf( fdat_f, "%d %f ", &id, &prix );
+        fscanf( fdat_f, "%d", &nb_prerequis );
+        int prerequis[ nb_prerequis ];
+        int j;
+        for( j = 0; j < nb_prerequis; j++ )
+        {
+            fscanf( fdat_f, "%d", &prerequis[j] );
+        }
+        fscanf( fdat_f, "%d", &nb_jours );
+        int jours[ nb_jours ];
+        int heures[ nb_jours ];
+        int durees[ nb_jours ];
+        for( j = 0; j < nb_jours; j++ )
+        {
+            fscanf( fdat_f, "%d %d %d", &jours[j], &heures[j], &durees[j] );
+        }
+        fscanf( fdat_f, "%f ", &prix );
         fgets( nom_formation, 50, fdat_f );
         if( feof( fdat_f ) )
         {
@@ -788,8 +839,15 @@ int main( void )
             nom_formation[ strlen( nom_formation ) - 1 ] = '\0';
         }
         formation *tmp = creer_formation( nom_formation, prix );
-        tmp->id = id;
+        tmp->id = i;
+        tmp->nb_prerequis = nb_prerequis;
+        memcpy( tmp->prerequis, prerequis, nb_prerequis );
+        tmp->nb_jours = nb_jours;
+        memcpy( tmp->jours, jours, nb_jours );
+        memcpy( tmp->heures, heures, nb_jours );
+        memcpy( tmp->durees, durees, nb_jours );
         ajouter_db_formation( dbf, tmp );
+        i += 1;
     }
 
     db_personne *tmpdbp = dbp;
@@ -806,7 +864,7 @@ int main( void )
             {
                 if( tmpndbp->p->formations[j] == tmpndbf->f->id )
                 {
-                    ajouter_formation( get_formation( dbf, tmpndbf->f->nom ), tmpndbp->p );
+                    ajouter_formation( tmpndbf->f, tmpndbp->p );
                 }
             }
             tmpndbf = tmpndbf->next;
