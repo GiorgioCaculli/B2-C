@@ -708,7 +708,7 @@ int menu( db_formation *f, db_personne *p )
                 noeud_db_personne *tmpndbp = tmpdbp->head;
                 while( tmpndbf != NULL )
                 {
-                    formation *tmpf = tmpndbf->f;
+                    //formation *tmpf = tmpndbf->f;
                     //fprintf( fdat_f, "%02d %6.2f %-s\n", tmpf->id, tmpf->prix, tmpf->nom );
                     tmpndbf = tmpndbf->next;
                 }
