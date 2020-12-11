@@ -364,21 +364,23 @@ void afficher_db_formation( db_formation *dbf )
 
 void afficher_options_menu()
 {
-    printf( "1: Afficher\n" );
-    printf( "2: Creer\n" );
-    printf( "3: Ajouter\n" );
-    printf( "4: Supprimer\n" );
-    printf( "5: Remplacer\n" );
-    printf( "0: Quitter\n" );
-    printf( "Que voudriez-vous faire ? " );
+    printf( "* 1: Afficher la liste des etudiants ou la liste des formations                *\n" );
+    printf( "* 2: Creer une nouvelle personne ou une nouvelle formation                     *\n" );
+    printf( "* 3: Ajouter une personne a une formation                                      *\n" );
+    printf( "* 4: Supprimer une formation, une personne ou une personne d'une formation     *\n" );
+    printf( "* 5: Remplacer                                                                 *\n" );
+    printf( "* 0: Quitter le programme                                                      *\n" );
+    printf( "********************************************************************************\n" );
+    printf( "* Que voudriez-vous faire ? " );
 }
 
 void afficher_options_choix()
 {
-    printf( "1. Personne\n" );
-    printf( "2. Formation\n" );
-    printf( "0. Retour\n" );
-    printf( "Quelle partie voudriez-vous manipuler ? ");
+    printf( "* 1. Personne                                                                  *\n" );
+    printf( "* 2. Formation                                                                 *\n" );
+    printf( "* 0. Retour                                                                    *\n" );
+    printf( "********************************************************************************\n" );
+    printf( "* Quelle partie voudriez-vous manipuler ? ");
 }
 
 void menu_creer_formation( db_formation *f )
@@ -717,6 +719,12 @@ int menu_choix( int manipulation, db_formation *f, db_personne *p )
     int choix;
     do
     {
+        printf( "********************************************************************************\n" );
+        if( manipulation == 1 )
+            printf( "* MENU AFFICHAGE: Qu'est-ce que vous souhaitez afficher ?                      *\n" );
+        else
+            printf( "* MENU CREATION: Qu'est-ce que vous souhaitez creer ?                          *\n" );
+        printf( "********************************************************************************\n" );
         db_formation *tmpdbf = f;
         db_personne *tmpdbp = p;
         afficher_options_choix();
@@ -725,17 +733,15 @@ int menu_choix( int manipulation, db_formation *f, db_personne *p )
         switch( choix )
         {
             case 1:
-                printf( "Personne\n" );
                 menu_manipulation( manipulation, "personne", tmpdbf, tmpdbp );
                 break;
             case 2:
-                printf( "Formation\n" );
                 menu_manipulation( manipulation, "formation", tmpdbf, tmpdbp );
                 break;
             case 0:
                 break;
             default:
-                printf( "Option %d - INVALIDE\n", choix );
+                printf( "/!\\ Option %d - INVALIDE /!\\\n", choix );
                 break;
         }
     } while( choix != 0 );
@@ -747,11 +753,12 @@ int menu_choix( int manipulation, db_formation *f, db_personne *p )
  */
 int menu( db_formation *f, db_personne *p )
 {
-    FILE *fdat_f = fopen( "formation_out.dat", "w" );
-    FILE *fdat_p = fopen( "personne_out.dat", "w" );
     int choix;
     do
     {
+        printf( "********************************************************************************\n" );
+        printf( "* MENU PRINCIPALE                                                              *\n" );
+        printf( "********************************************************************************\n" );
         db_formation *tmpdbf = f;
         db_personne *tmpdbp = p;
         afficher_options_menu();
@@ -760,101 +767,104 @@ int menu( db_formation *f, db_personne *p )
         switch ( choix )
         {
             case 1:
-                printf( "Afficher\n" );
                 menu_choix( 1, tmpdbf, tmpdbp );
                 break;
             case 2:
-                printf( "Creer\n" );
                 menu_choix( 2, tmpdbf, tmpdbp );
                 break;
             case 3:
-                printf( "Ajouter\n" );
                 menu_ajouter_formation( tmpdbf, tmpdbp );
                 break;
             case 4:
-                printf( "Supprimer\n" );
                 menu_supprimer( tmpdbf, tmpdbp );
                 break;
             case 5:
-                printf( "Remplacer\n" );
                 menu_choix( 5, tmpdbf, tmpdbp );
                 break;
             case 0:
-                printf( "Quitter\n" );
-                noeud_db_formation *tmpndbf = tmpdbf->head;
-                noeud_db_personne *tmpndbp = tmpdbp->head;
-                db_formation *out_f = creer_db_formation();
-                while( tmpndbf != NULL )
+                printf( "Voulez vous sauvegarder les changements ? (o/n) " );
+                char choix_sauvegarde[4];
+                scanf( "%s", choix_sauvegarde );
+                if( strcmp( choix_sauvegarde, "o" ) == 0 || strcmp( choix_sauvegarde, "oui" ) )
                 {
-                    ajouter_db_formation( out_f, tmpndbf->f );
-                    tmpndbf = tmpndbf->next;
-                }
-                tmpndbf = out_f->head;
-                db_personne *out_p = creer_db_personne();
-                while( tmpndbp != NULL )
-                {
-                    ajouter_db_personne( out_p, tmpndbp->p );
-                    tmpndbp = tmpndbp->next;
-                }
-                tmpndbp = out_p->head;
-                while( tmpndbp != NULL )
-                {
-                    personne *tmpp = tmpndbp->p;
-                    fprintf( fdat_p, "%-24s %-24s %d   %d   ",
-                             tmpp->nom, tmpp->prenom, tmpp->formateur, tmpp->nb_formations );
-                    int i;
-                    for( i = 0; i < tmpp->nb_formations; i++ )
+                    FILE *fdat_f = fopen( "formation_out.dat", "w" );
+                    FILE *fdat_p = fopen( "personne_out.dat", "w" );
+                    noeud_db_formation *tmpndbf = tmpdbf->head;
+                    noeud_db_personne *tmpndbp = tmpdbp->head;
+                    db_formation *out_f = creer_db_formation();
+                    while ( tmpndbf != NULL )
                     {
-                        fprintf( fdat_p, "%d ", tmpp->formations[i] );
+                        ajouter_db_formation( out_f, tmpndbf->f );
+                        tmpndbf = tmpndbf->next;
                     }
-                    if( tmpp->formateur == 0 )
+                    tmpndbf = out_f->head;
+                    db_personne *out_p = creer_db_personne();
+                    while ( tmpndbp != NULL )
                     {
-                        fprintf( fdat_p, "   %d   ", tmpp->reduction );
-                        if( tmpp->reduction > 0 )
+                        ajouter_db_personne( out_p, tmpndbp->p );
+                        tmpndbp = tmpndbp->next;
+                    }
+                    tmpndbp = out_p->head;
+                    while ( tmpndbp != NULL )
+                    {
+                        personne *tmpp = tmpndbp->p;
+                        fprintf( fdat_p, "%-24s %-24s %d   %d   ",
+                                 tmpp->nom, tmpp->prenom, tmpp->formateur, tmpp->nb_formations );
+                        int i;
+                        for ( i = 0; i < tmpp->nb_formations; i++ )
                         {
-                            fprintf( fdat_p, "%d", tmpp->val_reduction );
+                            fprintf( fdat_p, "%d ", tmpp->formations[ i ] );
                         }
-                    }
-                    else
-                    {
-                        fprintf( fdat_p, "  %d  ", tmpp->nb_jours_indisponible );
-                        for( i = 0; i < tmpp->nb_jours_indisponible; i++ )
+                        if ( tmpp->formateur == 0 )
                         {
-                            fprintf( fdat_p, "%d ", tmpp->jours_indisponible[i] );
-                        }
-                    }
-                    fprintf( fdat_p, "\n" );
-                    tmpndbp =  tmpndbp->next;
-                }
-                while( tmpndbf != NULL )
-                {
-                    int i;
-                    formation *tmpf = tmpndbf->f;
-                    fprintf( fdat_f, "%d ", tmpf->nb_prerequis );
-                    if( tmpf->nb_prerequis > 0 )
-                    {
-                        for( i = 0; i < tmpf->nb_prerequis; i++ )
+                            fprintf( fdat_p, "   %d   ", tmpp->reduction );
+                            if ( tmpp->reduction > 0 )
+                            {
+                                fprintf( fdat_p, "%d", tmpp->val_reduction );
+                            }
+                        } else
                         {
-                            fprintf( fdat_f, "%d ", tmpf->prerequis[i] );
+                            fprintf( fdat_p, "  %d  ", tmpp->nb_jours_indisponible );
+                            for ( i = 0; i < tmpp->nb_jours_indisponible; i++ )
+                            {
+                                fprintf( fdat_p, "%d ", tmpp->jours_indisponible[ i ] );
+                            }
                         }
-                        fprintf( fdat_f, "%d   ", tmpf->nb_jours );
+                        fprintf( fdat_p, "\n" );
+                        tmpndbp = tmpndbp->next;
                     }
-                    else
+                    while ( tmpndbf != NULL )
                     {
-                        fprintf( fdat_f, "  %d   ", tmpf->nb_jours );
+                        int i;
+                        formation *tmpf = tmpndbf->f;
+                        fprintf( fdat_f, "%d ", tmpf->nb_prerequis );
+                        if ( tmpf->nb_prerequis > 0 )
+                        {
+                            for ( i = 0; i < tmpf->nb_prerequis; i++ )
+                            {
+                                fprintf( fdat_f, "%d ", tmpf->prerequis[ i ] );
+                            }
+                            fprintf( fdat_f, "%d   ", tmpf->nb_jours );
+                        } else
+                        {
+                            fprintf( fdat_f, "  %d   ", tmpf->nb_jours );
+                        }
+                        for ( i = 0; i < tmpf->nb_jours; i++ )
+                        {
+                            fprintf( fdat_f, "%d   %02d   %d   ", tmpf->jours[ i ], tmpf->heures[ i ],
+                                     tmpf->durees[ i ] );
+                        }
+                        fprintf( fdat_f, "%6.2f %-s\n", tmpf->prix, tmpf->nom );
+                        tmpndbf = tmpndbf->next;
                     }
-                    for( i = 0; i < tmpf->nb_jours; i++ )
-                    {
-                        fprintf( fdat_f, "%d   %02d   %d   ", tmpf->jours[i], tmpf->heures[i], tmpf->durees[i] );
-                    }
-                    fprintf( fdat_f, "%6.2f %-s\n", tmpf->prix, tmpf->nom );
-                    tmpndbf = tmpndbf->next;
+                    fclose( fdat_f );
+                    fclose( fdat_p );
+                    printf( "Changements sauvegardes!\n" );
                 }
-                fclose( fdat_f );
-                fclose( fdat_p );
+                printf( "Fermeture du programme...\n" );
                 break;
             default:
-                printf( "Option %d - INVALIDE\n", choix );
+                printf( "/!\\ Option %d - INVALIDE /!\\\n", choix );
                 break;
         }
     } while ( choix != 0 );
@@ -906,9 +916,9 @@ int main( void )
         i += 1;
     }
 
-    printf( "\nLISTE FICHIER personne.dat\n" );
+    /*printf( "\nLISTE FICHIER personne.dat\n" );
 
-    afficher_db_personne( dbp );
+    afficher_db_personne( dbp );*/
 
     i = 1;
 
@@ -982,9 +992,9 @@ int main( void )
         tmpndbp = tmpndbp->next;
     }
 
-    printf( "\nLISTE FICHIER formation.dat\n" );
+    /*printf( "\nLISTE FICHIER formation.dat\n" );
 
-    afficher_db_formation( dbf );
+    afficher_db_formation( dbf );*/
 
     fclose( fdat_p );
     fclose( fdat_f );
