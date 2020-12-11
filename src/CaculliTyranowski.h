@@ -35,7 +35,7 @@ typedef struct noeud_formation
 typedef struct formation
 {
     int id;
-    char nom[50];
+    char nom[40];
     float prix;
     int nb_jours;
     int jours[7];
