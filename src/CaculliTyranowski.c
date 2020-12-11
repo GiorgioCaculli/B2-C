@@ -271,10 +271,8 @@ void ajouter_db_formation( db_formation *db, formation *f )
 
 int supprimer_db_formation( db_formation *dbf, int id )
 {
-    db_formation *tmpdbf = dbf;
-    noeud_db_formation *tmpndbf = tmpdbf->head;
     noeud_db_formation *tmp = NULL;
-    if( tmpndbf == NULL )
+    if( dbf->head == NULL )
     {
         return 0;
     }
@@ -285,6 +283,7 @@ int supprimer_db_formation( db_formation *dbf, int id )
         dbf->head = tmp;
         return 1;
     }
+    noeud_db_formation *tmpndbf = dbf->head;
     while( tmpndbf != NULL )
     {
         if( tmpndbf->next == NULL )
@@ -298,24 +297,13 @@ int supprimer_db_formation( db_formation *dbf, int id )
         if( tmpndbf->next->f->id == id )
         {
             tmp = tmpndbf->next;
-            tmpndbf->next = tmp->next;
-            free( tmp->next );
+            tmpndbf->next = tmpndbf->next->next;
+            free( tmp );
             return 1;
         }
         tmpndbf = tmpndbf->next;
     }
     return 0;
-}
-
-void afficher_db_formation( db_formation *dbf )
-{
-    db_formation *tmpdbf = dbf;
-    noeud_db_formation *tmpndbf = tmpdbf->head;
-    while( tmpndbf != NULL )
-    {
-        afficher_formation( tmpndbf->f );
-        tmpndbf = tmpndbf->next;
-    }
 }
 
 formation *get_formation( db_formation *dbf, char nom_formation[] )
@@ -331,6 +319,41 @@ formation *get_formation( db_formation *dbf, char nom_formation[] )
         tmpndbf = tmpndbf->next;
     }
     return NULL;
+}
+
+void afficher_db_formation( db_formation *dbf )
+{
+    int i;
+    db_formation *tmpdbf = dbf;
+    noeud_db_formation *tmpndbf = tmpdbf->head;
+    while( tmpndbf != NULL )
+    {
+        formation *tmpf = tmpndbf->f;
+        afficher_formation( tmpf );
+        printf( "Prerequis: " );
+        if( tmpf->nb_prerequis > 0 )
+        {
+            noeud_db_formation *tmp_prereq_ndbf = dbf->head;
+            while( tmp_prereq_ndbf != NULL )
+            {
+                formation *tmp_prereq = tmp_prereq_ndbf->f;
+                for( i = 0; i < tmpf->nb_prerequis; i++ )
+                {
+                    if( tmpf->prerequis[i] == tmp_prereq->id )
+                    {
+                        printf( "%s ", tmp_prereq->nom );
+                    }
+                }
+                tmp_prereq_ndbf = tmp_prereq_ndbf->next;
+            }
+            printf( "\n\n" );
+        }
+        else
+        {
+            printf( "Aucun\n\n" );
+        }
+        tmpndbf = tmpndbf->next;
+    }
 }
 
 /*                             FIN FORMATION                                 */
@@ -361,6 +384,7 @@ void afficher_options_choix()
 void menu_creer_formation( db_formation *f )
 {
     db_formation *tmpdbf = f;
+    int i;
     char nom[50];
     float prix;
     printf( "Nom de la formation: " );
@@ -374,8 +398,33 @@ void menu_creer_formation( db_formation *f )
     {
         printf( "Cout de la formation: " );
         scanf( "%f", &prix );
+        getchar();
         formation *tmpf = creer_formation( nom, prix );
         tmpf->id = tmpdbf->head->f->id + 1;
+        printf( "Est-ce que la formation a des prerequis ? (o/n) " );
+        char choix_prerequis[4];
+        scanf( "%s", choix_prerequis );
+        getchar();
+        if( strcmp( choix_prerequis, "o" ) == 0 || strcmp( choix_prerequis, "oui" ) == 0 )
+        {
+            afficher_db_formation( tmpdbf );
+            printf( "Combien de prerequis faut-il ? " );
+            int nb_prerequis;
+            scanf( "%d", &nb_prerequis );
+            getchar();
+            tmpf->nb_prerequis = nb_prerequis;
+            for( i = 0; i < nb_prerequis; i++ )
+            {
+                printf( "ID du prerequis a rajouter: " );
+                int id_prerequis;
+                scanf( "%d", &id_prerequis );
+                tmpf->prerequis[i] = id_prerequis;
+            }
+        }
+        printf( "Combien de fois par semain a le cours lieu ? " );
+        printf( "A quel jour de la semain a le cours lieu ? " );
+        printf( "A quelle heure a-t-il lieu ? " );
+        printf( "Combien d'heures dure le cours ? " );
         ajouter_db_formation( tmpdbf, tmpf );
     }
     else
@@ -609,19 +658,21 @@ void menu_supprimer( db_formation *dbf, db_personne *dbp )
     int choix;
     do
     {
+        db_formation *tmpdbf = dbf;
+        db_personne *tmpdbp = dbp;
         afficher_menu_suppression();
         scanf( "%d", &choix );
         getchar();
         switch( choix )
         {
             case 1:
-                menu_supprimer_personne( dbf, dbp );
+                menu_supprimer_personne( tmpdbf, tmpdbp );
                 break;
             case 2:
-                menu_supprimer_formation( dbf, dbp );
+                menu_supprimer_formation( tmpdbf, tmpdbp );
                 break;
             case 3:
-                menu_supprimer_personne_de_formation( dbf, dbp );
+                menu_supprimer_personne_de_formation( tmpdbf, tmpdbp );
                 break;
             default:
                 break;
@@ -631,26 +682,28 @@ void menu_supprimer( db_formation *dbf, db_personne *dbp )
 
 int menu_manipulation( int manipulation, char choix[], db_formation *f, db_personne *p )
 {
+    db_formation *tmpdbf = f;
+    db_personne *tmpdbp = p;
     switch( manipulation )
     {
         case 1:
             if( strcmp( choix, "formation" ) == 0 )
             {
-                afficher_db_formation( f );
+                afficher_db_formation( tmpdbf );
             }
             if( strcmp( choix, "personne" ) == 0 )
             {
-                afficher_db_personne( p );
+                afficher_db_personne( tmpdbp );
             }
             break;
         case 2:
             if( strcmp( choix, "formation" ) == 0 )
             {
-                menu_creer_formation( f );
+                menu_creer_formation( tmpdbf );
             }
             if( strcmp( choix, "personne" ) == 0 )
             {
-                menu_creer_personne( p );
+                menu_creer_personne( tmpdbp );
             }
             break;
         case 3:
@@ -664,6 +717,8 @@ int menu_choix( int manipulation, db_formation *f, db_personne *p )
     int choix;
     do
     {
+        db_formation *tmpdbf = f;
+        db_personne *tmpdbp = p;
         afficher_options_choix();
         scanf( "%d", &choix );
         getchar();
@@ -671,11 +726,11 @@ int menu_choix( int manipulation, db_formation *f, db_personne *p )
         {
             case 1:
                 printf( "Personne\n" );
-                menu_manipulation( manipulation, "personne", f, p );
+                menu_manipulation( manipulation, "personne", tmpdbf, tmpdbp );
                 break;
             case 2:
                 printf( "Formation\n" );
-                menu_manipulation( manipulation, "formation", f, p );
+                menu_manipulation( manipulation, "formation", tmpdbf, tmpdbp );
                 break;
             case 0:
                 break;
@@ -697,6 +752,8 @@ int menu( db_formation *f, db_personne *p )
     int choix;
     do
     {
+        db_formation *tmpdbf = f;
+        db_personne *tmpdbp = p;
         afficher_options_menu();
         scanf( "%d", &choix );
         getchar();
@@ -704,47 +761,94 @@ int menu( db_formation *f, db_personne *p )
         {
             case 1:
                 printf( "Afficher\n" );
-                menu_choix( 1, f, p );
+                menu_choix( 1, tmpdbf, tmpdbp );
                 break;
             case 2:
                 printf( "Creer\n" );
-                menu_choix( 2, f, p );
+                menu_choix( 2, tmpdbf, tmpdbp );
                 break;
             case 3:
                 printf( "Ajouter\n" );
-                menu_ajouter_formation( f, p );
+                menu_ajouter_formation( tmpdbf, tmpdbp );
                 break;
             case 4:
                 printf( "Supprimer\n" );
-                menu_supprimer( f, p );
+                menu_supprimer( tmpdbf, tmpdbp );
                 break;
             case 5:
                 printf( "Remplacer\n" );
-                menu_choix( 5, f, p );
+                menu_choix( 5, tmpdbf, tmpdbp );
                 break;
             case 0:
                 printf( "Quitter\n" );
-                db_formation *tmpdbf = f;
                 noeud_db_formation *tmpndbf = tmpdbf->head;
-                db_personne *tmpdbp = p;
                 noeud_db_personne *tmpndbp = tmpdbp->head;
+                db_formation *out_f = creer_db_formation();
                 while( tmpndbf != NULL )
                 {
-                    formation *tmpf = tmpndbf->f;
-                    fprintf( fdat_f, "%02d %6.2f %-s\n", tmpf->id, tmpf->prix, tmpf->nom );
+                    ajouter_db_formation( out_f, tmpndbf->f );
                     tmpndbf = tmpndbf->next;
                 }
+                tmpndbf = out_f->head;
+                db_personne *out_p = creer_db_personne();
+                while( tmpndbp != NULL )
+                {
+                    ajouter_db_personne( out_p, tmpndbp->p );
+                    tmpndbp = tmpndbp->next;
+                }
+                tmpndbp = out_p->head;
                 while( tmpndbp != NULL )
                 {
                     personne *tmpp = tmpndbp->p;
-                    fprintf( fdat_p, "%02d %-24s %-24s %d %d ", tmpp->id, tmpp->nom, tmpp->prenom, tmpp->formateur, tmpp->nb_formations );
+                    fprintf( fdat_p, "%-24s %-24s %d   %d   ",
+                             tmpp->nom, tmpp->prenom, tmpp->formateur, tmpp->nb_formations );
                     int i;
                     for( i = 0; i < tmpp->nb_formations; i++ )
                     {
                         fprintf( fdat_p, "%d ", tmpp->formations[i] );
                     }
+                    if( tmpp->formateur == 0 )
+                    {
+                        fprintf( fdat_p, "   %d   ", tmpp->reduction );
+                        if( tmpp->reduction > 0 )
+                        {
+                            fprintf( fdat_p, "%d", tmpp->val_reduction );
+                        }
+                    }
+                    else
+                    {
+                        fprintf( fdat_p, "  %d  ", tmpp->nb_jours_indisponible );
+                        for( i = 0; i < tmpp->nb_jours_indisponible; i++ )
+                        {
+                            fprintf( fdat_p, "%d ", tmpp->jours_indisponible[i] );
+                        }
+                    }
                     fprintf( fdat_p, "\n" );
                     tmpndbp =  tmpndbp->next;
+                }
+                while( tmpndbf != NULL )
+                {
+                    int i;
+                    formation *tmpf = tmpndbf->f;
+                    fprintf( fdat_f, "%d ", tmpf->nb_prerequis );
+                    if( tmpf->nb_prerequis > 0 )
+                    {
+                        for( i = 0; i < tmpf->nb_prerequis; i++ )
+                        {
+                            fprintf( fdat_f, "%d ", tmpf->prerequis[i] );
+                        }
+                        fprintf( fdat_f, "%d   ", tmpf->nb_jours );
+                    }
+                    else
+                    {
+                        fprintf( fdat_f, "  %d   ", tmpf->nb_jours );
+                    }
+                    for( i = 0; i < tmpf->nb_jours; i++ )
+                    {
+                        fprintf( fdat_f, "%d   %02d   %d   ", tmpf->jours[i], tmpf->heures[i], tmpf->durees[i] );
+                    }
+                    fprintf( fdat_f, "%6.2f %-s\n", tmpf->prix, tmpf->nom );
+                    tmpndbf = tmpndbf->next;
                 }
                 fclose( fdat_f );
                 fclose( fdat_p );
@@ -841,11 +945,17 @@ int main( void )
         formation *tmp = creer_formation( nom_formation, prix );
         tmp->id = i;
         tmp->nb_prerequis = nb_prerequis;
-        memcpy( tmp->prerequis, prerequis, nb_prerequis );
+        for( j = 0; j < tmp->nb_prerequis; j++ )
+        {
+            tmp->prerequis[j] = prerequis[j];
+        }
         tmp->nb_jours = nb_jours;
-        memcpy( tmp->jours, jours, nb_jours );
-        memcpy( tmp->heures, heures, nb_jours );
-        memcpy( tmp->durees, durees, nb_jours );
+        for( j = 0; j < tmp->nb_jours; j++ )
+        {
+            tmp->jours[j] = jours[j];
+            tmp->heures[j] = heures[j];
+            tmp->durees[j] = durees[j];
+        }
         ajouter_db_formation( dbf, tmp );
         i += 1;
     }
