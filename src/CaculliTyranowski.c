@@ -409,7 +409,7 @@ void menu_creer_formation( db_formation *f )
     int i;
     char nom[40];
     float prix;
-    printf( "Nom de la formation: " );
+    printf( "* Nom de la formation: " );
     fgets( nom, 40, stdin );
     if( strlen( nom ) > 0 && nom[ strlen( nom ) - 1 ] == '\n' )
     {
@@ -418,35 +418,61 @@ void menu_creer_formation( db_formation *f )
     formation *tmp = get_formation( f, nom );
     if( tmp == NULL )
     {
-        printf( "Cout de la formation: " );
+        printf( "* Cout de la formation: " );
         scanf( "%f", &prix );
         getchar();
         formation *tmpf = creer_formation( nom, prix );
         tmpf->id = tmpdbf->head->f->id + 1;
-        printf( "Est-ce que la formation a des prerequis ? (o/n) " );
+        printf( "* Est-ce que la formation a des prerequis ? (o/n) " );
         char choix_prerequis[4];
         scanf( "%s", choix_prerequis );
         getchar();
         if( strcmp( choix_prerequis, "o" ) == 0 || strcmp( choix_prerequis, "oui" ) == 0 )
         {
-            afficher_db_formation( tmpdbf );
-            printf( "Combien de prerequis faut-il ? " );
+            /*afficher_db_formation( tmpdbf );*/
+            noeud_db_formation *tmpndbf = tmpdbf->head;
+            printf( "* %2s %-40s                                  *\n", "ID", "Nom" );
+            printf( "* ---------------------------------------------------------------------------- *\n" );
+            while( tmpndbf != NULL )
+            {
+                printf( "* %2d %-40s                                  *\n", tmpndbf->f->id, tmpndbf->f->nom );
+                tmpndbf = tmpndbf->next;
+            }
+            tmpndbf = tmpdbf->head;
+            printf( "* Combien de prerequis faut-il ? " );
             int nb_prerequis;
             scanf( "%d", &nb_prerequis );
             getchar();
             tmpf->nb_prerequis = nb_prerequis;
             for( i = 0; i < nb_prerequis; i++ )
             {
-                printf( "ID du prerequis a rajouter: " );
+                printf( "* ID du prerequis a rajouter: " );
                 int id_prerequis;
                 scanf( "%d", &id_prerequis );
                 tmpf->prerequis[i] = id_prerequis;
             }
         }
-        printf( "Combien de fois par semain a le cours lieu ? " );
-        printf( "A quel jour de la semain a le cours lieu ? " );
-        printf( "A quelle heure a-t-il lieu ? " );
-        printf( "Combien d'heures dure le cours ? " );
+        printf( "* Combien de fois par semain a le cours lieu ? " );
+        scanf( "%d", &tmpf->nb_jours );
+        if( tmpf->nb_jours <= 0 )
+        {
+            tmpf->jours[0] = 7;
+            tmpf->heures[0] = 00;
+            tmpf->durees[0] = 2;
+        }
+        else
+        {
+            printf( "* 1. lundi\n* 2. mardi\n* 3. mercredi\n* 4. jeudi\n* 5. vendredi\n* 6. samedi\n* 7. dimanche\n" );
+            for ( i = 0; i < tmpf->nb_jours; i++ )
+            {
+                printf( "* A quel jour de la semain a le cours lieu N. %d ? ", i + 1 );
+                scanf( "%d", &tmpf->jours[ i ] );
+                printf( "* A quelle heure a-t-il lieu ? " );
+                scanf( "%d", &tmpf->heures[ i ] );
+                printf( "* Combien d'heures dure le cours ? " );
+                scanf( "%d", &tmpf->durees[ i ] );
+            }
+        }
         ajouter_db_formation( tmpdbf, tmpf );
     }
     else
@@ -495,13 +521,13 @@ void menu_creer_personne( db_personne *p )
     else
     {
         formateur = 0;
-        printf( "Est-ce que cet etudiant beneficie d'une reduction ? (o/n) " );
+        printf( "* Est-ce que cet etudiant beneficie d'une reduction ? (o/n) " );
         char choix_reduction[4];
         scanf( "%s", choix_reduction );
         if( strcmp( choix_reduction, "o" ) == 0 || strcmp( choix_reduction, "oui" ) == 0 )
         {
             reduction = 1;
-            printf( "Combien de pourcentage de reduction beneficie cet etudiant ? " );
+            printf( "* Combien de pourcentage de reduction beneficie cet etudiant ? " );
             scanf( "%d", &pourcent_reduction );
         }
     }
