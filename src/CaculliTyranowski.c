@@ -5,6 +5,12 @@
 #include <string.h>
 #include <stdlib.h>
 
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+char *clear = "cls";
+#elif __unix__
+char *clear = "clear";
+#endif
+
 /*****************************************************************************/
 /*                                     STRUCTS                               */
 
@@ -913,6 +919,7 @@ int menu( db_formation *f, db_personne *p )
     int choix;
     do
     {
+        system( clear );
         printf( "********************************************************************************\n" );
         printf( "* MENU PRINCIPALE                                                              *\n" );
         printf( "********************************************************************************\n" );
@@ -924,15 +931,19 @@ int menu( db_formation *f, db_personne *p )
         switch ( choix )
         {
             case 1:
+                system( clear );
                 menu_choix( 1, tmpdbf, tmpdbp );
                 break;
             case 2:
+                system( clear );
                 menu_choix( 2, tmpdbf, tmpdbp );
                 break;
             case 3:
+                system( clear );
                 menu_ajouter_formation( tmpdbf, tmpdbp );
                 break;
             case 4:
+                system( clear );
                 menu_supprimer( tmpdbf, tmpdbp );
                 break;
             /*case 5:

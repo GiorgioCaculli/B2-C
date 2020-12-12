@@ -6,7 +6,9 @@
 \usepackage{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
+\usepackage{lstautogobble}
 \usepackage{tikz}
+\usepackage{verbatim}
 \usepackage{xcolor}
 
 \usetikzlibrary{calc, shapes.multipart, chains, arrows}
@@ -18,31 +20,23 @@
   top=20mm,
 }
 
-\definecolor{codegreen}{rgb}{0,0.6,0}
-\definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{codepurple}{rgb}{0.58,0,0.82}
-\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{RoyalBlue}{cmyk}{1, 0.50, 0, 0}
 
-\lstdefinestyle{mystyle}{
-    backgroundcolor=\color{backcolour},   
-    commentstyle=\color{codegreen},
-    keywordstyle=\color{magenta},
-    numberstyle=\tiny\color{codegray},
-    stringstyle=\color{codepurple},
-    basicstyle=\ttfamily\footnotesize,
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    captionpos=b,                    
-    keepspaces=false,                 
-    numbers=left,                    
-    numbersep=5pt,                  
-    showspaces=false,                
-    showstringspaces=false,
-    showtabs=false,                  
-    tabsize=4
+\lstset{language=C,
+  keywordstyle=\color{RoyalBlue},
+  basicstyle=\scriptsize\ttfamily,
+  commentstyle=\ttfamily\itshape\color{gray},
+  stringstyle=\ttfamily,
+  breaklines=true,
+  keepspaces=true,
+  numbers=left,
+  numbersep=5pt,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=4,
+  autogobble=true
 }
-
-\lstset{style=mystyle}
 
 \title{Documentation Mini Projet Langage C}
 \author{Caculli Giorgio \& Jedrzej Tyranowski}
@@ -55,51 +49,141 @@
 \end{abstract}
 
 \newpage
+\section{Introduction}
+
+\newpage
+\section{Listes chaînées}
+
+\newpage
+\section{Énoncé}
+
+\newpage
+\section{Programme}
+\subsection{Mode d'emploi}
+
+\newpage
+\section{Code}
+\subsection{Structures}
+\begin{lstlisting}
+  typedef struct personne
+  {
+    int id;                      // L'ID unique de la personne
+    char nom[25];                // Le nom de la personne
+    char prenom[25];             // Le prenom de la personne
+    int formateur;               
+    int nb_formations;
+    int formations[30];
+    int nb_jours_indisponible;
+    int jours_indisponible[7];
+    int reduction;
+    int val_reduction;
+  } personne;
+\end{lstlisting}
+
+\begin{lstlisting}
+  typedef struct noeud_db_personne
+  {
+    personne *p;
+    struct noeud_db_personne *next;
+  } noeud_db_personne;
+\end{lstlisting}
+
+\begin{lstlisting}
+  typedef struct db_personne
+  {
+    noeud_db_personne *head;
+  } db_personne;
+\end{lstlisting}
+
+\begin{lstlisting}
+  typedef struct noeud_formation
+  {
+    personne *p;
+    struct noeud_db_formation *next;
+  } noeud_formation;
+\end{lstlisting}
+
+\begin{lstlisting}
+  typedef struct formation
+  {
+    int id;
+    char nom[40];
+    float prix;
+    int nb_jours;
+    int jours[7];
+    int heures[24];
+    int durees[10];
+    int nb_prerequis;
+    int prerequis;
+    noeud_formation *head;
+  } formation;
+\end{lstlisting}
+
+\begin{lstlisting}
+  typedef struct noeud_db_formation
+  {
+    formation *f;
+    struct noeud_db_formation *next;
+  } noeud_db_formation;
+\end{lstlisting}
+
+\begin{lstlisting}
+  typedef struct db_formation
+  {
+    noeud_db_formation *head;
+  } db_formation;
+\end{lstlisting}
+
+\subsection{Fonctions}
+
+\newpage
 \section{Structurogramme}
-\begin{algorithm}[H]
-  \Begin{
-      Ouvrir personne.dat en lecture\;
-      Ouvrir formation.dat en lecture\;
-      \While{!feof(personne.dat)}{
-        lire nom, prenom, formateur nb\_formations\;
-        \If{feof(personne.dat)}{
-          break\;
-        }
-        ajouter\_db\_personne(dbp, creer\_personne(nom, prenom, formateur))\;
-        get\_personne(dbp, nom, prenom, formateur)$\rightarrow$nb\_formations = nb\_formations\;
-        get\_personne(dbp, nom, prenom, formateur)$\rightarrow$id = i + 1\;
-        \For{$j=0$ \KwTo nb\_formations}{
-          lire get\_personne(dbp, nom, prenom, formateur)$\rightarrow$formations[j]\;
-        }
-        i += 1\;
-      }
-      \While{!feof(formation.dat)}{
-        lire id, prix, nom\_formation\;
-        \If{feof(formation.dat)}{
-          break\;
-        }
-        ajouter\_db\_formation(dbf, creer\_formation(nom\_formation, prix))\;
-        get\_formation(dbf, nom\_formation)$\rightarrow$id = i + 1\;
-        i += 1\;
-      }
-      tmpdbp = dbp\;
-      tmpndbp = tmpdbp$\rightarrow$head\;
-      \While{tmpndb != NULL}{
-        tmpdbf = dbf\;
-        tmpndbf = tmpdbf$\rightarrow$head\;
-        \While{tmpndbf != NULL}{
-          \For{$j=0$ \KwTo tmpndb$\rightarrow$p$\rightarrow$nb\_formations}{
-            \If{tmpndbp$\rightarrow$p$\rightarrow$formations[j] = tmpndbf$\rightarrow$f$\rightarrow$id}{
-              ajouter\_formation(get\_formation(dbf, tmpndbf$\rightarrow$f$\rightarrow$nom), tmpndbp$\rightarrow$p)\;
-            }
-            tmpndbf = tmpndbf$\rightarrow$next\;
+\begin{comment}
+  \begin{algorithm}[H]
+    \Begin{
+        Ouvrir personne.dat en lecture\;
+        Ouvrir formation.dat en lecture\;
+        \While{!feof(personne.dat)}{
+          lire nom, prenom, formateur nb\_formations\;
+          \If{feof(personne.dat)}{
+            break\;
           }
-          tmpndbp = tmpndbp$\rightarrow$next\;
+          ajouter\_db\_personne(dbp, creer\_personne(nom, prenom, formateur))\;
+          get\_personne(dbp, nom, prenom, formateur)$\rightarrow$nb\_formations = nb\_formations\;
+          get\_personne(dbp, nom, prenom, formateur)$\rightarrow$id = i + 1\;
+          \For{$j=0$ \KwTo nb\_formations}{
+            lire get\_personne(dbp, nom, prenom, formateur)$\rightarrow$formations[j]\;
+          }
+          i += 1\;
         }
+        \While{!feof(formation.dat)}{
+          lire id, prix, nom\_formation\;
+          \If{feof(formation.dat)}{
+            break\;
+          }
+          ajouter\_db\_formation(dbf, creer\_formation(nom\_formation, prix))\;
+          get\_formation(dbf, nom\_formation)$\rightarrow$id = i + 1\;
+          i += 1\;
+        }
+        tmpdbp = dbp\;
+        tmpndbp = tmpdbp$\rightarrow$head\;
+        \While{tmpndb != NULL}{
+          tmpdbf = dbf\;
+          tmpndbf = tmpdbf$\rightarrow$head\;
+          \While{tmpndbf != NULL}{
+            \For{$j=0$ \KwTo tmpndb$\rightarrow$p$\rightarrow$nb\_formations}{
+              \If{tmpndbp$\rightarrow$p$\rightarrow$formations[j] = tmpndbf$\rightarrow$f$\rightarrow$id}{
+                ajouter\_formation(get\_formation(dbf, tmpndbf$\rightarrow$f$\rightarrow$nom), tmpndbp$\rightarrow$p)\;
+              }
+              tmpndbf = tmpndbf$\rightarrow$next\;
+            }
+            tmpndbp = tmpndbp$\rightarrow$next\;
+          }
+        }
+        menu(dbf, dbp)\;
       }
-      menu(dbf, dbp)\;
-    }
-  \end{algorithm}
+    \end{algorithm}
+  \end{comment}
 
   \newpage
   \section{Listes chaînées}
