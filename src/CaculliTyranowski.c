@@ -452,15 +452,33 @@ void menu_creer_formation( db_formation *f )
             {
                 printf( "* A quel jour de la semain a le cours lieu N. %d ? ", i + 1 );
                 scanf( "%d", &tmpf->jours[ i ] );
-                printf( "* A quelle heure a-t-il lieu ? " );
+                printf( "* A quelle heure a-t-il lieu (eg. 08.15) ? " );
                 scanf( "%f", &tmpf->heures[ i ] );
                 printf( "* Combien d'heures dure le cours ? " );
                 scanf( "%f", &tmpf->durees[ i ] );
             }
         }
-        ajouter_db_formation( tmpdbf, tmpf );
-        system( clear );
-        printf( "* %-40s                        a ete creee. *\n", tmpf->nom );
+        char confirmation[4];
+        printf( "* Etes vous sur de vouloir creer la formation %s avec prix %.2f ? (o/n) ",
+                tmpf->nom, tmpf->prix );
+        scanf( "%s", confirmation );
+        while( strcmp( confirmation, "o" ) != 0 && strcmp( confirmation, "oui" ) != 0 &&
+               strcmp( confirmation, "n" ) != 0 && strcmp( confirmation, "non" ) != 0 )
+        {
+            printf( "Veuillez inserer o / oui - n / non : " );
+            scanf( "%s", confirmation );
+        }
+        if( strcmp( confirmation, "o" ) == 0 || strcmp( confirmation, "oui" ) == 0 )
+        {
+            ajouter_db_formation( tmpdbf, tmpf );
+            system( clear );
+            printf( "* %s a ete creee avec succes *\n", tmpf->nom );
+        }
+        else
+        {
+            system( clear );
+            printf( "* %s n'a PAS ete creee *\n", tmpf->nom );
+        }
     }
     else
     {
@@ -537,9 +555,27 @@ void menu_creer_personne( db_personne *p )
             memcpy( tmpp->jours_indisponible, jours_indisponible, nb_jours_indisponible );
         }
     }
-    ajouter_db_personne( p, tmpp );
-    system( clear );
-    printf( "* %-25s %-25s            a ete cree(e) *\n", tmpp->nom, tmpp->prenom );
+    char confirmation[4];
+    printf( "* Etes vous sur de vouloir creer %s: %s %s ? (o/n) ",
+            tmpp->formateur ? "formateur" : "etudiant", tmpp->prenom, tmpp->nom );
+    scanf( "%s", confirmation );
+    while( strcmp( confirmation, "o" ) != 0 && strcmp( confirmation, "oui" ) != 0 &&
+           strcmp( confirmation, "n" ) != 0 && strcmp( confirmation, "non" ) != 0 )
+    {
+        printf( "Veuillez inserer o / oui - n / non : " );
+        scanf( "%s", confirmation );
+    }
+    if( strcmp( confirmation, "o" ) == 0 || strcmp( confirmation, "oui" ) == 0 )
+    {
+        ajouter_db_personne( p, tmpp );
+        system( clear );
+        printf( "* %s %s a ete cree(e) avec succes *\n", tmpp->nom, tmpp->prenom );
+    }
+    else
+    {
+        system( clear );
+        printf( "* %s %s n'a PAS ete cree(e) *\n", tmpp->nom, tmpp->prenom );
+    }
 }
 
 int menu_creer( db_formation *f, db_personne *p )
@@ -624,22 +660,45 @@ void menu_ajouter_formation( db_formation *f, db_personne *p )
             int p;
             printf( "* Qui voudriez vous ajouter au cours de: %s ? ", tmpndbf->f->nom );
             scanf( "%d", &p );
-            while( tmpndbp != NULL )
+            char confirmation[4];
+            printf( "* Etes vous sur de vouloir ajouter %s %s au cours de %s ? (o/n) ",
+                    tmpndbp->p->nom, tmpndbp->p->prenom, tmpndbf->f->nom );
+            scanf( "%s", confirmation );
+            while( strcmp( confirmation, "o" ) != 0 && strcmp( confirmation, "oui" ) != 0 &&
+                   strcmp( confirmation, "n" ) != 0 && strcmp( confirmation, "non" ) != 0 )
             {
-                if( p == tmpndbp->p->id )
+                printf( "Veuillez inserer o / oui - n / non : " );
+                scanf( "%s", confirmation );
+            }
+            if( strcmp( confirmation, "o" ) == 0 || strcmp( confirmation, "oui" ) == 0 )
+            {
+                while ( tmpndbp != NULL )
                 {
-                    int res = ajouter_formation( tmpndbf->f, tmpndbp->p );
-                    if( res == 1 )
+                    if ( p == tmpndbp->p->id )
                     {
-                        tmpndbp->p->nb_formations += 1;
-                        tmpndbp->p->formations[ tmpndbp->p->nb_formations - 1 ] = tmpndbf->f->id;
+                        int res = ajouter_formation( tmpndbf->f, tmpndbp->p );
+                        if ( res == 1 )
+                        {
+                            tmpndbp->p->nb_formations += 1;
+                            tmpndbp->p->formations[ tmpndbp->p->nb_formations - 1 ] = tmpndbf->f->id;
+                            system( clear );
+                            printf( "* %s %s a ete ajoute au cours de %s avec succes *\n",
+                                    tmpndbp->p->nom, tmpndbp->p->prenom, tmpndbf->f->nom );
+                            break;
+                        }
+                        system( clear );
+                        printf( "* %s %s est deja present dans le cours de %s *\n" ,
+                                tmpndbp->p->nom, tmpndbp->p->prenom, tmpndbf->f->nom );
+                        break;
                     }
-                    system( clear );
-                    printf( "* %-25s %-25s a ete ajoute au cours de %40s *\n",
-                            tmpndbp->p->nom, tmpndbp->p->prenom, tmpndbf->f->nom );
-                    break;
+                    tmpndbp = tmpndbp->next;
                 }
-                tmpndbp = tmpndbp->next;
+            }
+            else
+            {
+                system( clear );
+                printf( "* %s %s n'a PAS ete ajoute au cours de %s *\n" ,
+                        tmpndbp->p->nom, tmpndbp->p->prenom, tmpndbf->f->nom );
             }
             break;
         }
@@ -690,10 +749,29 @@ void menu_supprimer_personne( db_formation *dbf, db_personne *dbp )
             char nom[40], prenom[40];
             strcpy( nom, tmpndbp->p->nom );
             strcpy( prenom, tmpndbp->p->prenom );
-            supprimer_db_personne( tmpdbp, idp );
-            system( clear );
-            printf( "* %-23s %-22s a ete supprime(e) entierement *\n",
+            char confirmation[4];
+            printf( "* Etes vous sur de vouloir supprimer %s %s entierement de la base de donnees ? (o/n) ",
                     nom, prenom );
+            scanf( "%s", confirmation );
+            while( strcmp( confirmation, "o" ) != 0 && strcmp( confirmation, "oui" ) != 0 &&
+                   strcmp( confirmation, "n" ) != 0 && strcmp( confirmation, "non" ) != 0 )
+            {
+                printf( "Veuillez inserer o / oui - n / non : " );
+                scanf( "%s", confirmation );
+            }
+            if( strcmp( confirmation, "o" ) == 0 || strcmp( confirmation, "oui" ) == 0 )
+            {
+                supprimer_db_personne( tmpdbp, idp );
+                system( clear );
+                printf( "* %s %s a ete supprime(e) entierement de la base de donnees *\n",
+                        nom, prenom );
+            }
+            else
+            {
+                system( clear );
+                printf( "* %s %s n'a PAS ete supprimer de la base de donnees *\n",
+                        nom, prenom );
+            }
             break;
         }
         tmpndbp = tmpndbp->next;
@@ -731,30 +809,46 @@ void menu_supprimer_formation( db_formation *dbf, db_personne *dbp )
         formation *tmpf = tmpndbf->f;
         if( idf == tmpf->id )
         {
-            printf( "* /!\\ Formation supprimee: %-40s        /!\\ *\n", tmpf->nom );
-            printf( "********************************************************************************\n" );
-            supprimer_db_formation( tmpdbf, idf );
-            while( tmpndbp != NULL )
+            char confirmation[4];
+            printf( "* Etes vous sur de vouloir supprimer %s entierement de la base de donnees ? (o/n) ",
+                    tmpf->nom );
+            scanf( "%s", confirmation );
+            while( strcmp( confirmation, "o" ) != 0 && strcmp( confirmation, "oui" ) != 0 &&
+                   strcmp( confirmation, "n" ) != 0 && strcmp( confirmation, "non" ) != 0 )
             {
-                personne *tmpp = tmpndbp->p;
-                int k;
-                for( k = 0; k < tmpp->nb_formations - 1; k++ )
-                {
-                    if( tmpp->formations[k] == tmpf->id )
-                    {
-                        int l;
-                        for( l = k; l < tmpp->nb_formations; l++ )
-                        {
-                            tmpp->formations[l] = tmpp->formations[l + 1];
-                        }
-                        tmpp->nb_formations -= 1;
-                        break;
-                    }
-                }
-                tmpndbp = tmpndbp->next;
+                printf( "Veuillez inserer o / oui - n / non : " );
+                scanf( "%s", confirmation );
             }
-            system( clear );
-            printf( "* %-50s           a ete supprimee *\n", tmpf->nom );
+            if( strcmp( confirmation, "o" ) == 0 || strcmp( confirmation, "oui" ) == 0 )
+            {
+                supprimer_db_formation( tmpdbf, idf );
+                while ( tmpndbp != NULL )
+                {
+                    personne *tmpp = tmpndbp->p;
+                    int k;
+                    for ( k = 0; k < tmpp->nb_formations - 1; k++ )
+                    {
+                        if ( tmpp->formations[ k ] == tmpf->id )
+                        {
+                            int l;
+                            for ( l = k; l < tmpp->nb_formations; l++ )
+                            {
+                                tmpp->formations[ l ] = tmpp->formations[ l + 1 ];
+                            }
+                            tmpp->nb_formations -= 1;
+                            break;
+                        }
+                    }
+                    tmpndbp = tmpndbp->next;
+                }
+                system( clear );
+                printf( "* %s a ete supprimee de la base de donnees *\n", tmpf->nom );
+            }
+            else
+            {
+                system( clear );
+                printf( "* %s n'a PAS ete supprimee de la base de donnees *\n", tmpf->nom );
+            }
             break;
         }
         tmpndbf = tmpndbf->next;
@@ -789,6 +883,7 @@ int menu_supprimer_personne_de_formation( db_formation *dbf )
             noeud_formation *tmpnf = tmpf->head;
             if( tmpnf == NULL )
             {
+                system( clear );
                 printf( "* /!\\ La formation est vide /!\\                                        *\n" );
                 return 0;
             }
@@ -809,27 +904,46 @@ int menu_supprimer_personne_de_formation( db_formation *dbf )
                 personne *tmpp = tmpnf->p;
                 if( tmpp->id == idp )
                 {
-                    supprimer_personne_de_formation( tmpf, tmpp->id );
-                    int k;
-                    for( k = 0; k < tmpp->nb_formations - 1; k++ )
-                    {
-                        if( tmpp->formations[k] == tmpf->id )
-                        {
-                            int l;
-                            for( l = k; l < tmpp->nb_formations; l++ )
-                            {
-                                tmpp->formations[l] = tmpp->formations[l + 1];
-                            }
-                            tmpp->nb_formations -= 1;
-                            break;
-                        }
-                    }
-                    system( clear );
-                    printf( "* %-25s %-25s a ete supprime du cours: %s *\n",
+                    char confirmation[4];
+                    printf( "* Etes vous sur de vouloir supprimer %s %s du cours %s ? (o/n) ",
                             tmpp->nom, tmpp->prenom, tmpf->nom );
-                    printf( "\n\n");
-                    afficher_formation( tmpf );
-                    return 1;
+                    scanf( "%s", confirmation );
+                    while( strcmp( confirmation, "o" ) != 0 && strcmp( confirmation, "oui" ) != 0 &&
+                           strcmp( confirmation, "n" ) != 0 && strcmp( confirmation, "non" ) != 0 )
+                    {
+                        printf( "Veuillez inserer o / oui - n / non : " );
+                        scanf( "%s", confirmation );
+                    }
+                    if( strcmp( confirmation, "o" ) == 0 || strcmp( confirmation, "oui" ) == 0 )
+                    {
+                        supprimer_personne_de_formation( tmpf, tmpp->id );
+                        int k;
+                        for ( k = 0; k < tmpp->nb_formations - 1; k++ )
+                        {
+                            if ( tmpp->formations[ k ] == tmpf->id )
+                            {
+                                int l;
+                                for ( l = k; l < tmpp->nb_formations; l++ )
+                                {
+                                    tmpp->formations[ l ] = tmpp->formations[ l + 1 ];
+                                }
+                                tmpp->nb_formations -= 1;
+                                break;
+                            }
+                        }
+                        system( clear );
+                        printf( "* %s %s a ete supprime du cours %s avec succes *\n",
+                                tmpp->nom, tmpp->prenom, tmpf->nom );
+                        printf( "\n\n" );
+                        afficher_formation( tmpf );
+                        return 1;
+                    }
+                    else
+                    {
+                        system( clear );
+                        printf( "* %s %s n'a PAS ete supprime du cours %s *\n",
+                                tmpp->nom, tmpp->prenom, tmpf->nom );
+                    }
                 }
                 tmpnf = tmpnf->next;
             }
@@ -1042,10 +1156,10 @@ int menu( db_formation *f, db_personne *p )
                         }
                         for ( i = 0; i < tmpf->nb_jours; i++ )
                         {
-                            fprintf( fdat_f, "%d   %f   %f   ",
+                            fprintf( fdat_f, "%d   %.2f   %.2f   ",
                                      tmpf->jours[ i ], tmpf->heures[ i ], tmpf->durees[ i ] );
                         }
-                        fprintf( fdat_f, "%6.2f %-s\n", tmpf->prix, tmpf->nom );
+                        fprintf( fdat_f, "%.2f %-s\n", tmpf->prix, tmpf->nom );
                         tmpndbf = tmpndbf->next;
                     }
                     fclose( fdat_f );
