@@ -39,8 +39,8 @@ typedef struct formation
     float prix;
     int nb_jours;
     int jours[7];
-    int heures[24];
-    int durees[10];
+    float heures[24];
+    float durees[10];
     int nb_prerequis;
     int prerequis[10];
     noeud_formation *head;
