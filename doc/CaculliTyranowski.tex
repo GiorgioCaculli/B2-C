@@ -4,10 +4,12 @@
 \usepackage[french, onelanguage]{algorithm2e}
 \usepackage[french]{babel}
 \usepackage{geometry}
+\usepackage{hyperref}
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
 \usepackage{lstautogobble}
 \usepackage{tikz}
+\usepackage{tocloft}
 \usepackage{verbatim}
 \usepackage{xcolor}
 
@@ -49,10 +51,49 @@
 \end{abstract}
 
 \newpage
+\tableofcontents
+
+\newpage
 \section{Introduction}
+\subsection{Le langage C}
+\subsection{Fonctions générales utilisées}
+\subsubsection{Qu'est-ce l'allocation de mémoire dynamique?}
+\subsubsection{Qu'est-ce \texttt{malloc()}}
+\subsubsection{Qu'est-ce \texttt{calloc()}}
+\subsubsection{Pourquoi utiliser \texttt{calloc()}}
+\subsubsection{Pourquoi utiliser \texttt{malloc()}}
+\subsubsection{Syntaxe de \texttt{calloc()}}
+\subsubsection{Exemples de \texttt{calloc()}}
+\subsubsection{Syntaxe de \texttt{malloc()}}
+\subsubsection{Exemples de \texttt{malloc()}}
+\subsubsection{Differences entre \texttt{calloc()} et \texttt{malloc()}}
 
 \newpage
 \section{Listes chaînées}
+\begin{tikzpicture}[list/.style={
+      rectangle split,
+      rectangle split parts=2,
+      draw,
+      rectangle split horizontal
+    },
+    >=stealth,
+    start chain]
+
+  \node[list,on chain] (A) {12};
+  \node[list,on chain] (B) {99};
+  \node[list,on chain] (C) {37};
+  \node[on chain,draw,inner sep=6pt] (D) {};
+  \draw (D.north east) -- (D.south west);
+  \draw (D.north west) -- (D.south east);
+  \draw[*->] let \p1 = (A.two), \p2 = (A.center) in (\x1,\y2) -- (B);
+  \draw[*->] let \p1 = (B.two), \p2 = (B.center) in (\x1,\y2) -- (C);
+  \draw[*->] let \p1 = (C.two), \p2 = (C.center) in (\x1,\y2) -- (D);
+\end{tikzpicture}
+
+\subsection{Création d'un nouveau n\oe{}ud}
+\subsection{Insertion d'un n\oe{}ud dans une liste chaînée}
+\subsection{Suppression d'un n\oe{}ud d'une liste chaînée}
+\subsection{Affichage d'une liste chaînée}
 
 \newpage
 \section{Énoncé}
@@ -64,13 +105,14 @@
 \newpage
 \section{Code}
 \subsection{Structures}
+
 \begin{lstlisting}
   typedef struct personne
   {
-    int id;                      // L'ID unique de la personne
-    char nom[25];                // Le nom de la personne
-    char prenom[25];             // Le prenom de la personne
-    int formateur;               
+    int id;
+    char nom[25];
+    char prenom[25];
+    int formateur;
     int nb_formations;
     int formations[30];
     int nb_jours_indisponible;
@@ -99,7 +141,7 @@
   typedef struct noeud_formation
   {
     personne *p;
-    struct noeud_db_formation *next;
+    struct noeud_formation *next;
   } noeud_formation;
 \end{lstlisting}
 
@@ -111,10 +153,10 @@
     float prix;
     int nb_jours;
     int jours[7];
-    int heures[24];
-    int durees[10];
+    float heures[24];
+    float durees[10];
     int nb_prerequis;
-    int prerequis;
+    int prerequis[10];
     noeud_formation *head;
   } formation;
 \end{lstlisting}
@@ -134,87 +176,115 @@
   } db_formation;
 \end{lstlisting}
 
+\newpage
 \subsection{Fonctions}
 
-\newpage
-\section{Structurogramme}
-\begin{comment}
-  \begin{algorithm}[H]
-    \Begin{
-        Ouvrir personne.dat en lecture\;
-        Ouvrir formation.dat en lecture\;
-        \While{!feof(personne.dat)}{
-          lire nom, prenom, formateur nb\_formations\;
-          \If{feof(personne.dat)}{
-            break\;
-          }
-          ajouter\_db\_personne(dbp, creer\_personne(nom, prenom, formateur))\;
-          get\_personne(dbp, nom, prenom, formateur)$\rightarrow$nb\_formations = nb\_formations\;
-          get\_personne(dbp, nom, prenom, formateur)$\rightarrow$id = i + 1\;
-          \For{$j=0$ \KwTo nb\_formations}{
-            lire get\_personne(dbp, nom, prenom, formateur)$\rightarrow$formations[j]\;
-          }
-          i += 1\;
-        }
-        \While{!feof(formation.dat)}{
-          lire id, prix, nom\_formation\;
-          \If{feof(formation.dat)}{
-            break\;
-          }
-          ajouter\_db\_formation(dbf, creer\_formation(nom\_formation, prix))\;
-          get\_formation(dbf, nom\_formation)$\rightarrow$id = i + 1\;
-          i += 1\;
-        }
-        tmpdbp = dbp\;
-        tmpndbp = tmpdbp$\rightarrow$head\;
-        \While{tmpndb != NULL}{
-          tmpdbf = dbf\;
-          tmpndbf = tmpdbf$\rightarrow$head\;
-          \While{tmpndbf != NULL}{
-            \For{$j=0$ \KwTo tmpndb$\rightarrow$p$\rightarrow$nb\_formations}{
-              \If{tmpndbp$\rightarrow$p$\rightarrow$formations[j] = tmpndbf$\rightarrow$f$\rightarrow$id}{
-                ajouter\_formation(get\_formation(dbf, tmpndbf$\rightarrow$f$\rightarrow$nom), tmpndbp$\rightarrow$p)\;
-              }
-              tmpndbf = tmpndbf$\rightarrow$next\;
-            }
-            tmpndbp = tmpndbp$\rightarrow$next\;
-          }
-        }
-        menu(dbf, dbp)\;
-      }
-    \end{algorithm}
-  \end{comment}
+\begin{lstlisting}
+  personne *creer_personne( char nom[], char prenom[], int formateur );
+\end{lstlisting}
 
-  \newpage
-  \section{Listes chaînées}
-  \begin{tikzpicture}[list/.style={
-        rectangle split,
-        rectangle split parts=2,
-        draw,
-        rectangle split horizontal
-      },
-      >=stealth,
-      start chain]
+\begin{lstlisting}
+  void afficher_personne( personne *p );
+\end{lstlisting}
 
-    \node[list,on chain] (A) {12};
-    \node[list,on chain] (B) {99};
-    \node[list,on chain] (C) {37};
-    \node[on chain,draw,inner sep=6pt] (D) {};
-    \draw (D.north east) -- (D.south west);
-    \draw (D.north west) -- (D.south east);
-    \draw[*->] let \p1 = (A.two), \p2 = (A.center) in (\x1,\y2) -- (B);
-    \draw[*->] let \p1 = (B.two), \p2 = (B.center) in (\x1,\y2) -- (C);
-    \draw[*->] let \p1 = (C.two), \p2 = (C.center) in (\x1,\y2) -- (D);
-  \end{tikzpicture}
+\begin{lstlisting}
+  db_personne *creer_db_personne();
+\end{lstlisting}
 
-  \newpage
-  \begin{lstlisting}[language=C]
-    typedef struct client
-    {
-      char nom[50];
-      int age;
-      float poids
-    } client;
-  \end{lstlisting}
-  
+\begin{lstlisting}
+  void ajouter_db_personne( db_personne *db, personne *p );
+\end{lstlisting}
+
+\begin{lstlisting}
+  int supprimer_db_personne( db_personne *dbp, int id );
+\end{lstlisting}
+
+\begin{lstlisting}
+  void afficher_db_personne( db_personne *db );
+\end{lstlisting}
+
+\begin{lstlisting}
+  personne *get_personne( db_personne *db, char nom[], char prenom[], int formateur );
+\end{lstlisting}
+
+\begin{lstlisting}
+  formation *creer_formation( char nom[], float prix );
+\end{lstlisting}
+
+\begin{lstlisting}
+  int ajouter_formation( formation *f, personne *p );
+\end{lstlisting}
+
+\begin{lstlisting}
+  int supprimer_personne_de_formation( formation *f, int id );
+\end{lstlisting}
+
+\begin{lstlisting}
+  void afficher_formation( formation *f );
+\end{lstlisting}
+
+\begin{lstlisting}
+  db_formation *creer_db_formation();
+\end{lstlisting}
+
+\begin{lstlisting}
+  void ajouter_db_formation( db_formation *db, formation *f );
+\end{lstlisting}
+
+\begin{lstlisting}
+  int supprimer_db_formation( db_formation *dbf, int id );
+\end{lstlisting}
+
+\begin{lstlisting}
+  formation *get_formation( db_formation *dbf, char nom_formation[] );
+\end{lstlisting}
+
+\begin{lstlisting}
+  void afficher_db_formation( db_formation *dbf );
+\end{lstlisting}
+
+\begin{lstlisting}
+  void menu_creer_formation( db_formation *f );
+\end{lstlisting}
+
+\begin{lstlisting}
+  void menu_creer_personne( db_personne *p );
+\end{lstlisting}
+
+\begin{lstlisting}
+  int menu_creer( db_formation *f, db_personne *p );
+\end{lstlisting}
+
+\begin{lstlisting}
+  void menu_ajouter_formation( db_formation *f, db_personne *p );
+\end{lstlisting}
+
+\begin{lstlisting}
+  void menu_supprimer_personne( db_formation *dbf, db_personne *dbp );
+\end{lstlisting}
+
+\begin{lstlisting}
+  void menu_supprimer_formation( db_formation *dbf, db_personne *dbp );
+\end{lstlisting}
+
+\begin{lstlisting}
+  int menu_supprimer_personne_de_formation( db_formation *dbf );
+\end{lstlisting}
+
+\begin{lstlisting}
+  int menu_supprimer( db_formation *dbf, db_personne *dbp );
+\end{lstlisting}
+
+\begin{lstlisting}
+  int menu_affichage( db_formation *f, db_personne *p );
+\end{lstlisting}
+
+\begin{lstlisting}
+  int menu( db_formation *f, db_personne *p );
+\end{lstlisting}
+
+\begin{lstlisting}
+  int main( void );
+\end{lstlisting}
+
 \end{document}
