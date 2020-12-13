@@ -604,7 +604,7 @@ void menu_creer_personne( db_personne *p )
         tmpp->nb_jours_indisponible = nb_jours_indisponible;
         if( nb_jours_indisponible > 0 )
         {
-            memcpy( tmpp->jours_indisponible, jours_indisponible, nb_jours_indisponible );
+            memcpy( tmpp->jours_indisponible, jours_indisponible, sizeof(tmpp->jours_indisponible) );
         }
     }
     char confirmation[4];

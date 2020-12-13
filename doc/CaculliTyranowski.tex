@@ -17,6 +17,7 @@
 \makeglossaries
 
 \newacronym{ansi}{ANSI}{American National Standard Institute}
+\newacronym{ram}{RAM}{Random Access Memory}
 
 \usetikzlibrary{calc, shapes.multipart, chains, arrows}
 
@@ -32,7 +33,7 @@
 \lstset{language=C,
   keywordstyle=\color{RoyalBlue},
   basicstyle=\scriptsize\ttfamily,
-  commentstyle=\ttfamily\itshape\color{gray},
+  commentstyle=\ttfamily\itshape\color{darkgray},
   stringstyle=\ttfamily,
   breaklines=true,
   keepspaces=true,
@@ -88,6 +89,74 @@ Différentes fonctions ont été utilisée lors du développement de ce programm
 permettre au compilateur de reconnaître le système d'exploitation dans lequel le logiciel compilé tournera.
 Voici une liste des fonctions clés utilisées:
 \begin{itemize}
+\item \texttt{printf()} : Fonction qui prend en paramètre un \texttt{const char *\_\_format} et \texttt{\ldots}, un nombre indéterminé de paramètres, qui sert à afficher la châine de caractères \texttt{format} dans la console.\\
+  Exemple:
+  \begin{lstlisting}
+    #include <stdio.h>
+    int main() {
+      printf( "Hello World!" ); /* Affiche "Hello World!" dans la console */
+      return 0;
+    }
+  \end{lstlisting}
+  
+\item \texttt{fprintf()} : Fonction qui prend en paramètre un \texttt{FILE *\_\_stream},
+  un \texttt{const char *\_\_format} et \texttt{\ldots}, un nombre indéterminé de paramètres, qui sert à écrire la chaîne de caractères \texttt{format} vers le flux spécifique \texttt{stream} et extrapoler les informations des paramètres des arguments supplémentaires qui seront ajouté dans \texttt{format}.\\
+  Exemple:
+  \begin{lstlisting}
+    #include <stdio.h>
+    int main() {
+      File *ficher_sortie = fopen( "fichier_sortie.txt", "w" );
+      /* On cree et ouvre un fichier nomme fichier_sortie.txt en ecriture */
+      fprintf( ficher_sortie, "Hello World!\n" );
+      /* Ecrit "Hello World!" dans le ficher "fichier_sortie.txt" mais pas dans la console */
+      fprintf( stdout, "Hello World!\n" );
+      /* Affiche "Hello World!" dans la console mais pas dans le fichier de sortie */
+      return 0;
+    }
+  \end{lstlisting}
+
+\item \texttt{scanf()} : Fonction qui prend en paramètre un \texttt{const char *\_\_format} et
+  \texttt{\ldots}, un nombre indéterminé de paramètres, qui sert à extrapoler une entrée du clavier et stocker les informations extrapolées dans les paramètres déclarés dans la fonction.\\
+  Exemple:
+  \begin{lstlisting}
+    #include <stdio.h>
+    int main() {
+      char prenom[50];
+      int age;
+      printf( "Comment t'appels-tu ? " );
+      scanf( "%s", prenom ); /* Admettons que l'utilisateur insere "Jedrzej" */
+      printf( "Quel age as-tu %s ? ", prenom );
+      scanf( "%d", &age ); /* Admettons que l'utilisateur insere "21" */
+      printf( "Salut %s, je vois que tu as %d ans!\n", prenom, age );
+      /* Affiche "Salut Jedrzej, je vois que tu as 21 ans!" dans la console */
+      return 0;
+    }
+  \end{lstlisting}
+  
+\item \texttt{fscanf()} : Fonction qui prend en paramètre un \texttt{FILE *\_\_stream},
+  un \texttt{const char *\_\_format} et \texttt{\ldots}, une quantité indéterminée de paramètres qui servent à satisafaire ceux demandés dans \texttt{format}. Cette fonction sert à extrapoler des entrées à partir du flux \texttt{stream}, remplir toutes les informations dans \texttt{format} et stocker les informations extrapolées dans les paramètres déclarés après le \texttt{format}.\\
+  Exemple:
+  \begin{lstlisting}
+    /* Contenu dans ficher_in.txt */
+    /* Jedrzej 21 */
+    #include <stdio.h>
+    int main() {
+      char prenom[50];
+      int age;
+      FILE *ficher_in = fopen( "fichier_entree.txt", "r" );
+      /* On ouvre un fichier nomme fichier_entree.txt en lecture */
+      fscanf( fichier_in, "%s %d\n", prenom, &age );
+      /* On lit le contenu de fichier_entree.txt */
+      printf( "Salut %s, je vois que tu as %d ans\n", prenom, age );
+      /* Affiche "Salut Jedrzej, je vois que tu as 21 ans!" dans la console */
+      return 0;
+    }
+  \end{lstlisting}
+  
+\item \texttt{fgets()}
+\item \texttt{fopen()}
+\item \texttt{fclose()}
+  
 \item \texttt{strcpy()} : Fonction qui prend en paramètre un \texttt{char *\_\_dest} et un
   \texttt{const char *\_\_src}, soit la destination dans laquelle on souhaite stocker la chaîne de caractères, et la
   source par laquelle le compilateur va reprende la chaîne de caractères.\\
@@ -100,25 +169,59 @@ Voici une liste des fonctions clés utilisées:
       char source[10] = "Giorgio";
       strcpy( prenom, source );
       printf( "%s\n", prenom ); /* Affichera "Giorgio" dans la console */
+      return 0;
+    }
+  \end{lstlisting}
+  
+\item \texttt{sizeof()} : Fonction qui renvoie la quantité de mémoire (en bits) qu'une entité va occuper dans la \acrlong{ram}, ou mémoire vive en français, abrégé en \acrshort{ram} dans ce document.\\
+  Exemple
+  \begin{lstlisting}
+    #include <stdio.h>
+    int main() {
+      printf( "Taille de char: %lu\n", sizeof( char ) );
+      /* Affiche 1 dans la console */
+      printf( "Taille de int: %lu\n", sizeof( int ) );
+      /* Affiche 4 dans la console */
+      printf( "Taille de log: %lu\n", sizeof( long ) );
+      /* Affiche 8 dans la console */
+      printf( "Taille de int[4]: %lu\n", sizeof( int[4] ) );
+      /* Affiche 16 dans la console, soit 4*4=16 */
+      return 0;
     }
   \end{lstlisting}
 
-\item \texttt{memcpy()}
-\item \texttt{printf()}
-\item \texttt{fprintf()}
-\item \texttt{scanf()}
-\item \texttt{fscanf()}
-\item \texttt{fgets()}
-\item \texttt{fopen()}
-\item \texttt{fclose()}
+\item \texttt{memcpy()} : Fonction qui prend en paramètre un \texttt{void *\_\_dest}, un
+  \texttt{const void *\_\_src}, et un \texttt{size\_t \_\_n}. Le pointeur \texttt{void *\_\_dest} est un
+  paramètre qui accept tout type d'attribut, même cas pour le pointeur void \texttt{void *\_\_src}. Les
+  informations stockées dans \texttt{src} seront copiées vers \texttt{dest}, mais que la quantité maximale
+  choisie par le \texttt{size\_t \_\_n}. \texttt{size\_t} étant un entier non signé (qui ne peut pas avoir
+  de valeur négative).\\
+  Exemple
+  \begin{lstlisting}
+    #include <stdio.h>
+    #include <string.h>
+    int main() {
+      int src[] = {1, 2, 3};
+      size_t n = sizeof(src) / sizeof(src[0])
+      /* Calcul qui renvoi 3 car la taille d'un int = 4, il y a 3 int dans src donc 4*3 = 12; on divise la taille totale du vecteur, soit 12, par la taille du premier element du vecteur, soit 4, donc 12 / 4 = 3 */
+      int dest[n]; /* On initialiser le vecteur dest avec la meme taille src, ici 3 */
+      memcpy( dest, src, sizeof(dest) ); /* On copie les informations de src vers dest */
+      int i;
+      for( i = 0; i < n; i++ ) {
+        printf( "%d ", dest[i] ); /* Affiche 1 2 3 dans la console */
+      }
+      return 0;
+    }
+  \end{lstlisting}
+  
 \item \texttt{calloc()}
 \item \texttt{getchar()}
 \item \texttt{system()}
 \end{itemize}
 
 \subsubsection{Qu'est-ce l'allocation de mémoire dynamique?}
-\subsubsection{Qu'est-ce \texttt{malloc()} ?}
 \subsubsection{Qu'est-ce \texttt{calloc()} ?}
+\subsubsection{Qu'est-ce \texttt{malloc()} ?}
 \subsubsection{Pourquoi utiliser \texttt{calloc()} ?}
 \subsubsection{Pourquoi utiliser \texttt{malloc()} ?}
 \subsubsection{Syntaxe de \texttt{calloc()}}
