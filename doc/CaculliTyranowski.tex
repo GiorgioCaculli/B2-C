@@ -368,6 +368,7 @@ Une allocation dynamique de mémoire est le processus d'alluer de la mémoire lo
 \newpage
 \section{Code}
 \subsection{Structures}
+Voici les différentes structures qui ont été utilisée dans la conception du programme:
 
 \begin{lstlisting}
   typedef struct personne
@@ -384,6 +385,21 @@ Une allocation dynamique de mémoire est le processus d'alluer de la mémoire lo
     int val_reduction;
   } personne;
 \end{lstlisting}
+
+Cette structure sert à stocker les informations qui composent une personne quelconque.\\
+Voici ce que représente chaque partie de la structure:
+\begin{itemize}
+\item \texttt{int id} : L'identifiant unique de la personne
+\item \texttt{char nom[25]} : Le nom de la personne (25 caractères maximum)
+\item \texttt{char prenom[25]} : Le prénom de la personne (25 caractères maximum)
+\item \texttt{int formateur} : 1 si la personne est un formateur, 0 si la personne est un étudiant
+\item \texttt{int nb\_formations} : Le nombre de formations auquel la personne participera
+\item \texttt{int formations[30]} : Vecteur qui stockera les idéntifiants des différentes formations auquel la personne participera (On suppose dans une année, une personne ne peut participer qu'à 30 formations maximum)
+\item \texttt{int nb\_jours\_indisponible} : Si la personne est un formateur, il se peut qu'il/elle ait des jours d'indisponibilé, cette variable va stocker le nombre de jours où cette personne est indisponile (maximum 7)
+\item \texttt{int jours\_indisponibles[7]} : Le vecteur qui stockera les jours auquel le formateur ne sera pas disponible(1 - lundi, 2 - mardi, etc\ldots)
+\item \texttt{int reduction} : Si la personne est un étudiant, il se peut qu'il ait une réduction sur son minérval, 1 s'il a droit à une réduction, 0 si pas
+  \item \texttt{int val\_reduction} : Le pourcentage de réduction auquel un étudiant à droit
+\end{itemize}
 
 \begin{lstlisting}
   typedef struct noeud_db_personne

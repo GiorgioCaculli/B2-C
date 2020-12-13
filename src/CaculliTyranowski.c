@@ -687,11 +687,17 @@ void menu_ajouter_formation( db_formation *f, db_personne *p )
         tmpndbf = tmpndbf->next;
     }
     tmpndbf = tmpdbf->head;
+    printf( "*  0 Retour                                                                    *\n" );
     printf( "********************************************************************************\n" );
     int cours;
     printf( "* A quel cours voudriez vous ajouter une personne? " );
     scanf( "%d", &cours );
     getchar();
+    if( cours <= 0 )
+    {
+        system( clear );
+        return;
+    }
     while( tmpndbf != NULL )
     {
         if( cours == tmpndbf->f->id )
@@ -708,10 +714,16 @@ void menu_ajouter_formation( db_formation *f, db_personne *p )
             tmpndbp = tmpdbp->head;*/
             printf( "********************************************************************************\n" );
             afficher_db_personne( tmpdbp );
+            printf( "*  0 Retour                                                                    *\n" );
             printf( "********************************************************************************\n" );
             int p;
             printf( "* Qui voudriez vous ajouter au cours de: %s ? ", tmpndbf->f->nom );
             scanf( "%d", &p );
+            if( p <= 0 )
+            {
+                system( clear );
+                return;
+            }
             while ( tmpndbp != NULL )
             {
                 if ( p == tmpndbp->p->id )
