@@ -473,7 +473,7 @@ Voici ce que chaque partie représente:
 \item \texttt{noeud\_formation *head} : Étant donné qu'une formation stocke des personnes, elle-même est une liste chaînée qui stockera un nombre indéterminé de participants.
 \end{itemize}
 
-\begin{lstlisting}
+\begin{lstlisting}[firstnumber=115]
   typedef struct noeud_db_formation
   {
     formation *f;
@@ -481,35 +481,71 @@ Voici ce que chaque partie représente:
   } noeud_db_formation;
 \end{lstlisting}
 
-\begin{lstlisting}
+Cette structure suit la même logique que la structure \texttt{noeud\_db\_personne}. Elle sert à stocker les différentes formations, qui eux-mêmes stockeront les personnes à leurs tour.
+\begin{itemize}
+\item \texttt{formation *f} : La formation qui sera stockée dans la base de données.
+\item \texttt{struct noeud\_db\_formation *next} : La prochaine formation qui sera stockée dans la base de données. \texttt{NULL} si pas de prochaine formation.
+\end{itemize}
+
+\begin{lstlisting}[firstnumber=127]
   typedef struct db_formation
   {
     noeud_db_formation *head;
   } db_formation;
 \end{lstlisting}
 
+Cette structure aussi suit la même logique que la structure \texttt{db\_formation}. Elle sert de tête pour la la liste chaînée et c'est à partir de cette structure-ci que l'on démarrera les différentes interactions avec la base de données des formations.
+\begin{itemize}
+  \item \texttt{noeud\_db\_formation *head} : La tête de la liste chaînée qui stockera les différentes formations.
+\end{itemize}
+
+Pourquoi avons-nous choisi cette approche ? Principalement car on ne voulait pas stocker les différentes personnes et les différentes formations dans des vecteurs. On ne voulait pas qu'il y ait un nombre prédéfini de personnes et un nombre prédéfini de formations, on s'est donc fiés aux listes chaînées. Et c'est pourquoi maintenant il est possible de stocker autant de formations que la \acrshort{ram} nous permet ainsi que de stocker autant de formations que la \acrshort{ram} nous permet.
+
 \newpage
 \subsection{Fonctions}
-
-\begin{lstlisting}
+Voici les différentes fonctions que l'on a du créer pour le bon fonctionnement du programme:
+\begin{lstlisting}[firstnumber=144]
   personne *creer_personne( char nom[], char prenom[], int formateur );
 \end{lstlisting}
 
-\begin{lstlisting}
+Cette fonction sert à créer un pointeur qui permettra d'initialiser les différentes informations présentes dans la structure \texttt{personne}. Lors de l'initialisation d'une personne, on n'aura besoin que du nom de famille de la personne, son prenom et s'il/elle est un formateur ou pas. Le reste des informations est manipulé par la suite lors des différentes interactions.
+
+\begin{lstlisting}[firstnumber=157]
   void afficher_personne( personne *p );
 \end{lstlisting}
 
-\begin{lstlisting}
+Cette fonction sert à afficher les informations de base qui caractérisent une personne. De manière générale, son identifiant, son nom de famille, son prénom et s'il est formateur ou étudiant.
+
+\begin{lstlisting}[firstnumber=168]
   db_personne *creer_db_personne();
 \end{lstlisting}
 
-\begin{lstlisting}
+Cette fonction sert à initialiser le pointer \texttt{noeud\_db\_personne *head} dans la structure \texttt{db\_personne} à \texttt{NULL}, afin que l'on puisse commencer à faire des manipulations avec cette structure.
+
+\begin{lstlisting}[firstnumber=187]
   void ajouter_db_personne( db_personne *db, personne *p );
 \end{lstlisting}
+
+Cette fonction sert à initialiser un pointeur \texttt{noeud\_db\_personne *ndb} qui stockera \texttt{personne *p} dans la base de données \texttt{db\_personne *db}. Ici, l'ajout dans la liste chaînée à lieu par le mécanisme suivant:
+\begin{enumerate}
+\item On initialise le noeud temporaire que l'on ajoutera à la base de données.
+\item On associe \texttt{p} au pointeur \texttt{p} présent dans la structure \texttt{noeud\_db\_personne}.
+\item On initialise le prochain n\oe{}ud de la liste \texttt{*next} à NULL.
+\item Si la tête \texttt{*head} de la base de donnée est \texttt{NULL}, alors la tête devient le nouveau noeud. On arrête la fonction d'ajout là.
+\item Sinon, on fait une copie de la tête dans le n\oe{}ud \texttt{*next} que l'on avait initialisé à \texttt{NULL}.
+\item On déclare la tête comme étant le n\oe{}ud temporaire que l'on a initialisé.
+\end{enumerate}
 
 \begin{lstlisting}
   int supprimer_db_personne( db_personne *dbp, int id );
 \end{lstlisting}
+
+Cette fonction sert à supprimer une personne de la base de données à partir de son identifiant. La démarche faite dans cette fonction est la suivant:
+\begin{enumerate}
+\item On vérife que la tête de la base de données \texttt{dbp->head} ne soit pas \texttt{NULL}, si oui, on arrête la fonction.
+\item On vérifie si le premier élément de la liste correspond à l'\texttt{id} de la personne que l'on souhaite supprimer.
+  \item Si oui, on crée un n\oe{}ud temporaire qui stockera la personne suivante dans la liste.
+\end{enumerate}
 
 \begin{lstlisting}
   void afficher_db_personne( db_personne *db );

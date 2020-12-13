@@ -105,12 +105,25 @@ typedef struct formation
     noeud_formation *head;
 } formation;
 
+/*
+ * Cette structure suit la même logique que la structure noeud_db_personne.
+ * Elle sert à stocker les différentes formations, qui eux-mêmes stockeront les personnes à leurs tour.
+ * formation *f : La formation qui sera stockée dans la base de données.
+ * struct noeud_db_formation *next : La prochaine formation qui sera stockée dans la base de données.
+ * NULL si pas de prochaine formation.
+ */
 typedef struct noeud_db_formation
 {
     formation *f;
     struct noeud_db_formation *next;
 } noeud_db_formation;
 
+/*
+ * Cette structure aussi suit la même logique que la structure db_formation.
+ * Elle sert de tête pour la la liste chaînée et c'est à partir de cette structure-ci que l'on démarrera
+ * les différentes interactions avec la base de données des formations.
+ * noeud_db_formation *head : La tête de la liste chaînée qui stockera les différentes formations.
+ */
 typedef struct db_formation
 {
     noeud_db_formation *head;
@@ -122,11 +135,11 @@ typedef struct db_formation
 /*****************************************************************************/
 /*                                    PERSONNE                               */
 /*
- * Creation d'une personne.
- * Ici on crée le pointeur pour la personne qui va contenir:
- * Son nom
- * Son prénom
- * Une valeur 0 ou 1 si la personne est un formateur ou pas
+ * Cette fonction sert à créer un pointeur qui permettra d'initialiser les différentes informations présentes
+ * dans la structure personne.
+ * Lors de l'initialisation d'une personne, on n'aura besoin que du nom de famille de la personne,
+ * son prenom et s'il/elle est un formateur ou pas.
+ * Le reste des informations est manipulé par la suite lors des différentes interactions.
  */
 personne *creer_personne( char nom[], char prenom[], int formateur )
 {
@@ -137,6 +150,10 @@ personne *creer_personne( char nom[], char prenom[], int formateur )
     return e;
 }
 
+/*
+ * Cette fonction sert à afficher les informations de base qui caractérisent une personne.
+ * De manière générale, son identifiant, son nom de famille, son prénom et s'il est formateur ou étudiant.
+ */
 void afficher_personne( personne *p )
 {
     personne *tmp = p;
@@ -144,6 +161,10 @@ void afficher_personne( personne *p )
             tmp->id, tmp->nom, tmp->prenom, tmp->formateur ? "Formateur" : "Etudiant" );
 }
 
+/*
+ * Cette fonction sert à initialiser le pointer noeud_db_personne *head dans la structure db_personne à NULL,
+ * afin que l'on puisse commencer à faire des manipulations avec cette structure.
+ */
 db_personne *creer_db_personne()
 {
     db_personne *db = ( db_personne * ) calloc( sizeof( db_personne ), sizeof( db_personne ) );
@@ -151,6 +172,18 @@ db_personne *creer_db_personne()
     return db;
 }
 
+/*
+ * Cette fonction sert à initialiser un pointeur noeud_db_personne *ndb qui stockera personne *p
+ * dans la base de données db_personne *db.
+ * Ici, l'ajout dans la liste chaînée à lieu par le mécanisme suivant:
+ * On initialise le noeud temporaire que l'on ajoutera à la base de données.
+ * On associe p au pointeur p présent dans la structure noeud_db_personne.
+ * On initialise le prochain noeud de la liste *next à NULL.
+ * Si la tête *head de la base de donnée est NULL, alors la tête devient le nouveau noeud.
+ * On arrête la fonction d'ajout là.
+ * Sinon, on fait une copie de la tête dans le noeud *next que l'on avait initialisé à NULL.
+ * On déclare la tête comme étant le noeud temporaire que l'on a initialisé.
+ */
 void ajouter_db_personne( db_personne *db, personne *p )
 {
     noeud_db_personne *ndb = ( noeud_db_personne * ) calloc( sizeof( noeud_db_personne ), sizeof( noeud_db_personne ) );
@@ -168,11 +201,6 @@ void ajouter_db_personne( db_personne *db, personne *p )
 int supprimer_db_personne( db_personne *dbp, int id )
 {
     noeud_db_personne *ndbp = dbp->head;
-    /*if( ndbp->p == NULL )
-    {
-        printf( "Personne pas trouvee\n" );
-        return 0;
-    }*/
     if( ndbp == NULL )
     {
         return 0;
@@ -254,7 +282,6 @@ formation *creer_formation( char nom[], float prix )
     formation *tmp = ( formation * ) calloc( sizeof( formation), sizeof( formation ) );
     strcpy( tmp->nom, nom );
     tmp->prix = prix;
-    /*tmp->prerequis[10] = { 0 };*/
     tmp->head = NULL;
     return tmp;
 }
