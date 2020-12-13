@@ -389,19 +389,19 @@ Voici les différentes structures qui ont été utilisée dans la conception du 
 Cette structure sert à stocker les informations qui composent une personne quelconque: étudiant ou formateur.\\
 Voici ce que représente chaque partie de la structure:
 \begin{itemize}
-\item \texttt{int id} : L'identifiant unique de la personne
-\item \texttt{char nom[25]} : Le nom de la personne (25 caractères maximum)
-\item \texttt{char prenom[25]} : Le prénom de la personne (25 caractères maximum)
-\item \texttt{int formateur} : 1 si la personne est un formateur, 0 si la personne est un étudiant
-\item \texttt{int nb\_formations} : Le nombre de formations auquel la personne participera
-\item \texttt{int formations[30]} : Vecteur qui stockera les idéntifiants des différentes formations auquel la personne participera (On suppose dans une année, une personne ne peut participer qu'à 30 formations maximum)
-\item \texttt{int nb\_jours\_indisponible} : Si la personne est un formateur, il se peut qu'il/elle ait des jours d'indisponibilé, cette variable va stocker le nombre de jours où cette personne est indisponile (maximum 7)
-\item \texttt{int jours\_indisponibles[7]} : Le vecteur qui stockera les jours auquel le formateur ne sera pas disponible(1 - lundi, 2 - mardi, etc\ldots)
-\item \texttt{int reduction} : Si la personne est un étudiant, il se peut qu'il ait une réduction sur son minérval, 1 s'il a droit à une réduction, 0 si pas
-  \item \texttt{int val\_reduction} : Le pourcentage de réduction auquel un étudiant à droit
+\item \texttt{int id} : L'identifiant unique de la personne.
+\item \texttt{char nom[25]} : Le nom de la personne (25 caractères maximum).
+\item \texttt{char prenom[25]} : Le prénom de la personne (25 caractères maximum).
+\item \texttt{int formateur} : 1 si la personne est un formateur, 0 si la personne est un étudiant.
+\item \texttt{int nb\_formations} : Le nombre de formations auquel la personne participera.
+\item \texttt{int formations[30]} : Vecteur qui stockera les idéntifiants des différentes formations auquel la personne participera (On suppose dans une année, une personne ne peut participer qu'à 30 formations maximum).
+\item \texttt{int nb\_jours\_indisponible} : Si la personne est un formateur, il se peut qu'il/elle ait des jours d'indisponibilé, cette variable va stocker le nombre de jours où cette personne est indisponile (maximum 7).
+\item \texttt{int jours\_indisponibles[7]} : Le vecteur qui stockera les jours auquel le formateur ne sera pas disponible(1 - lundi, 2 - mardi, etc\ldots).
+\item \texttt{int reduction} : Si la personne est un étudiant, il se peut qu'il ait une réduction sur son minérval, 1 s'il a droit à une réduction, 0 si pas.
+\item \texttt{int val\_reduction} : Le pourcentage de réduction auquel un étudiant à droit.
 \end{itemize}
 
-\begin{lstlisting}
+\begin{lstlisting}[firstnumber=51]
   typedef struct noeud_db_personne
   {
     personne *p;
@@ -409,14 +409,26 @@ Voici ce que représente chaque partie de la structure:
   } noeud_db_personne;
 \end{lstlisting}
 
-\begin{lstlisting}
+Cette structure sert à devenir les différents n\oe{}uds qui seront stockés dans la base de donnée, soit la structure \texttt{db\_personne}.
+Voici ce qui représent chaque partie de la structure:
+\begin{itemize}
+\item \texttt{personne *p} : Le pointeur de la personne qui sera stocké dans ce n\oe{}ud lors de sa création.
+\item \texttt{struct noeud\_db\_personne *next} : qui contiendra le tête lors qu'on créera un nouveau n\oe{}ud, sinon \texttt{NULL}.
+\end{itemize}
+
+\begin{lstlisting}[firstnumber=63]
   typedef struct db_personne
   {
     noeud_db_personne *head;
   } db_personne;
 \end{lstlisting}
 
-\begin{lstlisting}
+Cette structure sert à contenir tous les différentes n\oe{}uds \texttt{noeud\_db\_personne}. C'est à partir de cette structure que l'on stockera les différentes n\oe{}uds qui eux-mêmes stockeront leurs personnes respectives.
+\begin{itemize}
+\item \texttt{noeud\_db\_personne *head} : La tête de la liste chaînée qui stockera toutes les personnes.
+\end{itemize}
+
+\begin{lstlisting}[firstnumber=73]
   typedef struct noeud_formation
   {
     personne *p;
@@ -424,7 +436,13 @@ Voici ce que représente chaque partie de la structure:
   } noeud_formation;
 \end{lstlisting}
 
-\begin{lstlisting}
+Cette structure va stocker les différentes personnes qui participeront à une formation spécifique.
+\begin{itemize}
+\item \texttt{personne *p} : La personne qui participera à la formation.
+\item \texttt{struct noeud\_formation *next} : Le n\oe{}ud de pour la prochaine personne qui sera stockée.
+\end{itemize}
+
+\begin{lstlisting}[firstnumber=94]
   typedef struct formation
   {
     int id;
@@ -439,6 +457,21 @@ Voici ce que représente chaque partie de la structure:
     noeud_formation *head;
   } formation;
 \end{lstlisting}
+
+Cette structure sert à stocker toutes les informations qui composent une formations.
+Voici ce que chaque partie représente:
+\begin{itemize}
+\item \texttt{int id} : L'identifiant unique de la formation.
+\item \texttt{char nom[40]} : Le nom de la formation (40 caractères maximum).
+\item \texttt{float prix} : Le coût de la formation.
+\item \texttt{int nb\_jours} : Le nombre de jours par semaine où cette formation à cours.
+\item \texttt{int jours[7]} : Vecteur contenant les jours où la formation a cours.
+\item \texttt{float heures[24]} : Le nombre d'heures du début de la formation.
+\item \texttt{float durees[10]} : Les différentes durées du cours lors de la semaine.
+\item \texttt{int nb\_prerequis} : Le nombre de prérequis pour avoir accès à cette formation.
+\item \texttt{int prerequis[10]} : Vecteur contenant les identifiants des formations qui seraient des prérequis.
+\item \texttt{noeud\_formation *head} : Étant donné qu'une formation stocke des personnes, elle-même est une liste chaînée qui stockera un nombre indéterminé de participants.
+\end{itemize}
 
 \begin{lstlisting}
   typedef struct noeud_db_formation

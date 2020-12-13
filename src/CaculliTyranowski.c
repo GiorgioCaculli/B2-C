@@ -22,7 +22,7 @@ char *clear = "clear";
  * int nb_jours_indisponible : Si la personne est un formateur, il se peut qu'il/elle ait des jours d'indisponibilé,
  * cette variable va stocker le nombre de jours où cette personne est indisponile (maximum 7)
  * int jours_indisponibles[7] : Le vecteur qui stockera les jours auquel le formateur ne sera pas disponible
- * (1 - lundi, 2 - mardi, etc\ldots)
+ * (1 - lundi, 2 - mardi, etc...)
  * int reduction : Si la personne est un étudiant, il se peut qu'il ait une réduction sur son minérval,
  * 1 s'il a droit à une réduction, 0 si pas
  * int val_reduction : Le pourcentage de réduction auquel un étudiant à droit
@@ -41,23 +41,56 @@ typedef struct personne
     int val_reduction;
 } personne;
 
+/*
+ * Cette structure sert à devenir les différents noeuds qui seront stockés dans la base de donnée,
+ * soit la structure db_personne.
+ * Voici ce qui représent chaque partie de la structure:
+ * personne *p : Le pointeur de la personne qui sera stocké dans ce nud lors de sa création.
+ * struct noeud_db_personne *next : qui contiendra le tête lors qu'on créera un nouveau nud, sinon NULL.
+ */
 typedef struct noeud_db_personne
 {
     personne *p;
     struct noeud_db_personne *next;
 } noeud_db_personne;
 
+/*
+ * Cette structure sert à contenir tous les différentes noeuds noeud_db_personne.
+ * C'est à partir de cette structure que l'on stockera les différentes noeuds qui eux-mêmes stockeront
+ * leurs personnes respectives.
+ * noeud_db_personne *head : La tête de la liste chaînée qui stockera toutes les personnes.
+ */
 typedef struct db_personne
 {
     noeud_db_personne *head;
 } db_personne;
 
+/*
+ * Cette structure va stocker les différentes personnes qui participeront à une formation spécifique.
+ * personne *p : La personne qui participera à la formation.
+ * struct noeud_formation *next : Le noeud de pour la prochaine personne qui sera stockée.
+ */
 typedef struct noeud_formation
 {
     personne *p;
     struct noeud_formation *next;
 } noeud_formation;
 
+/*
+ * Cette structure sert à stocker toutes les informations qui composent une formations.
+ * Voici ce que chaque partie représente:
+ * int id : L'identifiant unique de la formation.
+ * char nom[40] : Le nom de la formation (40 caractères maximum).
+ * float prix : Le coût de la formation.
+ * int nb_jours : Le nombre de jours par semaine où cette formation à cours.
+ * int jours[7] : Vecteur contenant les jours où la formation a cours.
+ * float heures[24] : Le nombre d'heures du début de la formation.
+ * float durees[10] : Les différentes durées du cours lors de la semaine.
+ * int nb_prerequis : Le nombre de prérequis pour avoir accès à cette formation.
+ * int prerequis[10] : Vecteur contenant les identifiants des formations qui seraient des prérequis.
+ * noeud_formation *head} : Étant donné qu'une formation stocke des personnes,
+ * elle-même est une liste chaînée qui stockera un nombre indéterminé de participants.
+ */
 typedef struct formation
 {
     int id;
