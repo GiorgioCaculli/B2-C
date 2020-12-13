@@ -638,7 +638,7 @@ int menu_creer( db_formation *f, db_personne *p )
         db_formation *tmpdbf = f;
         db_personne *tmpdbp = p;
         printf( "********************************************************************************\n" );
-        printf( "* MENU CREATION                                                                *\n" );
+        printf( "* MENU AJOUT                                                                   *\n" );
         printf( "********************************************************************************\n" );
         printf( "* 1. Ajouter une nouvelle personne a la base de donnees                        *\n" );
         printf( "* 2. Ajouter une nouvelle formation a la base de donneees                      *\n" );
@@ -673,7 +673,7 @@ void menu_ajouter_formation( db_formation *f, db_personne *p )
     db_personne *tmpdbp = p;
     noeud_db_personne *tmpndbp = tmpdbp->head;
     printf( "********************************************************************************\n" );
-    printf( "* MENU AJOUT                                                                   *\n" );
+    printf( "* MENU ATTRIBUTION                                                             *\n" );
     printf( "********************************************************************************\n" );
     printf( "********************************************************************************\n" );
     printf( "* Liste des cours                                                              *\n" );
