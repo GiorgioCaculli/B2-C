@@ -674,6 +674,7 @@ int menu_creer( db_formation *f, db_personne *p )
                 system( clear );
                 break;
             default:
+                system( clear );
                 printf( "/!\\ Option %d - INVALIDE /!\\\n", choix );
                 break;
         }
@@ -816,9 +817,22 @@ void menu_supprimer_personne( db_formation *dbf, db_personne *dbp )
     }
     tmpndbp = tmpdbp->head;*/
     afficher_db_personne( tmpdbp );
+    printf( "*  0 Retour                                                                    *\n" );
     printf( "* Quelle personne voudriez vous supprimer entierement ? " );
     scanf( "%d", &idp );
     getchar();
+    while( idp < 0 && idp > tmpndbp->p->id )
+    {
+        printf( "* Option %d - INVALIDE\n", idp );
+        printf( "* Quelle personne voudriez vous supprimer entierement ? " );
+        scanf( "%d", &idp );
+        getchar();
+    }
+    if( idp <= 0 )
+    {
+        system( clear );
+        return;
+    }
     while( tmpndbf != NULL )
     {
         formation *tmpf = tmpndbf->f;
@@ -893,11 +907,24 @@ void menu_supprimer_formation( db_formation *dbf, db_personne *dbp )
         tmpndbf = tmpndbf->next;
     }
     tmpndbf = tmpdbf->head;
+    printf( "*  0 Retour                                                                    *\n" );
     printf( "********************************************************************************\n" );
     printf( "* Quelle formation voudriez vous supprimer? " );
     scanf( "%d", &idf );
     getchar();
     printf( "********************************************************************************\n" );
+    while( idf < 0 && idf > tmpndbf->f->id )
+    {
+        printf( "* Option %d - INVALIDE\n", idf );
+        printf( "* Quelle formation voudriez vous supprimer? " );
+        scanf( "%d", &idf );
+        getchar();
+    }
+    if( idf <= 0 )
+    {
+        system( clear );
+        return;
+    }
     while( tmpndbf != NULL )
     {
         formation *tmpf = tmpndbf->f;
@@ -958,16 +985,29 @@ int menu_supprimer_personne_de_formation( db_formation *dbf )
     printf( "********************************************************************************\n" );
     printf( "* MENU SUPPRESSION : Liste des cours                                           *\n" );
     printf( "********************************************************************************\n" );
-    while( tmpndbf != NULL )
+    while ( tmpndbf != NULL )
     {
         formation *tmpf = tmpndbf->f;
         printf( "* %2d %-40s                                  *\n", tmpf->id, tmpf->nom );
         tmpndbf = tmpndbf->next;
     }
     tmpndbf = tmpdbf->head;
+    printf( "*  0 Retour                                                                    *\n" );
     printf( "* De quelle formation voudriez vous supprimer quelqu'un ? " );
     scanf( "%d", &idf );
     getchar();
+    while( idf < 0 && idf > tmpndbf->f->id )
+    {
+        printf( "* Option %d - INVALIDE\n", idf );
+        printf( "* De quelle formation voudriez vous supprimer quelqu'un ? " );
+        scanf( "%d", &idf );
+        getchar();
+    }
+    if ( idf <= 0 )
+    {
+        system( clear );
+        return 0;
+    }
     while( tmpndbf != NULL )
     {
         if( idf == tmpndbf->f->id )
@@ -989,10 +1029,23 @@ int menu_supprimer_personne_de_formation( db_formation *dbf )
                 tmpnf = tmpnf->next;
             }
             tmpnf = tmpf->head;
-            printf( "* Quelle personne voudriez vous supprimer de ce cours ? " );
+            printf( "*  0 Retour                                                                    *\n" );
             int idp;
+            printf( "* Quelle personne voudriez vous supprimer de ce cours ? " );
             scanf( "%d", &idp );
             getchar();
+            while( idp < 0 && idp > tmpnf->p->id )
+            {
+                printf( "* Option %d - INVALIDE\n", idp );
+                printf( "* Quelle personne voudriez vous supprimer de ce cours ? " );
+                scanf( "%d", &idp );
+                getchar();
+            }
+            if( idp <= 0 )
+            {
+                system( clear );
+                return 0;
+            }
             while( tmpnf != NULL )
             {
                 personne *tmpp = tmpnf->p;
@@ -1061,7 +1114,7 @@ int menu_supprimer( db_formation *dbf, db_personne *dbp )
         printf( "********************************************************************************\n" );
         printf( "* 1. Supprimer une personne de la base de donnees                              *\n" );
         printf( "* 2. Supprimer une formation de la base de donnes                              *\n" );
-        printf( "* 3. Supprimer une personner d'une formation specifique                        *\n" );
+        printf( "* 3. Supprimer une personne specifique d'une formation specifique              *\n" );
         printf( "* 0. Retour                                                                    *\n" );
         printf( "********************************************************************************\n" );
         printf ("* Que voudriez vous supprimer ? " );
@@ -1082,6 +1135,7 @@ int menu_supprimer( db_formation *dbf, db_personne *dbp )
                 system( clear );
                 break;
             default:
+                system( clear );
                 break;
         }
     } while( choix != 0 );
@@ -1133,6 +1187,7 @@ int menu_affichage( db_formation *f, db_personne *p )
                 system( clear );
                 break;
             default:
+                system( clear );
                 printf( "/!\\ Option %d - INVALIDE /!\\\n", choix );
                 break;
         }
@@ -1264,6 +1319,7 @@ int menu( db_formation *f, db_personne *p )
                 printf( "Au revoir!\n" );
                 break;
             default:
+                system( clear );
                 printf( "/!\\ Option %d - INVALIDE /!\\\n", choix );
                 break;
         }

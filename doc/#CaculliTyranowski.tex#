@@ -409,6 +409,8 @@ Voici ce que représente chaque partie de la structure:
   } noeud_db_personne;
 \end{lstlisting}
 
+Cette structure sert à stocker les différentes personnes qui seront 
+
 \begin{lstlisting}
   typedef struct db_personne
   {
