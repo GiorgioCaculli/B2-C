@@ -640,8 +640,8 @@ int menu_creer( db_formation *f, db_personne *p )
         printf( "********************************************************************************\n" );
         printf( "* MENU CREATION                                                                *\n" );
         printf( "********************************************************************************\n" );
-        printf( "* 1. Une nouvelle personne                                                     *\n" );
-        printf( "* 2. Une nouvelle formation                                                    *\n" );
+        printf( "* 1. Ajouter une nouvelle personne a la base de donnees                        *\n" );
+        printf( "* 2. Ajouter une nouvelle formation a la base de donneees                      *\n" );
         printf( "* 0. Retour                                                                    *\n" );
         printf( "********************************************************************************\n" );
         printf( "* Que voudriez-vous creer ? " );
@@ -1029,9 +1029,9 @@ int menu_supprimer( db_formation *dbf, db_personne *dbp )
         printf( "********************************************************************************\n" );
         printf( "* MENU SUPPRESSION                                                             *\n" );
         printf( "********************************************************************************\n" );
-        printf( "* 1. Une personne entierement                                                  *\n" );
-        printf( "* 2. Une formation entierement                                                 *\n" );
-        printf( "* 3. Une personne d'une formation specifique                                   *\n" );
+        printf( "* 1. Supprimer une personne de la base de donnees                              *\n" );
+        printf( "* 2. Supprimer une formation de la base de donnes                              *\n" );
+        printf( "* 3. Supprimer une personner d'une formation specifique                        *\n" );
         printf( "* 0. Retour                                                                    *\n" );
         printf( "********************************************************************************\n" );
         printf ("* Que voudriez vous supprimer ? " );
@@ -1123,9 +1123,9 @@ int menu( db_formation *f, db_personne *p )
         printf( "********************************************************************************\n" );
         db_formation *tmpdbf = f;
         db_personne *tmpdbp = p;
-        printf( "* 1: Afficher la liste des etudiants ou la liste des formations                *\n" );
-        printf( "* 2: Creer une nouvelle personne ou une nouvelle formation                     *\n" );
-        printf( "* 3: Ajouter une personne a une formation                                      *\n" );
+        printf( "* 1: Afficher la liste des etudiants/formateurs ou la liste des formations     *\n" );
+        printf( "* 2: Ajouter une nouvelle personne ou formation a la base de donnees           *\n" );
+        printf( "* 3: Attribuer une personne a une formation                                    *\n" );
         printf( "* 4: Supprimer une formation, une personne ou une personne d'une formation     *\n" );
         printf( "* 0: Quitter le programme                                                      *\n" );
         printf( "********************************************************************************\n" );
