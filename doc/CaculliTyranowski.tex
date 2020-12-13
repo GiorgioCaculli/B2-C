@@ -88,8 +88,8 @@ Différentes fonctions ont été utilisée lors du développement de ce programm
 permettre au compilateur de reconnaître le système d'exploitation dans lequel le logiciel compilé tournera.
 Voici une liste des fonctions clés utilisées:
 \begin{itemize}
-\item \texttt{strcpy()} : Fonction qui prend en paramètre un \texttt{char dest[]} et un
-  \texttt{char src[]}, soit la destination dans laquelle on souhaite stocker la chaîne de caractères, et la
+\item \texttt{strcpy()} : Fonction qui prend en paramètre un \texttt{char *\_\_dest} et un
+  \texttt{const char *\_\_src}, soit la destination dans laquelle on souhaite stocker la chaîne de caractères, et la
   source par laquelle le compilateur va reprende la chaîne de caractères.\\
   Exemple:
   \begin{lstlisting}
