@@ -511,7 +511,7 @@ void menu_creer_formation( db_formation *f )
             }
         }
         char confirmation[4];
-        printf( "* Etes vous sur de vouloir creer la formation %s avec prix %.2f ? (o/n) ",
+        printf( "* Etes vous sur de vouloir ajouter la formation %s avec prix %.2f a la base de donnees ? (o/n) ",
                 tmpf->nom, tmpf->prix );
         scanf( "%s", confirmation );
         while( strcmp( confirmation, "o" ) != 0 && strcmp( confirmation, "oui" ) != 0 &&
@@ -524,18 +524,18 @@ void menu_creer_formation( db_formation *f )
         {
             ajouter_db_formation( tmpdbf, tmpf );
             system( clear );
-            printf( "* %s a ete creee avec succes *\n", tmpf->nom );
+            printf( "* %s a ete ajoutee a la base de donnees avec succes *\n", tmpf->nom );
         }
         else
         {
             system( clear );
-            printf( "* %s n'a PAS ete creee *\n", tmpf->nom );
+            printf( "* %s n'a PAS ete ajoutee a la base de donnees *\n", tmpf->nom );
         }
     }
     else
     {
         system( clear );
-        printf( "* Formation deja existente *\n" );
+        printf( "* Formation deja existente dans la base de donnees *\n" );
     }
 }
 
@@ -544,7 +544,7 @@ void menu_creer_personne( db_personne *p )
     db_personne *tmpdbp = p;
     char nom[25], prenom[25], choix_formateur[4];
     int formateur, nb_jours_indisponible = 0, jours_indisponible[7], reduction = 0, pourcent_reduction;
-    printf( "* Nom de la personne: " );
+    printf( "* Nom de famille de la personne: " );
     scanf( "%s", nom );
     printf( "* Prenom de la personne: " );
     scanf( "%s", prenom );
@@ -608,7 +608,7 @@ void menu_creer_personne( db_personne *p )
         }
     }
     char confirmation[4];
-    printf( "* Etes vous sur de vouloir creer %s: %s %s ? (o/n) ",
+    printf( "* Etes vous sur de vouloir ajouter %s: %s %s a la base de donnees ? (o/n) ",
             tmpp->formateur ? "formateur" : "etudiant", tmpp->prenom, tmpp->nom );
     scanf( "%s", confirmation );
     while( strcmp( confirmation, "o" ) != 0 && strcmp( confirmation, "oui" ) != 0 &&
@@ -621,12 +621,12 @@ void menu_creer_personne( db_personne *p )
     {
         ajouter_db_personne( p, tmpp );
         system( clear );
-        printf( "* %s %s a ete cree(e) avec succes *\n", tmpp->nom, tmpp->prenom );
+        printf( "* %s %s a ete ajoute(e) a la base de donnees avec succes *\n", tmpp->nom, tmpp->prenom );
     }
     else
     {
         system( clear );
-        printf( "* %s %s n'a PAS ete cree(e) *\n", tmpp->nom, tmpp->prenom );
+        printf( "* %s %s n'a PAS ete ajoute(e) a la base de donnees *\n", tmpp->nom, tmpp->prenom );
     }
 }
 
@@ -644,7 +644,7 @@ int menu_creer( db_formation *f, db_personne *p )
         printf( "* 2. Ajouter une nouvelle formation a la base de donneees                      *\n" );
         printf( "* 0. Retour                                                                    *\n" );
         printf( "********************************************************************************\n" );
-        printf( "* Que voudriez-vous creer ? " );
+        printf( "* Que voudriez-vous ajouter a la base de donnees ? " );
         scanf( "%d", &choix );
         getchar();
         switch( choix )
@@ -690,9 +690,16 @@ void menu_ajouter_formation( db_formation *f, db_personne *p )
     printf( "*  0 Retour                                                                    *\n" );
     printf( "********************************************************************************\n" );
     int cours;
-    printf( "* A quel cours voudriez vous ajouter une personne? " );
+    printf( "* A quel cours voudriez vous attribuer une personne? " );
     scanf( "%d", &cours );
     getchar();
+    while( cours < 0 && cours > tmpndbf->f->id )
+    {
+        printf( "* Valeur %d - INVALIDE! *\n", cours );
+        printf( "* A quel cours voudriez vous attribuer une personne? " );
+        scanf( "%d", &cours );
+        getchar();
+    }
     if( cours <= 0 )
     {
         system( clear );
@@ -717,8 +724,16 @@ void menu_ajouter_formation( db_formation *f, db_personne *p )
             printf( "*  0 Retour                                                                    *\n" );
             printf( "********************************************************************************\n" );
             int p;
-            printf( "* Qui voudriez vous ajouter au cours de: %s ? ", tmpndbf->f->nom );
+            printf( "* Qui voudriez vous attribuer au cours de: %s ? ", tmpndbf->f->nom );
             scanf( "%d", &p );
+            getchar();
+            while( p < 0 && p > tmpndbp->p->id )
+            {
+                printf( "* Valeur %d - INVALIDE\n", p );
+                printf( "* Qui voudriez vous attribuer au cours de: %s ? ", tmpndbf->f->nom );
+                scanf( "%d", &p );
+                getchar();
+            }
             if( p <= 0 )
             {
                 system( clear );
@@ -729,7 +744,7 @@ void menu_ajouter_formation( db_formation *f, db_personne *p )
                 if ( p == tmpndbp->p->id )
                 {
                     char confirmation[4];
-                    printf( "* Etes vous sur de vouloir ajouter %s %s au cours de %s ? (o/n) ",
+                    printf( "* Etes vous sur de vouloir attribuer %s %s au cours de %s ? (o/n) ",
                             tmpndbp->p->nom, tmpndbp->p->prenom, tmpndbf->f->nom );
                     scanf( "%s", confirmation );
                     while( strcmp( confirmation, "o" ) != 0 && strcmp( confirmation, "oui" ) != 0 &&
@@ -746,7 +761,7 @@ void menu_ajouter_formation( db_formation *f, db_personne *p )
                             tmpndbp->p->nb_formations += 1;
                             tmpndbp->p->formations[ tmpndbp->p->nb_formations - 1 ] = tmpndbf->f->id;
                             system( clear );
-                            printf( "* %s %s a ete ajoute au cours de %s avec succes *\n",
+                            printf( "* %s %s a ete attribue(e) au cours de %s avec succes *\n",
                                     tmpndbp->p->nom, tmpndbp->p->prenom, tmpndbf->f->nom );
                             break;
                         }
@@ -758,7 +773,7 @@ void menu_ajouter_formation( db_formation *f, db_personne *p )
                     else
                     {
                         system( clear );
-                        printf( "* %s %s n'a PAS ete ajoute au cours de %s *\n" ,
+                        printf( "* %s %s n'a PAS ete attribue(e) au cours de %s *\n" ,
                                 tmpndbp->p->nom, tmpndbp->p->prenom, tmpndbf->f->nom );
                     }
                 }
@@ -1231,6 +1246,7 @@ int menu( db_formation *f, db_personne *p )
                     printf( "Changements sauvegardes!\n" );
                 }
                 printf( "Fermeture du programme...\n" );
+                printf( "Au revoir!\n" );
                 break;
             default:
                 printf( "/!\\ Option %d - INVALIDE /!\\\n", choix );
