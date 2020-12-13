@@ -56,8 +56,8 @@
   Documentation pour le projet de Langage procédural sur les listes chaînées. Projet basé sur le concept
   d'un centre de formations.
 \end{abstract}
-  %\small
-  \textbf{\textit{Mots-clés : }}liste, chaînée, c, noeud, centre, formation, tête
+%\small
+\textbf{\textit{Mots-clés : }}liste, chaînée, c, noeud, centre, formation, tête
 
 \newpage
 \tableofcontents
@@ -72,17 +72,55 @@ La langage de programmation utilisé lors du développement et la mise en \oe{}u
 \item \textbf{ANSI-C} : La première vérsion standardisée par le \textbf{\acrlong{ansi}},
   abrégé en \textbf{\acrshort{ansi}} dans ce document, du langage \texttt{C} publiée en 1990.
 \item \textbf{C-99} : Révision de la version \acrshort{ansi} pour permettre aux développeurs d'utiliser les
-  commentaires \texttt{//}, les booléans grâce à la librairie \texttt{<stdbool.h>}, la déclaration des int directement dans la boucle for, et d'autres modérnisations de la syntaxe.
+  commentaires \texttt{//}, les booléans grâce à la librairie \texttt{<stdbool.h>}, la déclaration des int
+  directement dans la boucle \texttt{for}, et d'autres modérnisations de la syntaxe.
 \item \textbf{C-11} : Mise à jour du langage \texttt{C} pour permettre le support des \texttt{thread} afin de pouvoir faire du multi-threading.
-\item \textbf{C-17} : Révision de la version \textbf{C-11} qui n'ajoute aucune nouvelle fonctionnalité, mais corriges beaucoup bugs présents dans la version 11.
+\item \textbf{C-17} : Révision de la version \textbf{C-11} qui n'ajoute aucune nouvelle fonctionnalité, mais
+  corriges beaucoup bugs présents dans la version 11.
 \end{itemize}
+Dans les différentes applications que l'on a fait dans le cours de Langage procédural, la plupart des
+interactions que l'on a eu avec le langage \texttt{C}, notammente le fait de devoir déclarer un \texttt{int}
+avant une boucle \texttt{for}, ressemblaient fortement à l'\acrshort{ansi}-\texttt{C}. C'est pourquoi nous
+avons choisi d'utiliser cette vérsion là.
 
 \subsection{Fonctions générales utilisées}
+Différentes fonctions ont été utilisée lors du développement de ce programme, ainsi que des macros pour
+permettre au compilateur de reconnaître le système d'exploitation dans lequel le logiciel compilé tournera.
+Voici une liste des fonctions clés utilisées:
+\begin{itemize}
+\item \texttt{strcpy()} : Fonction qui prend en paramètre un \texttt{char dest[]} et un
+  \texttt{char src[]}, soit la destination dans laquelle on souhaite stocker la chaîne de caractères, et la
+  source par laquelle le compilateur va reprende la chaîne de caractères.\\
+  Exemple:
+  \begin{lstlisting}
+    #include <stdio.h>
+    #include <string.h>
+    int main() {
+      char prenom[10];
+      char source[10] = "Giorgio";
+      strcpy( prenom, source );
+      printf( "%s\n", prenom ); /* Affichera "Giorgio" dans la console */
+    }
+  \end{lstlisting}
+
+\item \texttt{memcpy()}
+\item \texttt{printf()}
+\item \texttt{fprintf()}
+\item \texttt{scanf()}
+\item \texttt{fscanf()}
+\item \texttt{fgets()}
+\item \texttt{fopen()}
+\item \texttt{fclose()}
+\item \texttt{calloc()}
+\item \texttt{getchar()}
+\item \texttt{system()}
+\end{itemize}
+
 \subsubsection{Qu'est-ce l'allocation de mémoire dynamique?}
-\subsubsection{Qu'est-ce \texttt{malloc()}}
-\subsubsection{Qu'est-ce \texttt{calloc()}}
-\subsubsection{Pourquoi utiliser \texttt{calloc()}}
-\subsubsection{Pourquoi utiliser \texttt{malloc()}}
+\subsubsection{Qu'est-ce \texttt{malloc()} ?}
+\subsubsection{Qu'est-ce \texttt{calloc()} ?}
+\subsubsection{Pourquoi utiliser \texttt{calloc()} ?}
+\subsubsection{Pourquoi utiliser \texttt{malloc()} ?}
 \subsubsection{Syntaxe de \texttt{calloc()}}
 \subsubsection{Exemples de \texttt{calloc()}}
 \subsubsection{Syntaxe de \texttt{malloc()}}
