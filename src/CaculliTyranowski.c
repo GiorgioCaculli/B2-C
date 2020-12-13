@@ -206,7 +206,7 @@ formation *creer_formation( char nom[], float prix )
     formation *tmp = ( formation * ) calloc( sizeof( formation), sizeof( formation ) );
     strcpy( tmp->nom, nom );
     tmp->prix = prix;
-    //tmp->prerequis[10] = { 0 };
+    /*tmp->prerequis[10] = { 0 };*/
     tmp->head = NULL;
     return tmp;
 }

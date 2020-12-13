@@ -11,7 +11,7 @@
 \contentsline {subsubsection}{\numberline {1.2.7}Exemples de \texttt {calloc()}}{3}{subsubsection.1.2.7}%
 \contentsline {subsubsection}{\numberline {1.2.8}Syntaxe de \texttt {malloc()}}{3}{subsubsection.1.2.8}%
 \contentsline {subsubsection}{\numberline {1.2.9}Exemples de \texttt {malloc()}}{3}{subsubsection.1.2.9}%
-\contentsline {subsubsection}{\numberline {1.2.10}Differences entre \texttt {calloc()} et \texttt {malloc()}}{3}{subsubsection.1.2.10}%
+\contentsline {subsubsection}{\numberline {1.2.10}Différences entre \texttt {calloc()} et \texttt {malloc()}}{3}{subsubsection.1.2.10}%
 \contentsline {section}{\numberline {2}Listes chaînées}{4}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Création d'un nouveau n\oe {}ud}{4}{subsection.2.1}%
 \contentsline {subsection}{\numberline {2.2}Insertion d'un n\oe {}ud dans une liste chaînée}{4}{subsection.2.2}%
