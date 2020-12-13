@@ -11,7 +11,22 @@ char *clear = "clear";
 
 /*****************************************************************************/
 /*                                     STRUCTS                               */
-
+/*
+ * int id : L'identifiant unique de la personne
+ * char nom[25] : Le nom de la personne (25 caractères maximum)
+ * char prenom[25] : Le prénom de la personne (25 caractères maximum)
+ * int formateur : 1 si la personne est un formateur, 0 si la personne est un étudiant
+ * int nb_formations : Le nombre de formations auquel la personne participera
+ * int formations[30] : Vecteur qui stockera les idéntifiants des différentes formations auquel la personne participera
+ * (On suppose dans une année, une personne ne peut participer qu'à 30 formations maximum)
+ * int nb_jours_indisponible : Si la personne est un formateur, il se peut qu'il/elle ait des jours d'indisponibilé,
+ * cette variable va stocker le nombre de jours où cette personne est indisponile (maximum 7)
+ * int jours_indisponibles[7] : Le vecteur qui stockera les jours auquel le formateur ne sera pas disponible
+ * (1 - lundi, 2 - mardi, etc\ldots)
+ * int reduction : Si la personne est un étudiant, il se peut qu'il ait une réduction sur son minérval,
+ * 1 s'il a droit à une réduction, 0 si pas
+ * int val_reduction : Le pourcentage de réduction auquel un étudiant à droit
+ */
 typedef struct personne
 {
     int id;
