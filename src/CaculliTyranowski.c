@@ -661,7 +661,6 @@ void menu_creer_formation( db_formation *f )
         }
         if( strcmp( choix_prerequis, "o" ) == 0 || strcmp( choix_prerequis, "oui" ) == 0 )
         {
-            /*afficher_db_formation( tmpdbf );*/
             noeud_db_formation *tmpndbf = tmpdbf->head;
             printf( "* %2s %-40s                                  *\n", "ID", "Nom" );
             printf( "* ---------------------------------------------------------------------------- *\n" );
@@ -1021,12 +1020,6 @@ void menu_ajouter_formation( db_formation *f, db_personne *p )
             printf( "* Liste des personnes                                                          *\n" );
             printf( "********************************************************************************\n" );
             printf( "* Cours choisi: %-40s                       *\n", tmpndbf->f->nom );
-            /*while( tmpndbp != NULL )
-            {
-                afficher_personne( tmpndbp->p );
-                tmpndbp = tmpndbp->next;
-            }
-            tmpndbp = tmpdbp->head;*/
             printf( "********************************************************************************\n" );
             afficher_db_personne( tmpdbp );
             printf( "*  0 Retour                                                                    *\n" );
@@ -1100,14 +1093,6 @@ void menu_supprimer_personne( db_formation *dbf, db_personne *dbp )
     noeud_db_formation *tmpndbf = tmpdbf->head;
     db_personne *tmpdbp = dbp;
     noeud_db_personne *tmpndbp = tmpdbp->head;
-    /*while( tmpndbp != NULL )
-    {
-        personne *tmpp = tmpndbp->p;
-        printf( "* %2d %s %s - %s                                                      *\n",
-                tmpp->id, tmpp->nom, tmpp->prenom, tmpp->formateur ? "Formateur" : "Étudiant" );
-        tmpndbp = tmpndbp->next;
-    }
-    tmpndbp = tmpdbp->head;*/
     afficher_db_personne( tmpdbp );
     printf( "*  0 Retour                                                                    *\n" );
     printf( "* Quelle personne voudriez vous supprimer entierement ? " );
@@ -1487,6 +1472,86 @@ int menu_affichage( db_formation *f, db_personne *p )
     return 0;
 }
 
+void ecrire_planning( db_formation *dbf )
+{
+    FILE *fres = fopen( "CaculliTyranowski.res", "w" );
+    int i;
+    db_formation *tmpdbf = dbf;
+    noeud_db_formation *tmpndbf = tmpdbf->head;
+    char jour[7][9] = { "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche" };
+    for( i = 1; i <= 7; i++ )
+    {
+        tmpndbf = tmpdbf->head;
+        fprintf( fres, "********************************************************************************\n" );
+        fprintf( fres, "Cours du: %s\n", jour[i - 1] );
+        fprintf( fres, "********************************************************************************\n" );
+        while( tmpndbf != NULL )
+        {
+            formation *tmp = tmpndbf->f;
+            int j;
+            for( j = 0; j < tmp->nb_jours; j++ )
+            {
+                if( tmp->jours[j] == i )
+                {
+                    formation *tmp = tmpndbf->f;
+                    noeud_formation *tmpnf = tmp->head;
+                    fprintf( fres, "ID: %d - Nom formation: %s\n", tmp->id, tmp->nom );
+                    fprintf( fres, "Participants dans la formation:\n" );
+                    fprintf( fres, "Formateurs:\n" );
+                    while( tmpnf != NULL )
+                    {
+                        if( tmpnf->p->formateur == 1 )
+                        {
+                            fprintf( fres, "%2d %s %s", tmpnf->p->id, tmpnf->p->nom, tmpnf->p->prenom );
+                            if( tmpnf != NULL ) fprintf( fres, "\n" );
+                        }
+                        tmpnf = tmpnf->next;
+                    }
+                    tmpnf = tmp->head;
+                    fprintf( fres, "Etudiants:\n" );
+                    while( tmpnf != NULL )
+                    {
+                        if( tmpnf->p->formateur == 0 )
+                        {
+                            fprintf( fres, "%2d %s %s", tmpnf->p->id, tmpnf->p->nom, tmpnf->p->prenom );
+                            if( tmpnf != NULL ) fprintf( fres, "\n" );
+                        }
+                        tmpnf = tmpnf->next;
+                    }
+                    fprintf( fres, "\n" );
+                    fprintf( fres, "De: %.2f - A %.2f\n", tmp->heures[j], tmp->heures[j] + tmp->durees[j] );
+                    fprintf( fres, "Prerequis: " );
+                    if( tmp->nb_prerequis > 0 )
+                    {
+                        db_formation *tmpdb = dbf;
+                        noeud_db_formation *tmp_prereq_ndbf = tmpdb->head;
+                        while( tmp_prereq_ndbf != NULL )
+                        {
+                            formation *tmp_prereq = tmp_prereq_ndbf->f;
+                            int k;
+                            for( k = 0; k < tmp->nb_prerequis; k++ )
+                            {
+                                if( tmp->prerequis[k] == tmp_prereq->id )
+                                {
+                                    fprintf( fres, "%s ", tmp_prereq->nom );
+                                }
+                            }
+                            tmp_prereq_ndbf = tmp_prereq_ndbf->next;
+                        }
+                        fprintf( fres, "\n\n" );
+                    }
+                    else
+                    {
+                        fprintf( fres, "Aucun\n\n" );
+                    }
+                }
+            }
+            tmpndbf = tmpndbf->next;
+        }
+    }
+    fclose( fres );
+}
+
 /*
  * Menu permettant à l'utilisateur d'intéragir avec le programme
  */
@@ -1607,9 +1672,8 @@ int menu( db_formation *f, db_personne *p )
                     tmpndbf = tmpdbf->head;
                     fclose( fdat_f );
                     fclose( fdat_p );
+                    ecrire_planning( tmpdbf );
                     printf( "Changements sauvegardes!\n" );
-                    printf( "Voici le planning complet après les changements\n" );
-                    afficher_db_formation( tmpdbf );
                 }
                 printf( "Fermeture du programme...\n" );
                 printf( "Au revoir!\n" );

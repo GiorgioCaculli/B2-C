@@ -1111,7 +1111,7 @@ Cette fonction parcourt l'entièreté de la base de données \texttt{db\_personn
 
 Cette fonction sert à afficher les informations de base qui caractérisent une \textbf{formation}. De manière générale, son identifiant, son nom, son prix, ainsi que les personnes qui y participent.
 
-\begin{lstlisting}[firstnumber=461]
+\begin{lstlisting}[firstnumber=559]
   void afficher_db_formation( db_formation *dbf );
 \end{lstlisting}
 
@@ -1147,7 +1147,7 @@ Cette fonction sert à initialiser un pointeur \texttt{noeud\_formation *nf} qui
 \item On déclare la tête comme étant le n\oe{}ud temporaire que l'on a initialisé.
 \end{enumerate}
 
-\begin{lstlisting}[firstnumber=559]
+\begin{lstlisting}[firstnumber=461]
   void ajouter_db_formation( db_formation *db, formation *f );
 \end{lstlisting}
 
@@ -1239,47 +1239,52 @@ Cette fonction renvoie \texttt{NULL} si une formation avec un nom spécifique n'
 
 \subsubsection{Fonctions qui affiches les différentes parties du menu interactif}
 les fonctions ci-dessous ne servent qu'à affichier les différentes parties du menu interactif. Elle ne font aucune manipulation particulière autre qu'affichier du texte. Le \texttt{main()} est la seule fonction qui lit les données et les initialise dans la base de données avant que le menu soit affiché.
-\begin{lstlisting}
+
+\begin{lstlisting}[firstnumber=618]
   void menu_creer_formation( db_formation *f );
 \end{lstlisting}
 
-\begin{lstlisting}
+\begin{lstlisting}[firstnumber=786]
   void menu_creer_personne( db_personne *p );
 \end{lstlisting}
 
-\begin{lstlisting}
+\begin{lstlisting}[firstnumber=939]
   int menu_creer( db_formation *f, db_personne *p );
 \end{lstlisting}
 
-\begin{lstlisting}
+\begin{lstlisting}[firstnumber=976]
   void menu_ajouter_formation( db_formation *f, db_personne *p );
 \end{lstlisting}
 
-\begin{lstlisting}
+\begin{lstlisting}[firstnumber=1089]
   void menu_supprimer_personne( db_formation *dbf, db_personne *dbp );
 \end{lstlisting}
 
-\begin{lstlisting}
+\begin{lstlisting}[firstnumber=1168]
   void menu_supprimer_formation( db_formation *dbf, db_personne *dbp );
 \end{lstlisting}
 
-\begin{lstlisting}
+\begin{lstlisting}[firstnumber=1257]
   int menu_supprimer_personne_de_formation( db_formation *dbf );
 \end{lstlisting}
 
-\begin{lstlisting}
+\begin{lstlisting}[firstnumber=1382]
   int menu_supprimer( db_formation *dbf, db_personne *dbp );
 \end{lstlisting}
 
-\begin{lstlisting}
+\begin{lstlisting}[firstnumber=1422]
   int menu_affichage( db_formation *f, db_personne *p );
 \end{lstlisting}
 
-\begin{lstlisting}
+\begin{lstlisting}[firstnumber=1475]
+  int ecrire_planning( db_formation *dbf );
+\end{lstlisting}
+
+\begin{lstlisting}[firstnumber=1558]
   int menu( db_formation *f, db_personne *p );
 \end{lstlisting}
 
-\begin{lstlisting}
+\begin{lstlisting}[firstnumber=1690]
   int main( void );
 \end{lstlisting}
 

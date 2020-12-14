@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/VoidLinux) (preloaded format=pdflatex 2020.11.28)  14 DEC 2020 16:10
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/VoidLinux) (preloaded format=pdflatex 2020.11.28)  14 DEC 2020 23:54
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1214,20 +1214,20 @@ cmtt/m/n/10.95 noeud[]db[]formation *head \OT1/cmr/m/n/10.95 dans la struc-ture
  []
 
 [27] [28] [29] [30] (./CaculliTyranowski.gls) [31]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1289.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1289.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1294.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1294.
  (./CaculliTyranowski.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1289.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1289.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1294.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1294.
 
 Package rerunfilecheck Info: File `CaculliTyranowski.out' has not changed.
 (rerunfilecheck)             Checksum: 66D48D07C7F249E465A66C73A88CFC9A;3125.
  ) 
 Here is how much of TeX's memory you used:
- 29630 strings out of 480478
- 546168 string characters out of 5905926
+ 29634 strings out of 480478
+ 546269 string characters out of 5905926
  1265055 words of memory out of 5000000
- 44547 multiletter control sequences out of 15000+600000
+ 44549 multiletter control sequences out of 15000+600000
  539578 words of font info for 50 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  60i,9n,72p,1018b,1995s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1240,10 +1240,10 @@ usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texmf
 -dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-dist/fonts/type
 1/public/amsfonts/cm/cmtt10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfo
 nts/cm/cmtt8.pfb>
-Output written on CaculliTyranowski.pdf (31 pages, 308909 bytes).
+Output written on CaculliTyranowski.pdf (31 pages, 308886 bytes).
 PDF statistics:
- 1025 PDF objects out of 1200 (max. 8388607)
- 935 compressed objects within 10 object streams
- 548 named destinations out of 1000 (max. 500000)
+ 1027 PDF objects out of 1200 (max. 8388607)
+ 937 compressed objects within 10 object streams
+ 550 named destinations out of 1000 (max. 500000)
  519 words of extra memory for PDF output out of 10000 (max. 10000000)
 
