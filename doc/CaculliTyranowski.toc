@@ -2,8 +2,8 @@
 \contentsline {section}{\numberline {1}Introduction}{3}{section.1}%
 \contentsline {subsection}{\numberline {1.1}Le langage C}{3}{subsection.1.1}%
 \contentsline {subsection}{\numberline {1.2}Fonctions générales utilisées}{3}{subsection.1.2}%
-\contentsline {subsubsection}{\numberline {1.2.1}Qu'est-ce l'allocation dynamique de mémoire?}{5}{subsubsection.1.2.1}%
-\contentsline {subsubsection}{\numberline {1.2.2}Qu'est-ce \texttt {calloc()} ?}{5}{subsubsection.1.2.2}%
+\contentsline {subsubsection}{\numberline {1.2.1}Qu'est-ce l'allocation dynamique de mémoire?}{6}{subsubsection.1.2.1}%
+\contentsline {subsubsection}{\numberline {1.2.2}Qu'est-ce \texttt {calloc()} ?}{6}{subsubsection.1.2.2}%
 \contentsline {subsubsection}{\numberline {1.2.3}Qu'est-ce \texttt {malloc()} ?}{6}{subsubsection.1.2.3}%
 \contentsline {subsubsection}{\numberline {1.2.4}Différences entre \texttt {calloc()} et \texttt {malloc()}}{6}{subsubsection.1.2.4}%
 \contentsline {section}{\numberline {2}Listes chaînées}{7}{section.2}%
