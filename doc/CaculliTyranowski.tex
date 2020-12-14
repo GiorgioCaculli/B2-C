@@ -362,7 +362,7 @@ Il existe trois types de listes chaînées:
 \begin{itemize}
 \item La \textbf{liste chaînée linéaire} : Une liste chaînée que ne peut être parcourue dans une seule direction.
 \item La \textbf{double liste chaînée} : Une liste chaînée qui peut être parcourue en deux directions: à partir de la tête ou à partir de la queue.
-  \item La \textbf{liste chaînée circulaire} : Une liste chaînée où le premier n\oe{}ud fait toujours référence au dernier n\oe{}ud.
+\item La \textbf{liste chaînée circulaire} : Une liste chaînée où le premier n\oe{}ud fait toujours référence au dernier n\oe{}ud.
 \end{itemize}
 
 Dans le cas de notre projet, on a travaillé avec la liste chaînée linéaire.\\
@@ -618,12 +618,12 @@ Voici comment la suppression interagit avec la liste chaînée et le nombre 10:
   \end{enumerate}
 \item Est-ce que la donnée \texttt{data} équivaut à la donnée \texttt{tete->donnee} ?
   \begin{enumerate}
-    \item Oui car \texttt{tete->donnee = 10} et \texttt{data = 10}.
+  \item Oui car \texttt{tete->donnee = 10} et \texttt{data = 10}.
   \end{enumerate}
 \item On fait un backup de \texttt{tete->suivant} dans un n\oe{}ud temporaire.
 \item On libére le n\oe{}ud \texttt{tete}.
 \item On attribue à \texttt{tete} le n\oe{}ud temporaire.\\
-A ce stade de la modification, la liste ressemble à ça:\\\\
+  A ce stade de la modification, la liste ressemble à ça:\\\\
   \begin{tikzpicture}[list/.style={
         rectangle split,
         rectangle split parts=2,
@@ -654,7 +654,7 @@ Voici comment la suppression interagit avec la liste chaînée et le nombre 42:
   \end{enumerate}
 \item Est-ce que la donnée \texttt{data} équivaut à la donnée \texttt{tete->donnee} ?
   \begin{enumerate}
-    \item Non car \texttt{tete->donnee = 12} et \texttt{data = 42}.
+  \item Non car \texttt{tete->donnee = 12} et \texttt{data = 42}.
   \end{enumerate}
 \item On commence à parcourir toute la liste tant que \texttt{tete != NULL}.
 \item On vérifie si \texttt{tete->suivant->donnee == data}
@@ -664,7 +664,7 @@ Voici comment la suppression interagit avec la liste chaînée et le nombre 42:
 \item Si c'est le cas, on fait un backup du suivant du suivant dans un n\oe{}ud temporaire.
 \item On libère \texttt{tete->suivant}.
 \item On attribue à \texttt{tete->suivant} le n\oe{}ud \texttt{tete->suivant->suivant} (on pivote la liste vers la gauche et on libère l'espace mémoire qui était occupée par le 42).\\
-A ce stade de la modification, la liste ressemble à ça:\\\\
+  A ce stade de la modification, la liste ressemble à ça:\\\\
   \begin{tikzpicture}[list/.style={
         rectangle split,
         rectangle split parts=2,
@@ -705,31 +705,31 @@ Généralement, le code en langage \texttt{C} ressemblerait à ça:
 \end{lstlisting}
 
 Si on se base sur la liste chaînée:
-  \begin{tikzpicture}[list/.style={
-        rectangle split,
-        rectangle split parts=2,
-        draw,
-        rectangle split horizontal
-      },
-      >=stealth,
-      start chain]
-    \node[list,on chain] (A) {12};
-    \node[list,on chain] (B) {99};
-    \node[list,on chain] (C) {37};
-    \node[on chain,draw,inner sep=6pt] (D) {};
-    \draw (D.north east) -- (D.south west);
-    \draw (D.north west) -- (D.south east);
-    \draw[*->] let \p1 = (A.two), \p2 = (A.center) in (\x1,\y2) -- (B);
-    \draw[*->] let \p1 = (B.two), \p2 = (B.center) in (\x1,\y2) -- (C);
-    \draw[*->] let \p1 = (C.two), \p2 = (C.center) in (\x1,\y2) -- (D);
-  \end{tikzpicture}
+\begin{tikzpicture}[list/.style={
+      rectangle split,
+      rectangle split parts=2,
+      draw,
+      rectangle split horizontal
+    },
+    >=stealth,
+    start chain]
+  \node[list,on chain] (A) {12};
+  \node[list,on chain] (B) {99};
+  \node[list,on chain] (C) {37};
+  \node[on chain,draw,inner sep=6pt] (D) {};
+  \draw (D.north east) -- (D.south west);
+  \draw (D.north west) -- (D.south east);
+  \draw[*->] let \p1 = (A.two), \p2 = (A.center) in (\x1,\y2) -- (B);
+  \draw[*->] let \p1 = (B.two), \p2 = (B.center) in (\x1,\y2) -- (C);
+  \draw[*->] let \p1 = (C.two), \p2 = (C.center) in (\x1,\y2) -- (D);
+\end{tikzpicture}
 
 Ce qui se passe dans le code est la manipulation suivante:
 \begin{enumerate}
 \item On vérifie si \texttt{tete} est différent de \texttt{NULL}.
 \item Si c'est le cas, on affiche dans la console la valeur \texttt{tete->donnee}
 \item On continue à parcourir la liste, donc \texttt{tete} devient \texttt{tete->suivant}
-  \item Même procédure tant que \texttt{tete != NULL}.
+\item Même procédure tant que \texttt{tete != NULL}.
 \end{enumerate}
 
 Donc, l'affichage sera: 12 99 37 dans la console.
@@ -802,7 +802,7 @@ L'ajout d'une personne se passe de la manière suivante:
 \item Il faut insérer son statut (étudiant ou formateur), "f" pour formateur, "e" pour étudiant.
 \item Il faut insérer le nombre de jours où le formateur est indisponible.
 \item Dépendamment du nombre de jour, il faudra attribuer le jour corréspondant à ceux dans la liste ( 1 - lundi, 2 - mardi, etc\ldots)
-  \item Il faut confirmer par "o" ou "n" (oui ou non) si l'on souhaite effectivement ajouter la nouvelle personne dans la base de données.
+\item Il faut confirmer par "o" ou "n" (oui ou non) si l'on souhaite effectivement ajouter la nouvelle personne dans la base de données.
 \end{enumerate}
 
 \newpage
@@ -888,7 +888,7 @@ Voici à quoi ressemble l'interface par lequel il est possible de faire des supp
 \begin{enumerate}
 \item Il est possible de supprimer entièrement une personne de la base de données. Par conséquent, la personne en question disparaîtra des cours aussi.
 \item Il est possible de supprimer entièrement une formation de la base de données. Par conséquents, les gens qui particiapaient à la formation en question ne pourront plus y participer.
-  \item Il est possible de supprimer une personne précise d'une formation précise, bien la formation que la personne apparaîtront dans leurs respectives bases de données, mais ils ne seront plus liés ensemble.
+\item Il est possible de supprimer une personne précise d'une formation précise, bien la formation que la personne apparaîtront dans leurs respectives bases de données, mais ils ne seront plus liés ensemble.
 \end{enumerate}
 
 \subsubsection{Suppression d'une personne}
