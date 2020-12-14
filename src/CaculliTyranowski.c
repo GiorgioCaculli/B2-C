@@ -88,7 +88,7 @@ typedef struct noeud_formation
  * float durees[10] : Les différentes durées du cours lors de la semaine.
  * int nb_prerequis : Le nombre de prérequis pour avoir accès à cette formation.
  * int prerequis[10] : Vecteur contenant les identifiants des formations qui seraient des prérequis.
- * noeud_formation *head} : Étant donné qu'une formation stocke des personnes,
+ * noeud_formation *head : Étant donné qu'une formation stocke des personnes,
  * elle-même est une liste chaînée qui stockera un nombre indéterminé de participants.
  */
 typedef struct formation
@@ -198,6 +198,21 @@ void ajouter_db_personne( db_personne *db, personne *p )
     db->head = ndb;
 }
 
+/*
+ * Cette fonction sert à supprimer une personne de la base de données à partir de son identifiant.
+ * La démarche faite dans cette fonction est la suivant:
+ * On vérife que la tête de la base de données dbp->head ne soit pas NULL, si oui, on arrête la fonction.
+ * On vérifie si le premier élément de la liste correspond à l'id de la personne que l'on souhaite supprimer.
+ * Si oui:
+ * On crée un noeud temporaire qui stockera la personne suivante dans la liste.
+ * On libére l'espace mémoire occupé par head avec la fonction free(dbp->head).
+ * On attribue à dbp->head le noeud temporaire que l'on avait créé.
+ * On arrête la fonction.
+ * Sinon, on parcourt l'entièreté de la liste jusqu'au moment où l'on trouve la personne qui a le même id que
+ * l'id en paramètre.
+ * Si on le trouve, on pivote l'élément qui suit vers l'élément que l'on vient de supprimer.
+ * On arrête la fonction, si réussite, on obtient 1, si pas, on obtient 0.
+ */
 int supprimer_db_personne( db_personne *dbp, int id )
 {
     noeud_db_personne *ndbp = dbp->head;
@@ -235,6 +250,10 @@ int supprimer_db_personne( db_personne *dbp, int id )
     return 0;
 }
 
+/*
+ * Cette fonction parcourt l'entièreté de la base de données db_personne *db.Tant que la tête n'est pas NULL,
+ * on affichera les informations que l'on souhaite afficher de chaque personne présente dans la base de données.
+ */
 void afficher_db_personne( db_personne *db )
 {
     db_personne *tmpdb = db;
@@ -248,6 +267,11 @@ void afficher_db_personne( db_personne *db )
     }
 }
 
+/*
+ * Cette fonction renvoie NULL si une formation avec un nom spécifique n'existe pas dans
+ * la base de données db_formation *dbf.
+ * Sinon, la fonction retourne la formation trouvée.
+ */
 personne *get_personne( db_personne *db, char nom[], char prenom[], int formateur )
 {
     db_personne *tmpdb = db;
@@ -271,11 +295,10 @@ personne *get_personne( db_personne *db, char nom[], char prenom[], int formateu
 /*****************************************************************************/
 /*                                     FORMATION                             */
 /*
- * Création de la formation
- * Ici on crée un pointeur pour la formation qui va contenir:
- * Le nom de la formation
- * Son prix
- * Un enchaînement de noeuds de formation
+ * Cette fonction sert à créer un pointeur qui permettra d'initialiser les différentes informations présentes dans
+ * la structure formation.
+ * Lors de l'initialisation d'une formation, on n'aura besoin que du nom de la formation et de son prix.
+ * Le reste des informations est manipulé par la suite lors des différentes interactions.
  */
 formation *creer_formation( char nom[], float prix )
 {
@@ -285,7 +308,17 @@ formation *creer_formation( char nom[], float prix )
     tmp->head = NULL;
     return tmp;
 }
-
+/*
+ * Cette fonction sert à initialiser un pointeur noeud_formation *nf qui stockera personne *p qui participera
+ * dans formation *f. Ici,
+ * l'ajout dans la liste chaînée à lieu par le mécanisme suivant:
+ * On initialise le noeud temporaire que l'on ajoutera dans la formation.
+ * On associe p au pointeur p présent dans la structure noeud_formation.
+ * On initialise le prochain noeud de la liste *next à NULL.
+ * Si la tête *head de la formation est NULL, alors la tête devient le nouveau noeud. On arrête la fonction d'ajout là.
+ * Sinon, on fait une copie de la tête dans le noeud *next que l'on avait initialisé à NULL.
+ * On déclare la tête comme étant le noeud temporaire que l'on a initialisé.
+ */
 int ajouter_formation( formation *f, personne *p )
 {
     noeud_formation *nf = ( noeud_formation * ) calloc( sizeof( noeud_formation ), sizeof( noeud_formation) );
@@ -310,6 +343,21 @@ int ajouter_formation( formation *f, personne *p )
     return 1;
 }
 
+/*
+ * Cette fonction sert à supprimer une personne de la fonction à partir de son identifiant.
+ * La démarche faite dans cette fonction est la suivant:
+ * On vérife que la tête de la fonction f->head ne soit pas NULL, si oui, on arrête la fonction.
+ * On vérifie si le premier élément de la liste correspond à l'\texttt{id} de la personne que l'on souhaite supprimer.
+ * Si oui:
+ * On crée un noeud temporaire qui stockera la personne suivante dans la liste.
+ * On libére l'espace mémoire occupé par head avec la fonction free(f->head).
+ * On attribue à f->head le noeud temporaire que l'on avait créé.
+ * On arrête la fonction.
+ * Sinon, on parcourt l'entièreté de la liste jusqu'au moment où l'on trouve la personne
+ * qui a le même id que l'id en paramètre.
+ * Si on le trouve, on pivote l'élément qui suit vers l'élément que l'on vient de supprimer.
+ * On arrête la fonction, si réussite, on obtient 1, si pas, on obtient 0.
+ */
 int supprimer_personne_de_formation( formation *f, int id )
 {
     formation *tmpf = f;
@@ -353,6 +401,10 @@ int supprimer_personne_de_formation( formation *f, int id )
     return 0;
 }
 
+/*
+ * Cette fonction sert à afficher les informations de base qui caractérisent une formation.
+ * De manière générale, son identifiant, son nom, son prix, ainsi que les personnes qui y participent.
+ */
 void afficher_formation( formation *f )
 {
     formation *tmp = f;
@@ -383,6 +435,10 @@ void afficher_formation( formation *f )
     printf( "\n" );
 }
 
+/*
+ * Cette fonction sert à initialiser le pointer noeud_db_formation *head dans la structure db_formation à NULL,
+ * afin que l'on puisse commencer à faire des manipulations avec cette structure.
+ */
 db_formation *creer_db_formation()
 {
     db_formation *db = ( db_formation * ) calloc( sizeof( db_formation ), sizeof( db_formation ) );
@@ -390,6 +446,18 @@ db_formation *creer_db_formation()
     return db;
 }
 
+/*
+ * Cette fonction sert à initialiser un pointeur noeud_db_formation *ndb qui stockera formation *f dans
+ * la base de données db_formation *db.
+ * Ici, l'ajout dans la liste chaînée à lieu par le mécanisme suivant:
+ * On initialise le noeud temporaire que l'on ajoutera à la base de données.
+ * On associe f au pointeur f présent dans la structure noeud_db_formation.
+ * On initialise le prochain noeud de la liste *next à NULL.
+ * Si la tête *head de la base de donnée est NULL, alors la tête devient le nouveau noeud.
+ * On arrête la fonction d'ajout là.
+ * Sinon, on fait une copie de la tête dans le noeud *next que l'on avait initialisé à NULL.
+ * On déclare la tête comme étant le noeud temporaire que l'on a initialisé.
+ */
 void ajouter_db_formation( db_formation *db, formation *f )
 {
     noeud_db_formation *ndb = ( noeud_db_formation * ) calloc( sizeof( noeud_db_formation ), sizeof( noeud_db_formation ) );
@@ -404,6 +472,20 @@ void ajouter_db_formation( db_formation *db, formation *f )
     db->head = ndb;
 }
 
+/*
+ * Cette fonction sert à supprimer une formation de la base de données à partir de son identifiant.
+ * La démarche faite dans cette fonction est la suivant:
+ * On vérife que la tête de la base de données dbf->head ne soit pas NULL, si oui, on arrête la fonction.
+ * On vérifie si le premier élément de la liste correspond à l'id de la formation que l'on souhaite supprimer.
+ * Si oui:
+ * On crée un noeud temporaire qui stockera la formation suivante dans la liste.
+ * On libére l'espace mémoire occupé par head avec la fonction \texttt{free(dbf->head)}.
+ * On attribue à \texttt{dbf->head} le n\oe{}ud temporaire que l'on avait créé.
+ * On arrête la fonction.
+ * Sinon, on parcourt l'entièreté de la liste jusqu'au moment où l'on trouve la formation qui a le même \texttt{id} que l'\texttt{id} en paramètre.
+ * Si on le trouve, on pivote l'élément qui suit vers l'élément que l'on vient de supprimer.
+ * On arrête la fonction, si réussite, on obtient 1, si pas, on obtient 0.
+ */
 int supprimer_db_formation( db_formation *dbf, int id )
 {
     noeud_db_formation *tmp = NULL;

@@ -5,7 +5,7 @@
 \usepackage[french]{babel}
 \usepackage{geometry}
 \usepackage{glossaries}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
 \usepackage{lstautogobble}
@@ -496,13 +496,14 @@ Cette structure suit la même logique que la structure \texttt{noeud\_db\_person
 
 Cette structure aussi suit la même logique que la structure \texttt{db\_formation}. Elle sert de tête pour la la liste chaînée et c'est à partir de cette structure-ci que l'on démarrera les différentes interactions avec la base de données des formations.
 \begin{itemize}
-  \item \texttt{noeud\_db\_formation *head} : La tête de la liste chaînée qui stockera les différentes formations.
+\item \texttt{noeud\_db\_formation *head} : La tête de la liste chaînée qui stockera les différentes formations.
 \end{itemize}
 
 Pourquoi avons-nous choisi cette approche ? Principalement car on ne voulait pas stocker les différentes personnes et les différentes formations dans des vecteurs. On ne voulait pas qu'il y ait un nombre prédéfini de personnes et un nombre prédéfini de formations, on s'est donc fiés aux listes chaînées. Et c'est pourquoi maintenant il est possible de stocker autant de formations que la \acrshort{ram} nous permet ainsi que de stocker autant de formations que la \acrshort{ram} nous permet.
 
 \newpage
 \subsection{Fonctions}
+\subsubsection{Fonctions qui créent des n\oe{}ds}
 Voici les différentes fonctions que l'on a du créer pour le bon fonctionnement du programme:
 \begin{lstlisting}[firstnumber=144]
   personne *creer_personne( char nom[], char prenom[], int formateur );
@@ -510,17 +511,51 @@ Voici les différentes fonctions que l'on a du créer pour le bon fonctionnement
 
 Cette fonction sert à créer un pointeur qui permettra d'initialiser les différentes informations présentes dans la structure \texttt{personne}. Lors de l'initialisation d'une personne, on n'aura besoin que du nom de famille de la personne, son prenom et s'il/elle est un formateur ou pas. Le reste des informations est manipulé par la suite lors des différentes interactions.
 
-\begin{lstlisting}[firstnumber=157]
-  void afficher_personne( personne *p );
-\end{lstlisting}
-
-Cette fonction sert à afficher les informations de base qui caractérisent une personne. De manière générale, son identifiant, son nom de famille, son prénom et s'il est formateur ou étudiant.
-
 \begin{lstlisting}[firstnumber=168]
   db_personne *creer_db_personne();
 \end{lstlisting}
 
 Cette fonction sert à initialiser le pointer \texttt{noeud\_db\_personne *head} dans la structure \texttt{db\_personne} à \texttt{NULL}, afin que l'on puisse commencer à faire des manipulations avec cette structure.
+
+\begin{lstlisting}[firstnumber=303]
+  formation *creer_formation( char nom[], float prix );
+\end{lstlisting}
+
+Cette fonction sert à créer un pointeur qui permettra d'initialiser les différentes informations présentes dans la structure \texttt{formation}. Lors de l'initialisation d'une formation, on n'aura besoin que du nom de la formation et de son prix. Le reste des informations est manipulé par la suite lors des différentes interactions.
+
+\begin{lstlisting}[firstnumber=442]
+  db_formation *creer_db_formation();
+\end{lstlisting}
+
+Cette fonction sert à initialiser le pointer \texttt{noeud\_db\_formation *head} dans la structure \texttt{db\_formation} à \texttt{NULL}, afin que l'on puisse commencer à faire des manipulations avec cette structure.
+
+\subsubsection{Fonctions qui affichent des listes chaînées}
+
+\begin{lstlisting}[firstnumber=157]
+  void afficher_personne( personne *p );
+\end{lstlisting}
+
+Cette fonction sert à afficher les informations de base qui caractérisent une \textbf{personne}. De manière générale, son identifiant, son nom de famille, son prénom et s'il est formateur ou étudiant.
+
+\begin{lstlisting}[firstnumber=257]
+  void afficher_db_personne( db_personne *db );
+\end{lstlisting}
+
+Cette fonction parcourt l'entièreté de la base de données \texttt{db\_personne *db}. Tant que la tête n'est pas \texttt{NULL}, on affichera les informations que l'on souhaite afficher de chaque personne présente dans la base de données.
+
+\begin{lstlisting}[firstnumber=408]
+  void afficher_formation( formation *f );
+\end{lstlisting}
+
+Cette fonction sert à afficher les informations de base qui caractérisent une \textbf{formation}. De manière générale, son identifiant, son nom, son prix, ainsi que les personnes qui y participent.
+
+\begin{lstlisting}
+  void afficher_db_formation( db_formation *dbf );
+\end{lstlisting}
+
+Cette fonction parcourt l'entièreté de la base de données \texttt{db\_formation *dbf}. Tant que la tête n'est pas \texttt{NULL}, on affichera les informations que l'on souhaite afficher de chaque formation présente dans la base de données.
+
+\subsubsection{Fonctions qui ajoutent un n\oe{}ud à une liste chaînée}
 
 \begin{lstlisting}[firstnumber=187]
   void ajouter_db_personne( db_personne *db, personne *p );
@@ -531,12 +566,42 @@ Cette fonction sert à initialiser un pointeur \texttt{noeud\_db\_personne *ndb}
 \item On initialise le noeud temporaire que l'on ajoutera à la base de données.
 \item On associe \texttt{p} au pointeur \texttt{p} présent dans la structure \texttt{noeud\_db\_personne}.
 \item On initialise le prochain n\oe{}ud de la liste \texttt{*next} à NULL.
-\item Si la tête \texttt{*head} de la base de donnée est \texttt{NULL}, alors la tête devient le nouveau noeud. On arrête la fonction d'ajout là.
+\item Si la tête \texttt{*head} de la base de donnée est \texttt{NULL}, alors la tête devient le nouveau n\oe{}ud. On arrête la fonction d'ajout là.
 \item Sinon, on fait une copie de la tête dans le n\oe{}ud \texttt{*next} que l'on avait initialisé à \texttt{NULL}.
 \item On déclare la tête comme étant le n\oe{}ud temporaire que l'on a initialisé.
 \end{enumerate}
 
-\begin{lstlisting}
+\begin{lstlisting}[firstnumber=322]
+  int ajouter_formation( formation *f, personne *p );
+\end{lstlisting}
+
+Cette fonction sert à initialiser un pointeur \texttt{noeud\_formation *nf} qui stockera \texttt{personne *p} qui participera dans \texttt{formation *f}. Ici, l'ajout dans la liste chaînée à lieu par le mécanisme suivant:
+\begin{enumerate}
+\item On initialise le noeud temporaire que l'on ajoutera dans la formation.
+\item On associe \texttt{p} au pointeur \texttt{p} présent dans la structure \texttt{noeud\_formation}.
+\item On initialise le prochain n\oe{}ud de la liste \texttt{*next} à NULL.
+\item Si la tête \texttt{*head} de la formation est \texttt{NULL}, alors la tête devient le nouveau n\oe{}ud. On arrête la fonction d'ajout là.
+\item Sinon, on fait une copie de la tête dans le n\oe{}ud \texttt{*next} que l'on avait initialisé à \texttt{NULL}.
+\item On déclare la tête comme étant le n\oe{}ud temporaire que l'on a initialisé.
+\end{enumerate}
+
+\begin{lstlisting}[firstnumber=461]
+  void ajouter_db_formation( db_formation *db, formation *f );
+\end{lstlisting}
+
+Cette fonction sert à initialiser un pointeur \texttt{noeud\_db\_formation *ndb} qui stockera \texttt{formation *f} dans la base de données \texttt{db\_formation *db}. Ici, l'ajout dans la liste chaînée à lieu par le mécanisme suivant:
+\begin{enumerate}
+\item On initialise le noeud temporaire que l'on ajoutera à la base de données.
+\item On associe \texttt{f} au pointeur \texttt{f} présent dans la structure \texttt{noeud\_db\_formation}.
+\item On initialise le prochain n\oe{}ud de la liste \texttt{*next} à NULL.
+\item Si la tête \texttt{*head} de la base de donnée est \texttt{NULL}, alors la tête devient le nouveau n\oe{}ud. On arrête la fonction d'ajout là.
+\item Sinon, on fait une copie de la tête dans le n\oe{}ud \texttt{*next} que l'on avait initialisé à \texttt{NULL}.
+\item On déclare la tête comme étant le n\oe{}ud temporaire que l'on a initialisé.
+\end{enumerate}
+
+\subsubsection{Fonctions qui suppriment un n\oe{}ud d'une liste chaînée}
+
+\begin{lstlisting}[firstnumber=216]
   int supprimer_db_personne( db_personne *dbp, int id );
 \end{lstlisting}
 
@@ -544,53 +609,74 @@ Cette fonction sert à supprimer une personne de la base de données à partir d
 \begin{enumerate}
 \item On vérife que la tête de la base de données \texttt{dbp->head} ne soit pas \texttt{NULL}, si oui, on arrête la fonction.
 \item On vérifie si le premier élément de la liste correspond à l'\texttt{id} de la personne que l'on souhaite supprimer.
-  \item Si oui, on crée un n\oe{}ud temporaire qui stockera la personne suivante dans la liste.
+\item Si oui:
+  \begin{enumerate}
+  \item On crée un n\oe{}ud temporaire qui stockera la personne suivante dans la liste.
+  \item On libére l'espace mémoire occupé par head avec la fonction \texttt{free(dbp->head)}.
+  \item On attribue à \texttt{dbp->head} le n\oe{}ud temporaire que l'on avait créé.
+  \item On arrête la fonction.
+  \end{enumerate}
+\item Sinon, on parcourt l'entièreté de la liste jusqu'au moment où l'on trouve la personne qui a le même \texttt{id} que l'\texttt{id} en paramètre.
+\item Si on le trouve, on pivote l'élément qui suit vers l'élément que l'on vient de supprimer.
+\item On arrête la fonction, si réussite, on obtient 1, si pas, on obtient 0.
 \end{enumerate}
 
-\begin{lstlisting}
-  void afficher_db_personne( db_personne *db );
-\end{lstlisting}
-
-\begin{lstlisting}
-  personne *get_personne( db_personne *db, char nom[], char prenom[], int formateur );
-\end{lstlisting}
-
-\begin{lstlisting}
-  formation *creer_formation( char nom[], float prix );
-\end{lstlisting}
-
-\begin{lstlisting}
-  int ajouter_formation( formation *f, personne *p );
-\end{lstlisting}
-
-\begin{lstlisting}
+\begin{lstlisting}[firstnumber=361]
   int supprimer_personne_de_formation( formation *f, int id );
 \end{lstlisting}
 
-\begin{lstlisting}
-  void afficher_formation( formation *f );
-\end{lstlisting}
-
-\begin{lstlisting}
-  db_formation *creer_db_formation();
-\end{lstlisting}
-
-\begin{lstlisting}
-  void ajouter_db_formation( db_formation *db, formation *f );
-\end{lstlisting}
+Cette fonction sert à supprimer une personne de la fonction à partir de son identifiant. La démarche faite dans cette fonction est la suivant:
+\begin{enumerate}
+\item On vérife que la tête de la fonction \texttt{f->head} ne soit pas \texttt{NULL}, si oui, on arrête la fonction.
+\item On vérifie si le premier élément de la liste correspond à l'\texttt{id} de la personne que l'on souhaite supprimer.
+\item Si oui:
+  \begin{enumerate}
+  \item On crée un n\oe{}ud temporaire qui stockera la personne suivante dans la liste.
+  \item On libére l'espace mémoire occupé par head avec la fonction \texttt{free(f->head)}.
+  \item On attribue à \texttt{f->head} le n\oe{}ud temporaire que l'on avait créé.
+  \item On arrête la fonction.
+  \end{enumerate}
+\item Sinon, on parcourt l'entièreté de la liste jusqu'au moment où l'on trouve la personne qui a le même \texttt{id} que l'\texttt{id} en paramètre.
+\item Si on le trouve, on pivote l'élément qui suit vers l'élément que l'on vient de supprimer.
+\item On arrête la fonction, si réussite, on obtient 1, si pas, on obtient 0.
+\end{enumerate}
 
 \begin{lstlisting}
   int supprimer_db_formation( db_formation *dbf, int id );
 \end{lstlisting}
 
+Cette fonction sert à supprimer une formation de la base de données à partir de son identifiant. La démarche faite dans cette fonction est la suivant:
+\begin{enumerate}
+\item On vérife que la tête de la base de données \texttt{dbf->head} ne soit pas \texttt{NULL}, si oui, on arrête la fonction.
+\item On vérifie si le premier élément de la liste correspond à l'\texttt{id} de la formation que l'on souhaite supprimer.
+\item Si oui:
+  \begin{enumerate}
+  \item On crée un n\oe{}ud temporaire qui stockera la formation suivante dans la liste.
+  \item On libére l'espace mémoire occupé par head avec la fonction \texttt{free(dbf->head)}.
+  \item On attribue à \texttt{dbf->head} le n\oe{}ud temporaire que l'on avait créé.
+  \item On arrête la fonction.
+  \end{enumerate}
+\item Sinon, on parcourt l'entièreté de la liste jusqu'au moment où l'on trouve la formation qui a le même \texttt{id} que l'\texttt{id} en paramètre.
+\item Si on le trouve, on pivote l'élément qui suit vers l'élément que l'on vient de supprimer.
+\item On arrête la fonction, si réussite, on obtient 1, si pas, on obtient 0.
+\end{enumerate}
+
+\subsubsection{Fonctions qui servent de \texttt{getter()}}
+
 \begin{lstlisting}
+  personne *get_personne( db_personne *db, char nom[], char prenom[], int formateur );
+\end{lstlisting}
+
+Cette fonction renvoie \texttt{NULL} si une personne d'un nom spécifique, d'un prénom spécifique, et s'il est formateur ou étudiant n'existe pas dans la base de données \texttt{db\_personne *db}. Sinon, la fonction retourne la personne trouvée.
+
+\begin{lstlisting}[firstnumber=275]
   formation *get_formation( db_formation *dbf, char nom_formation[] );
 \end{lstlisting}
 
-\begin{lstlisting}
-  void afficher_db_formation( db_formation *dbf );
-\end{lstlisting}
+Cette fonction renvoie \texttt{NULL} si une formation avec un nom spécifique n'existe pas dans la base de données \texttt{db\_formation *dbf}. Sinon, la fonction retourne la formation trouvée.
 
+\subsubsection{Fonctions qui affiches les différentes parties du menu interactif}
+les fonctions ci-dessous ne servent qu'à affichier les différentes parties du menu interactif. Elle ne font aucune manipulation particulière autre qu'affichier du texte.
 \begin{lstlisting}
   void menu_creer_formation( db_formation *f );
 \end{lstlisting}
