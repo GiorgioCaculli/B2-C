@@ -549,7 +549,7 @@ Cette fonction parcourt l'entièreté de la base de données \texttt{db\_personn
 
 Cette fonction sert à afficher les informations de base qui caractérisent une \textbf{formation}. De manière générale, son identifiant, son nom, son prix, ainsi que les personnes qui y participent.
 
-\begin{lstlisting}
+\begin{lstlisting}[firstnumber=461]
   void afficher_db_formation( db_formation *dbf );
 \end{lstlisting}
 
@@ -585,7 +585,7 @@ Cette fonction sert à initialiser un pointeur \texttt{noeud\_formation *nf} qui
 \item On déclare la tête comme étant le n\oe{}ud temporaire que l'on a initialisé.
 \end{enumerate}
 
-\begin{lstlisting}[firstnumber=461]
+\begin{lstlisting}[firstnumber=559]
   void ajouter_db_formation( db_formation *db, formation *f );
 \end{lstlisting}
 
@@ -641,7 +641,7 @@ Cette fonction sert à supprimer une personne de la fonction à partir de son id
 \item On arrête la fonction, si réussite, on obtient 1, si pas, on obtient 0.
 \end{enumerate}
 
-\begin{lstlisting}
+\begin{lstlisting}[firstnumber=490]
   int supprimer_db_formation( db_formation *dbf, int id );
 \end{lstlisting}
 
@@ -663,13 +663,13 @@ Cette fonction sert à supprimer une formation de la base de données à partir 
 
 \subsubsection{Fonctions qui servent de \texttt{getter()}}
 
-\begin{lstlisting}
+\begin{lstlisting}[firstnumber=275]
   personne *get_personne( db_personne *db, char nom[], char prenom[], int formateur );
 \end{lstlisting}
 
 Cette fonction renvoie \texttt{NULL} si une personne d'un nom spécifique, d'un prénom spécifique, et s'il est formateur ou étudiant n'existe pas dans la base de données \texttt{db\_personne *db}. Sinon, la fonction retourne la personne trouvée.
 
-\begin{lstlisting}[firstnumber=275]
+\begin{lstlisting}[firstnumber=532]
   formation *get_formation( db_formation *dbf, char nom_formation[] );
 \end{lstlisting}
 

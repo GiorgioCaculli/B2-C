@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/VoidLinux) (preloaded format=pdflatex 2020.11.28)  14 DEC 2020 01:19
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/VoidLinux) (preloaded format=pdflatex 2020.11.28)  14 DEC 2020 01:27
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1077,7 +1077,7 @@ Package rerunfilecheck Info: File `CaculliTyranowski.out' has not changed.
  ) 
 Here is how much of TeX's memory you used:
  29250 strings out of 480478
- 541006 string characters out of 5905926
+ 541012 string characters out of 5905926
  1289027 words of memory out of 5000000
  44374 multiletter control sequences out of 15000+600000
  539191 words of font info for 49 fonts, out of 8000000 for 9000
@@ -1093,7 +1093,7 @@ usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf
 e1/public/amsfonts/cm/cmr7.pfb></usr/share/texmf-dist/fonts/type1/public/amsfon
 ts/cm/cmr9.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb
 ></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt8.pfb>
-Output written on CaculliTyranowski.pdf (15 pages, 203921 bytes).
+Output written on CaculliTyranowski.pdf (15 pages, 203915 bytes).
 PDF statistics:
  645 PDF objects out of 1000 (max. 8388607)
  609 compressed objects within 7 object streams

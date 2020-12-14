@@ -479,10 +479,11 @@ void ajouter_db_formation( db_formation *db, formation *f )
  * On vérifie si le premier élément de la liste correspond à l'id de la formation que l'on souhaite supprimer.
  * Si oui:
  * On crée un noeud temporaire qui stockera la formation suivante dans la liste.
- * On libére l'espace mémoire occupé par head avec la fonction \texttt{free(dbf->head)}.
- * On attribue à \texttt{dbf->head} le n\oe{}ud temporaire que l'on avait créé.
+ * On libére l'espace mémoire occupé par head avec la fonction free(dbf->head).
+ * On attribue à dbf->head le noeud temporaire que l'on avait créé.
  * On arrête la fonction.
- * Sinon, on parcourt l'entièreté de la liste jusqu'au moment où l'on trouve la formation qui a le même \texttt{id} que l'\texttt{id} en paramètre.
+ * Sinon, on parcourt l'entièreté de la liste jusqu'au moment où l'on trouve la formation qui
+ * a le même id que l'id en paramètre.
  * Si on le trouve, on pivote l'élément qui suit vers l'élément que l'on vient de supprimer.
  * On arrête la fonction, si réussite, on obtient 1, si pas, on obtient 0.
  */
@@ -523,6 +524,11 @@ int supprimer_db_formation( db_formation *dbf, int id )
     return 0;
 }
 
+/*
+ * Cette fonction renvoie NULL si une formation avec un nom spécifique n'existe pas dans
+ * la base de données db_formation *dbf.
+ * Sinon, la fonction retourne la formation trouvée.
+ */
 formation *get_formation( db_formation *dbf, char nom_formation[] )
 {
     db_formation *tmpdbf = dbf;
@@ -538,6 +544,18 @@ formation *get_formation( db_formation *dbf, char nom_formation[] )
     return NULL;
 }
 
+/*
+ * Cette fonction sert à initialiser un pointeur noeud_db_formation *ndb qui stockera formation *f dans
+ * la base de données db_formation *db.
+ * Ici, l'ajout dans la liste chaînée à lieu par le mécanisme suivant:
+ * On initialise le noeud temporaire que l'on ajoutera à la base de données.
+ * On associe f au pointeur f présent dans la structure noeud_db_formation.
+ * On initialise le prochain noeud de la liste *next à NULL.
+ * Si la tête *head de la base de donnée est NULL, alors la tête devient le nouveau noeud.
+ * On arrête la fonction d'ajout là.
+ * Sinon, on fait une copie de la tête dans le noeud *next que l'on avait initialisé à NULL.
+ * On déclare la tête comme étant le noeud temporaire que l'on a initialisé.
+ */
 void afficher_db_formation( db_formation *dbf )
 {
     int i;
