@@ -635,10 +635,18 @@ void menu_creer_formation( db_formation *f )
         getchar();
         formation *tmpf = creer_formation( nom, prix );
         tmpf->id = tmpdbf->head->f->id + 1;
-        printf( "* Est-ce que la formation a des prerequis ? (o/n) " );
         char choix_prerequis[4];
+        printf( "* Est-ce que la formation a des prerequis ? (o/n) " );
         scanf( "%s", choix_prerequis );
         getchar();
+        while( strcmp( choix_prerequis, "o" ) != 0 && strcmp( choix_prerequis, "oui" ) != 0 &&
+        strcmp( choix_prerequis, "n" ) != 0 && strcmp( choix_prerequis, "non" ) != 0 )
+        {
+            printf( "* Options %s - INVALIDE: o pour oui et n pour non s'il vous plait\n", choix_prerequis );
+            printf( "* Est-ce que la formation a des prerequis ? (o/n) " );
+            scanf( "%s", choix_prerequis );
+            getchar();
+        }
         if( strcmp( choix_prerequis, "o" ) == 0 || strcmp( choix_prerequis, "oui" ) == 0 )
         {
             /*afficher_db_formation( tmpdbf );*/
@@ -651,39 +659,47 @@ void menu_creer_formation( db_formation *f )
                 tmpndbf = tmpndbf->next;
             }
             tmpndbf = tmpdbf->head;
-            printf( "* Combien de prerequis faut-il ? " );
             int nb_prerequis;
+            printf( "* Combien de prerequis faut-il ? " );
             scanf( "%d", &nb_prerequis );
             getchar();
+            while( nb_prerequis > tmpndbf->f->id || nb_prerequis < 0 )
+            {
+                printf( "* Option %d - INVALIDE: Max %d prerequis Min 0\n", nb_prerequis, tmpndbf->f->id );
+                printf( "* Combien de prerequis faut-il ? " );
+                scanf( "%d", &nb_prerequis );
+                getchar();
+            }
             tmpf->nb_prerequis = nb_prerequis;
             for( i = 0; i < nb_prerequis; i++ )
             {
-                printf( "* ID du prerequis a rajouter: " );
                 int id_prerequis;
+                printf( "* ID du prerequis N.%d a rajouter: ", i + 1 );
                 scanf( "%d", &id_prerequis );
                 tmpf->prerequis[i] = id_prerequis;
             }
         }
+        int nb_jours;
         printf( "* Combien de fois par semaine a le cours lieu ? " );
-        scanf( "%d", &tmpf->nb_jours );
-        if( tmpf->nb_jours <= 0 )
+        scanf( "%d", &nb_jours );
+        getchar();
+        while( nb_jours > 7 || nb_jours <= 0 )
         {
-            tmpf->jours[0] = 7;
-            tmpf->heures[0] = 00;
-            tmpf->durees[0] = 2;
+            printf( "Option %d - INVALIDE: Max 7 jours Min 1 jour\n", tmpf->nb_jours );
+            printf( "* Combien de fois par semaine a le cours lieu ? " );
+            scanf( "%d", &nb_jours );
+            getchar();
         }
-        else
+        tmpf->nb_jours = nb_jours;
+        printf( "* 1. lundi\n* 2. mardi\n* 3. mercredi\n* 4. jeudi\n* 5. vendredi\n* 6. samedi\n* 7. dimanche\n" );
+        for ( i = 0; i < tmpf->nb_jours; i++ )
         {
-            printf( "* 1. lundi\n* 2. mardi\n* 3. mercredi\n* 4. jeudi\n* 5. vendredi\n* 6. samedi\n* 7. dimanche\n" );
-            for ( i = 0; i < tmpf->nb_jours; i++ )
-            {
-                printf( "* A quel jour de la semain a le cours lieu N. %d ? ", i + 1 );
-                scanf( "%d", &tmpf->jours[ i ] );
-                printf( "* A quelle heure a-t-il lieu (eg. 08.15) ? " );
-                scanf( "%f", &tmpf->heures[ i ] );
-                printf( "* Combien d'heures dure le cours ? " );
-                scanf( "%f", &tmpf->durees[ i ] );
-            }
+            printf( "* A quel jour de la semain a le cours lieu N. %d ? ", i + 1 );
+            scanf( "%d", &tmpf->jours[ i ] );
+            printf( "* A quelle heure a-t-il lieu (eg. 08.15) ? " );
+            scanf( "%f", &tmpf->heures[ i ] );
+            printf( "* Combien d'heures dure le cours ? " );
+            scanf( "%f", &tmpf->durees[ i ] );
         }
         char confirmation[4];
         printf( "* Etes vous sur de vouloir ajouter la formation %s avec prix %.2f a la base de donnees ? (o/n) ",
@@ -730,24 +746,65 @@ void menu_creer_personne( db_personne *p )
     {
         choix_formateur[i] = tolower( choix_formateur[i] );
     }
+    while( strcmp( choix_formateur, "f" ) != 0 && strcmp( choix_formateur, "formateur" ) != 0 &&
+           strcmp( choix_formateur, "e" ) != 0 && strcmp( choix_formateur, "etudiant" ) != 0 )
+    {
+        printf( "* Option %s - INVALIDE: f ou e seulement sont acceptees                       *\n",
+                choix_formateur );
+        printf( "* Est-ce que cette personne est un formateur ou un etudiant ? (f/e) " );
+        scanf( "%s", choix_formateur );
+        for( i = 0; choix_formateur[i]; i++ )
+        {
+            choix_formateur[i] = tolower( choix_formateur[i] );
+        }
+    }
     if( strcmp( choix_formateur, "f" ) == 0 || strcmp( choix_formateur, "formateur" ) == 0 )
     {
         formateur = 1;
-        printf( "* Est-ce que ce formateur as des jours ou il/elle est indisponible ? (o/n) " );
         char choix_indisponible[4];
+        printf( "* Est-ce que ce formateur as des jours ou il/elle est indisponible ? (o/n) " );
         scanf( "%s", choix_indisponible );
+        getchar();
+        while( strcmp( choix_indisponible, "o" ) != 0 && strcmp( choix_indisponible, "oui" ) != 0 &&
+        strcmp( choix_indisponible, "n" ) != 0 && strcmp( choix_indisponible, "non" ) != 0 )
+        {
+            printf( "* Option %s - INVALIDE: o ou n sont acceptees                                  *\n",
+                    choix_indisponible );
+            printf( "* Est-ce que ce formateur as des jours ou il/elle est indisponible ? (o/n) " );
+            scanf( "%s", choix_indisponible );
+            getchar();
+        }
         if( strcmp( choix_indisponible, "o" ) == 0 || strcmp( choix_indisponible, "oui" ) == 0 )
         {
             printf( "* Combien de jours serait ce formateur indisponible ? " );
             scanf( "%d", &nb_jours_indisponible );
             getchar();
-            printf( "* 1. lundi\n* 2. mardi\n* 3. mercredi\n* 4. jeudi\n* 5. vendredi\n* 6. samedi\n* 7. dimanche\n" );
-            for( i = 0; i < nb_jours_indisponible; i++ )
+            while( nb_jours_indisponible < 0 )
             {
-                int jour;
-                printf( "* Quel serait son jour d'indisponibilite N.%d ? ", i + 1 );
-                scanf( "%d", &jour );
-                jours_indisponible[i] = jour;
+                printf( "* Option %d - INVALIDE: Max 7 jours - Min 0                                    *\n",
+                        nb_jours_indisponible );
+                printf( "* Combien de jours serait ce formateur indisponible ? " );
+                scanf( "%d", &nb_jours_indisponible );
+                getchar();
+            }
+            if( nb_jours_indisponible > 0 )
+            {
+                while ( nb_jours_indisponible > 7 || nb_jours_indisponible < 0)
+                {
+                    printf( "* Option %d - INVALIDE: Max 7 jours - Min 0                                    *\n",
+                            nb_jours_indisponible );
+                    printf( "* Combien de jours serait ce formateur indisponible ? " );
+                    scanf( "%d", &nb_jours_indisponible );
+                    getchar();
+                }
+                printf( "* 1. lundi\n* 2. mardi\n* 3. mercredi\n* 4. jeudi\n* 5. vendredi\n* 6. samedi\n* 7. dimanche\n" );
+                for ( i = 0; i < nb_jours_indisponible; i++ )
+                {
+                    int jour;
+                    printf( "* Quel serait son jour d'indisponibilite N.%d ? ", i + 1 );
+                    scanf( "%d", &jour );
+                    jours_indisponible[ i ] = jour;
+                }
             }
         }
     }
@@ -757,11 +814,32 @@ void menu_creer_personne( db_personne *p )
         printf( "* Est-ce que cet etudiant beneficie d'une reduction ? (o/n) " );
         char choix_reduction[4];
         scanf( "%s", choix_reduction );
+        getchar();
+        while( strcmp( choix_reduction, "o" ) != 0 && strcmp( choix_reduction, "oui" ) != 0 &&
+        strcmp( choix_reduction, "n" ) != 0 && strcmp( choix_reduction, "non" ) != 0 )
+        {
+            printf( "* Option %s - INVALIDE: o ou n sont acceptees                                  *\n",
+                    choix_reduction );
+            printf( "* Est-ce que cet etudiant beneficie d'une reduction ? (o/n) " );
+            scanf( "%s", choix_reduction );
+            getchar();
+        }
         if( strcmp( choix_reduction, "o" ) == 0 || strcmp( choix_reduction, "oui" ) == 0 )
         {
-            reduction = 1;
             printf( "* Combien de pourcentage de reduction beneficie cet etudiant ? " );
             scanf( "%d", &pourcent_reduction );
+            getchar();
+            while ( pourcent_reduction > 100 || pourcent_reduction < 0 )
+            {
+                printf( "* Option %d - INVALIDE: Max 100 jours - Min 0                                  *\n",
+                        nb_jours_indisponible );
+                printf( "* Combien de pourcentage de reduction beneficie cet etudiant ? " );
+                scanf( "%d", &pourcent_reduction );
+            }
+            if( pourcent_reduction > 0 )
+            {
+                reduction = 1;
+            }
         }
     }
     personne *tmpp = creer_personne( nom, prenom, formateur );

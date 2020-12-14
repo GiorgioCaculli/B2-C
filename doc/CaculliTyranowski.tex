@@ -358,6 +358,14 @@ Voici une représentation d'une liste chaînée:
 \subsection{Qu'est-ce une liste chaînée?}
 Une liste chaînée est une séquence de structures de données, qui sont liée par des n\oe{}uds.
 Chaque n\oe{}ud contient une connexion vers un autre n\oe{}ud.\\
+Il existe trois types de listes chaînées:
+\begin{itemize}
+\item La \textbf{liste chaînée linéaire} : Une liste chaînée que ne peut être parcourue dans une seule direction.
+\item La \textbf{double liste chaînée} : Une liste chaînée qui peut être parcourue en deux directions: à partir de la tête ou à partir de la queue.
+  \item La \textbf{liste chaînée circulaire} : Une liste chaînée où le premier n\oe{}ud fait toujours référence au dernier n\oe{}ud.
+\end{itemize}
+
+Dans le cas de notre projet, on a travaillé avec la liste chaînée linéaire.\\
 Voici à quoi ressemble une structure pour une liste chaînée linéaire en \texttt{C}:
 \begin{lstlisting}
   typedef struct noeud
@@ -547,7 +555,7 @@ Cette procédure pourrait être écrite de la manière suivante:
 
 Analysons ce que le code fait:
 \begin{enumerate}
-  \setcounter{enumi}{26}
+  \setcounter{enumi}{27}
 \item On crée la tête à NULL
 \item On ajoute dans la liste chaînée la variable 37 qui sera stockée dans un n\oe{}ud.
 \item On ajoute dans la liste chaînée la variable 99 qui sera stockée dans un n\oe{}ud.
@@ -772,7 +780,7 @@ Affiche l'ID, le nom et le prix de chaque formation disponible dans la base de d
   \centering
   \includegraphics[width=\textwidth]{images/05.png}
 \end{figure}
-Les informations sont groupées par jour suivi par le nom de la formation, les différents formateurs, les élèves qui y participent et l'horaiare. Les prérequis pour les cours sont dictés en bas, exemple Sociologie est un prérequis pour le cours de Microbiologie
+Les informations sont groupées par jour suivi par le nom de la formation, les différents formateurs, les élèves qui y participent et l'horaiare. Les prérequis pour les cours sont dictés en bas, exemple Biologie est un prérequis pour le cours de Microbiologie
 
 \newpage
 \subsubsection{Menu ajout}
@@ -842,6 +850,82 @@ L'ajout d'une formation se passe de la manière suivante:
   \includegraphics[trim=0 15 10 10, clip, width=\textwidth]{images/12.png}
 \end{figure}
 Un message de confirmation apparaîtra au dessus du menu.
+
+\subsubsection{Menu attribution}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[trim=0 60 0 0, clip, width=\textwidth]{images/13.png}
+\end{figure}
+Lorsqu'on rentre dans le menu d'attribution, il faudra séléctionner le cours dans lequel on souhaite attribuer une personne, formateur ou étudiant.
+
+\newpage
+\begin{figure}[ht]
+  \centering
+  \includegraphics[trim=0 110 0 0, clip, width=\textwidth]{images/14.png}
+\end{figure}
+L'attribution à une formation se passe de la manière suivante:
+\begin{enumerate}
+\item Il faut insérer l'ID du cours auquel on souhaite ajouter un personne quelconque.
+\item Il faut insérer l'ID de la personne à rajouter.
+\item Il faut confirmer par "o" ou "n" (oui ou non) si l'on souhaite effectivement ajouter la nouvelle personne dans la base de données.
+\end{enumerate}
+
+\newpage
+\begin{figure}[ht]
+  \centering
+  \includegraphics[trim=0 60 0 0, clip, width=\textwidth]{images/15.png}
+\end{figure}
+Lors de la réussite de l'attribution de la personne dans le cours, un message de confirmation apparaîtra.
+
+\newpage
+\subsubsection{Menu suppression}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[trim=0 80 0 0, clip, width=\textwidth]{images/16.png}
+\end{figure}
+
+Voici à quoi ressemble l'interface par lequel il est possible de faire des suppressions.
+\begin{enumerate}
+\item Il est possible de supprimer entièrement une personne de la base de données. Par conséquent, la personne en question disparaîtra des cours aussi.
+\item Il est possible de supprimer entièrement une formation de la base de données. Par conséquents, les gens qui particiapaient à la formation en question ne pourront plus y participer.
+  \item Il est possible de supprimer une personne précise d'une formation précise, bien la formation que la personne apparaîtront dans leurs respectives bases de données, mais ils ne seront plus liés ensemble.
+\end{enumerate}
+
+\subsubsection{Suppression d'une personne}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[trim=0 0 0 0, clip, width=\textwidth]{images/17.png}
+\end{figure}
+Dans le cas d'une suppression d'une personne de la base de données, il suffit d'insérer l'ID de la personne à supprimer et la personne ne sera plus visible dans aucun cours. Comme toute manipulation, des messages de confirmation apparîtront à la fin de la manipulation.
+
+\newpage
+\subsubsection{Suppression d'une formation}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[trim=0 0 0 0, clip, width=\textwidth]{images/18.png}
+\end{figure}
+Suivant la même logique que la suppression d'une personne, lors de la suppression d'une formation de la base de données, il suffira d'introduire son ID, appuyer sur Enter et confirmer avec un "o" (oui) ou annuller avec un "n" (non). 
+
+\newpage
+\subsubsection{Suppression d'une personne d'une formation spécifique}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[trim=0 0 0 0, clip, width=\textwidth]{images/19.png}
+\end{figure}
+La suppression d'une personne spécifique d'une formation spécifique se passe de la manière suivante:
+\begin{enumerate}
+\item Il faut insérer l'ID de la formation à partir duquel on souhaite supprimer une personne.
+\item Il faut insérer l'ID de la personne à supprimer.
+\item Il faut confirmer par "o" ou "n" (oui ou non) si l'on souhaite effectivement ajouter la nouvelle personne dans la base de données.
+\end{enumerate}
+
+\newpage
+\begin{figure}[ht]
+  \centering
+  \includegraphics[trim=0 30 0 0, clip, width=\textwidth]{images/20.png}
+\end{figure}
+
+Si la suppression s'est passée avec succés, un message affichera la réussite de la suppression et affichera le nouvel état de la formation.
 
 \newpage
 \section{Code}
@@ -1154,7 +1238,7 @@ Cette fonction renvoie \texttt{NULL} si une personne d'un nom spécifique, d'un 
 Cette fonction renvoie \texttt{NULL} si une formation avec un nom spécifique n'existe pas dans la base de données \texttt{db\_formation *dbf}. Sinon, la fonction retourne la formation trouvée.
 
 \subsubsection{Fonctions qui affiches les différentes parties du menu interactif}
-les fonctions ci-dessous ne servent qu'à affichier les différentes parties du menu interactif. Elle ne font aucune manipulation particulière autre qu'affichier du texte.
+les fonctions ci-dessous ne servent qu'à affichier les différentes parties du menu interactif. Elle ne font aucune manipulation particulière autre qu'affichier du texte. Le \texttt{main()} est la seule fonction qui lit les données et les initialise dans la base de données avant que le menu soit affiché.
 \begin{lstlisting}
   void menu_creer_formation( db_formation *f );
 \end{lstlisting}
