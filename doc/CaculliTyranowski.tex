@@ -389,13 +389,24 @@ Afin de pouvoir créer un n\oe{}ud que l'on stockera dans notre liste chaînée,
   noeud *treinte_sept = creer_noeud( 37 );
   free( treinte_sept );
 \end{lstlisting}
+Le résultat obtenu serait un n\oe{}ud du style:
+\begin{tikzpicture}[list/.style={
+      rectangle split,
+      rectangle split parts=2,
+      draw,
+      rectangle split horizontal
+    },
+    >=stealth,
+    start chain]
+  \node[list,on chain] (C) {37};
+\end{tikzpicture}
 
 Le langage \texttt{C} ne fait pas de \texttt{Garbage Collection}, ce qui revient à dire que toute manipulation de mémoire doit être manipulée manuellement. Donc, lorsqu'on a besoin de libérer de la mémoire de données que l'on peut écraser, on utilise la fonction \texttt{free()}.\\
 Dans ce cas-ci, le n\oe{}ud est créé mais il n'est pas encore stocké dans la liste chaînée.
 On verra dans la section suivant comment on peut stocker ce nouveau noeud dans la liste chaînée.
 
 \subsection{Insertion d'un n\oe{}ud dans une liste chaînée}
-À l'état actuel de choses, on peut supposer que la liste chaînée soit vide: 
+À l'état actuel des choses, on peut supposer que la liste chaînée soit vide: 
 \begin{tikzpicture}[list/.style={
       rectangle split,
       rectangle split parts=2,
@@ -408,7 +419,7 @@ On verra dans la section suivant comment on peut stocker ce nouveau noeud dans l
   \draw (D.north east) -- (D.south west);
   \draw (D.north west) -- (D.south east);
 \end{tikzpicture}\\
-Une procédure d'ajout dans une liste chaînée pourrait être la suivant:
+Une procédure d'ajout dans une liste chaînée pourrait être la suivante:
 \begin{enumerate}
 \item On initialise le noeud temporaire que l'on ajoutera à la base de données.
 \item On associe \texttt{data} au pointeur \texttt{data} présent dans la structure \texttt{noeud}.
@@ -426,16 +437,19 @@ Dans une fonction, cette procédure ressemblerait à ça:
     if( tete == NULL )
     {
       tete = temporaire;
+      /* On le stocke directement temporaire a la place de tete si tete est NULL */
       return 1;
     }
     temporaire->suivant = tete;
+    /* On fait une copie de tete (le noeud stocke precedemment) dans le suivant du noeud temporaire (au lieu de le laisser a NULL) */
     tete = temporaire;
+    /* On fait devenir le noeud temporaire la nouvelle tete */
     return 1;
   }
   noeud *tete = NULL;
   ajouter_noeud( tete, 37 );
 \end{lstlisting}
-Si la fonction a eu du succés, la liste châinée ressemblera à ça: 
+Si la fonction a réussi, la liste chaînée ressemblera à ça: 
 \begin{tikzpicture}[list/.style={
       rectangle split,
       rectangle split parts=2,
@@ -456,7 +470,7 @@ Admettons que l'on souhaite ajouter une autre donnée à notre liste chaînée, 
   ajouter_noeud( tete, 99 );
 \end{lstlisting}
 
-Si la fonction a eu du succés, la liste châinée ressemblera à ça:
+Si la fonction a réussi, la liste chaînée ressemblera à ça:
 \begin{tikzpicture}[list/.style={
       rectangle split,
       rectangle split parts=2,
@@ -475,6 +489,196 @@ Si la fonction a eu du succés, la liste châinée ressemblera à ça:
 \end{tikzpicture}
 
 \subsection{Suppression d'un n\oe{}ud d'une liste chaînée}
+
+Pour que l'on puisse supprimer un n\oe{}ud, il faudra d'abord passer par différentes étapes de vérification:
+\begin{enumerate}
+\item On vérife que la tête de la liste \texttt{*tete} ne soit pas \texttt{NULL}, si oui, on arrête la fonction.
+\item On vérifie si le premier élément de la liste correspond à la donnée \texttt{data} de la liste que l'on souhaite supprimer.
+\item Si oui:
+  \begin{enumerate}
+  \item On crée un n\oe{}ud temporaire qui stockera la donnée suivante dans la liste.
+  \item On libére l'espace mémoire occupé par head avec la fonction \texttt{free(tete)}.
+  \item On attribue à \texttt{tete} le n\oe{}ud temporaire que l'on avait créé.
+  \item On arrête la fonction.
+  \end{enumerate}
+\item Sinon, on parcourt l'entièreté de la liste jusqu'au moment où l'on trouve la formation qui a le même \texttt{donnee} que la \texttt{donnee} en paramètre.
+\item Si on le trouve, on pivote l'élément qui suit vers l'élément que l'on vient de supprimer.
+\item On arrête la fonction, si réussite, on obtient 1, si pas, on obtient 0.
+\end{enumerate}
+
+Cette procédure pourrait être écrite de la manière suivante:
+\begin{lstlisting}
+  int supprimer_noeud( noeud *tete, int data )
+  {
+    if( tete == NULL )
+    {
+      return 0;
+    }
+    noeud *temporaire = NULL;
+    if( tete->data == date )
+    {
+      temporaire = tete->suivant;
+      free( tete );
+      tete = temporaire;
+      return 1;
+    }
+    while( tete != NULL )
+    {
+      if( tete->suivant->data == data )
+      {
+        temporaire = tete->suivant;
+        tete->suivant = tete->suivant->suivant;
+        free( temporaire );
+        return 1;
+      }
+      tete = tete->suivant;
+    }
+    return 0;
+  }
+  noeud *tete = NULL;
+  ajouter_noeud( tete, creer_noeud( 37 ) );
+  ajouter_noeud( tete, creer_noeud( 99 ) );
+  ajouter_noeud( tete, creer_noeud( 42 ) );
+  ajouter_noeud( tete, creer_noeud( 12 ) );
+  ajouter_noeud( tete, creer_noeud( 10 ) );
+  supprimer_noeud( tete, 10 );
+  supprimer_noeud( tete, 42 );
+\end{lstlisting}
+
+Analysons ce que le code fait:
+\begin{enumerate}
+  \setcounter{enumi}{26}
+\item On crée la tête à NULL
+\item On ajouter dans la liste chaînée le noeud avec la donnée 37.
+\item On ajouter dans la liste chaînée le noeud avec la donnée 99.
+\item On ajouter dans la liste chaînée le noeud avec la donnée 42.
+\item On ajouter dans la liste chaînée le noeud avec la donnée 12.
+\item On ajouter dans la liste chaînée le noeud avec la donnée 10.\\
+  À l'état actuel des choses, la liste ressemble à ça:\\\\
+  \begin{tikzpicture}[list/.style={
+        rectangle split,
+        rectangle split parts=2,
+        draw,
+        rectangle split horizontal
+      },
+      >=stealth,
+      start chain]
+
+    \node[list,on chain] (A) {10};
+    \node[list,on chain] (B) {12};
+    \node[list,on chain] (C) {42};
+    \node[list,on chain] (D) {99};
+    \node[list,on chain] (E) {37};
+    \node[on chain,draw,inner sep=6pt] (F) {};
+    \draw (F.north east) -- (F.south west);
+    \draw (F.north west) -- (F.south east);
+    \draw[*->] let \p1 = (A.two), \p2 = (A.center) in (\x1,\y2) -- (B);
+    \draw[*->] let \p1 = (B.two), \p2 = (B.center) in (\x1,\y2) -- (C);
+    \draw[*->] let \p1 = (C.two), \p2 = (C.center) in (\x1,\y2) -- (D);
+    \draw[*->] let \p1 = (D.two), \p2 = (D.center) in (\x1,\y2) -- (E);
+    \draw[*->] let \p1 = (E.two), \p2 = (E.center) in (\x1,\y2) -- (F);
+  \end{tikzpicture}
+\item On supprimer le noeud avec la valeur 10.
+\item On supprimer le noeud avec la valeur 42.\\
+  Au final la liste ressemblera à ça:\\\\
+  \begin{tikzpicture}[list/.style={
+        rectangle split,
+        rectangle split parts=2,
+        draw,
+        rectangle split horizontal
+      },
+      >=stealth,
+      start chain]
+
+    \node[list,on chain] (A) {12};
+    \node[list,on chain] (B) {99};
+    \node[list,on chain] (C) {37};
+    \node[on chain,draw,inner sep=6pt] (D) {};
+    \draw (D.north east) -- (D.south west);
+    \draw (D.north west) -- (D.south east);
+    \draw[*->] let \p1 = (A.two), \p2 = (A.center) in (\x1,\y2) -- (B);
+    \draw[*->] let \p1 = (B.two), \p2 = (B.center) in (\x1,\y2) -- (C);
+    \draw[*->] let \p1 = (C.two), \p2 = (C.center) in (\x1,\y2) -- (D);
+  \end{tikzpicture}
+\end{enumerate}
+
+Voilà comment la suppression a interagit avec la liste chaînée et le nombre 10:
+\begin{enumerate}
+\item Est-ce que le liste est vide? (\texttt{tete == NULL} ?)
+  \begin{enumerate}
+  \item Non car on a des noeuds dans notre liste, on continue dans la fonction.
+  \end{enumerate}
+\item Est-ce que la donnée \texttt{data} équivaut à la donnée \texttt{tete->donnee} ?
+  \begin{enumerate}
+    \item Oui car \texttt{tete->donneee = 10} et \texttt{data = 10}.
+  \end{enumerate}
+\item On fait un backup de \texttt{tete->suivant} dans un n\oe{}ud temporaire.
+\item On libére le n\oe{}ud \texttt{tete}.
+\item On attribue à \texttt{tete} le n\oe{}ud temporaire.\\
+A ce stade de la modification, la liste ressemble à ça:\\\\
+  \begin{tikzpicture}[list/.style={
+        rectangle split,
+        rectangle split parts=2,
+        draw,
+        rectangle split horizontal
+      },
+      >=stealth,
+      start chain]
+    \node[list,on chain] (B) {12};
+    \node[list,on chain] (C) {42};
+    \node[list,on chain] (D) {99};
+    \node[list,on chain] (E) {37};
+    \node[on chain,draw,inner sep=6pt] (F) {};
+    \draw (F.north east) -- (F.south west);
+    \draw (F.north west) -- (F.south east);
+    \draw[*->] let \p1 = (B.two), \p2 = (B.center) in (\x1,\y2) -- (C);
+    \draw[*->] let \p1 = (C.two), \p2 = (C.center) in (\x1,\y2) -- (D);
+    \draw[*->] let \p1 = (D.two), \p2 = (D.center) in (\x1,\y2) -- (E);
+    \draw[*->] let \p1 = (E.two), \p2 = (E.center) in (\x1,\y2) -- (F);
+  \end{tikzpicture}
+\end{enumerate}
+
+Voilà comment la suppression a interagit avec la liste chaînée et le nombre 42:
+\begin{enumerate}
+\item Est-ce que le liste est vide? (\texttt{tete == NULL} ?)
+  \begin{enumerate}
+  \item Non car on a des noeuds dans notre liste, on continue dans la fonction.
+  \end{enumerate}
+\item Est-ce que la donnée \texttt{data} équivaut à la donnée \texttt{tete->donnee} ?
+  \begin{enumerate}
+    \item Non car \texttt{tete->donneee = 12} et \texttt{data = 42}.
+  \end{enumerate}
+\item On commence à parcourir toute la liste tant que \texttt{tete != NULL}.
+\item On vérifie si \texttt{tete->suivant->donnee == data}
+  \begin{enumerate}
+  \item Si c'est pas le cas, on continue à parcourir la liste.
+  \end{enumerate}
+\item Si c'est le cas, on fait un backup du suivant du suivant dans un n\oe{}ud temporaire.
+\item On libère \texttt{tete->suivant}.
+\item On attribue à \texttt{tete->suivant} le n\oe{}ud \texttt{tete->suivant->suivant} qui est stocké dans le n\oe{}ud temporaire.\\
+A ce stade de la modification, la liste ressemble à ça:\\\\
+  \begin{tikzpicture}[list/.style={
+        rectangle split,
+        rectangle split parts=2,
+        draw,
+        rectangle split horizontal
+      },
+      >=stealth,
+      start chain]
+    \node[list,on chain] (A) {12};
+    \node[list,on chain] (B) {99};
+    \node[list,on chain] (C) {37};
+    \node[on chain,draw,inner sep=6pt] (D) {};
+    \draw (D.north east) -- (D.south west);
+    \draw (D.north west) -- (D.south east);
+    \draw[*->] let \p1 = (A.two), \p2 = (A.center) in (\x1,\y2) -- (B);
+    \draw[*->] let \p1 = (B.two), \p2 = (B.center) in (\x1,\y2) -- (C);
+    \draw[*->] let \p1 = (C.two), \p2 = (C.center) in (\x1,\y2) -- (D);
+  \end{tikzpicture}
+\end{enumerate}
+
+Si la fonction a réussi, on obtiendra 1 comme résultat, si pas, on obtiendra 0.
+
 \subsection{Affichage d'une liste chaînée}
 
 \newpage
