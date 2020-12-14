@@ -5,6 +5,7 @@
 \usepackage[french]{babel}
 \usepackage{geometry}
 \usepackage{glossaries}
+\usepackage{graphicx}
 \usepackage[hidelinks]{hyperref}
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
@@ -333,6 +334,7 @@ Une allocation dynamique de mémoire est le processus d'alluer de la mémoire lo
 
 \newpage
 \section{Listes chaînées}
+Voici une représentation d'une liste chaînée: 
 \begin{tikzpicture}[list/.style={
       rectangle split,
       rectangle split parts=2,
@@ -353,8 +355,125 @@ Une allocation dynamique de mémoire est le processus d'alluer de la mémoire lo
   \draw[*->] let \p1 = (C.two), \p2 = (C.center) in (\x1,\y2) -- (D);
 \end{tikzpicture}
 
+\subsection{Qu'est-ce une liste chaînée?}
+Une liste chaînée est une séquence de structures de données, qui sont liée par des n\oe{}uds.
+Chaque n\oe{}ud contient une connexion vers un autre n\oe{}ud.\\
+Voici à quoi ressemble une structure pour une liste chaînée linéaire en \texttt{C}:
+\begin{lstlisting}
+  typedef struct noeud
+  {
+    int donnee;         /* L'information que l'on souhaite stocker dans le noeud */
+    struct noeud *suivant; /* Le lien vers le prochain noeud */
+  } noeud;
+  noeud *tete = NULL;   /* Le point de demarrage d'une liste chainee */
+\end{lstlisting}
+
+Contrairement à un vecteur, qui lui ressemblerait à ça:
+\begin{lstlisting}
+  int donnee[10];
+\end{lstlisting}
+
+Les deux vont très bien stocker des \texttt{int} que l'on a nommé \texttt{donnee}, cependant, un vecteur possède une taille fixe, il ne saura stocker que 10 éléments maximum dans notre cas. Tandis que dans le cas d'une liste chaînée, tant qu'il y a de l'espace en mémoire, il saura stocker un nombre indéfini de n\oe{}uds, et par conséquent, un nombre indéfini de \texttt{int donnee}.
+
 \subsection{Création d'un nouveau n\oe{}ud}
+Afin de pouvoir créer un n\oe{}ud que l'on stockera dans notre liste chaînée, il faudra d'abord lui alluoer une taille dans la mémoire. Toujours en se basant par le bout de code vu précédemment, et le bout de code vu dans le chapitre précédent sur l'allocation de mémoire, on obtiendrait le code suivant:
+\begin{lstlisting}
+  noeud *creer_noeud( int data )
+  {
+    noeud *temporaire = ( noeud * ) calloc( 1, sizeof( noeud ) );
+    /* On cree un noeud temporaire ou l'on stockera les informations que l'on souhaite */
+    temporaire->data = data; /* La donnee que l'on souhaite stocker */
+    temporaire->suivant = NULL; /* Lien vers le prochain noeud s'il existe */
+    return tmp; /* On retourne le noeud qui sera stocke dans la liste chainee */
+  }
+  noeud *treinte_sept = creer_noeud( 37 );
+  free( treinte_sept );
+\end{lstlisting}
+
+Le langage \texttt{C} ne fait pas de \texttt{Garbage Collection}, ce qui revient à dire que toute manipulation de mémoire doit être manipulée manuellement. Donc, lorsqu'on a besoin de libérer de la mémoire de données que l'on peut écraser, on utilise la fonction \texttt{free()}.\\
+Dans ce cas-ci, le n\oe{}ud est créé mais il n'est pas encore stocké dans la liste chaînée.
+On verra dans la section suivant comment on peut stocker ce nouveau noeud dans la liste chaînée.
+
 \subsection{Insertion d'un n\oe{}ud dans une liste chaînée}
+À l'état actuel de choses, on peut supposer que la liste chaînée soit vide: 
+\begin{tikzpicture}[list/.style={
+      rectangle split,
+      rectangle split parts=2,
+      draw,
+      rectangle split horizontal
+    },
+    >=stealth,
+    start chain]
+  \node[on chain,draw,inner sep=6pt] (D) {};
+  \draw (D.north east) -- (D.south west);
+  \draw (D.north west) -- (D.south east);
+\end{tikzpicture}\\
+Une procédure d'ajout dans une liste chaînée pourrait être la suivant:
+\begin{enumerate}
+\item On initialise le noeud temporaire que l'on ajoutera à la base de données.
+\item On associe \texttt{data} au pointeur \texttt{data} présent dans la structure \texttt{noeud}.
+\item On initialise le prochain n\oe{}ud de la liste \texttt{*suivant} à NULL.
+\item Si la tête \texttt{*tete} de la liste est \texttt{NULL}, alors la tête devient le nouveau n\oe{}ud. On arrête la fonction d'ajout là.
+\item Sinon, on fait une copie de la tête dans le n\oe{}ud \texttt{*suivant} que l'on avait initialisé à \texttt{NULL}.
+\item On déclare la tête comme étant le n\oe{}ud temporaire que l'on a initialisé.
+\end{enumerate}
+Dans une fonction, cette procédure ressemblerait à ça:
+\begin{lstlisting}
+  int ajouter_noeud( noeud *tete, int data )
+  {
+    noeud *temporaire = creer_noeud( data );
+    /* On cree le noeud temporaire qui stocke la donnee */
+    if( tete == NULL )
+    {
+      tete = temporaire;
+      return 1;
+    }
+    temporaire->suivant = tete;
+    tete = temporaire;
+    return 1;
+  }
+  noeud *tete = NULL;
+  ajouter_noeud( tete, 37 );
+\end{lstlisting}
+Si la fonction a eu du succés, la liste châinée ressemblera à ça: 
+\begin{tikzpicture}[list/.style={
+      rectangle split,
+      rectangle split parts=2,
+      draw,
+      rectangle split horizontal
+    },
+    >=stealth,
+    start chain]
+  \node[list,on chain] (C) {37};
+  \node[on chain,draw,inner sep=6pt] (D) {};
+  \draw (D.north east) -- (D.south west);
+  \draw (D.north west) -- (D.south east);
+  \draw[*->] let \p1 = (C.two), \p2 = (C.center) in (\x1,\y2) -- (D);
+\end{tikzpicture}
+
+Admettons que l'on souhaite ajouter une autre donnée à notre liste chaînée, on refait appel à la fonction:
+\begin{lstlisting}[firstnumber=16]
+  ajouter_noeud( tete, 99 );
+\end{lstlisting}
+
+Si la fonction a eu du succés, la liste châinée ressemblera à ça:
+\begin{tikzpicture}[list/.style={
+      rectangle split,
+      rectangle split parts=2,
+      draw,
+      rectangle split horizontal
+    },
+    >=stealth,
+    start chain]
+  \node[list,on chain] (B) {99};
+  \node[list,on chain] (C) {37};
+  \node[on chain,draw,inner sep=6pt] (D) {};
+  \draw (D.north east) -- (D.south west);
+  \draw (D.north west) -- (D.south east);
+  \draw[*->] let \p1 = (B.two), \p2 = (B.center) in (\x1,\y2) -- (C);
+  \draw[*->] let \p1 = (C.two), \p2 = (C.center) in (\x1,\y2) -- (D);
+\end{tikzpicture}
+
 \subsection{Suppression d'un n\oe{}ud d'une liste chaînée}
 \subsection{Affichage d'une liste chaînée}
 
