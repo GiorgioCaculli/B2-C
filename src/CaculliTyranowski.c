@@ -1554,8 +1554,8 @@ int menu( db_formation *f, db_personne *p )
                     while ( tmpndbp != NULL )
                     {
                         personne *tmpp = tmpndbp->p;
-                        fprintf( fdat_p, "%-24s %-24s %d   %d   ",
-                                 tmpp->nom, tmpp->prenom, tmpp->formateur, tmpp->nb_formations );
+                        fprintf( fdat_p, "%02d %-24s %-24s %d   %d   ",
+                                 tmpp->id, tmpp->nom, tmpp->prenom, tmpp->formateur, tmpp->nb_formations );
                         int i;
                         for ( i = 0; i < tmpp->nb_formations; i++ )
                         {
@@ -1579,11 +1579,12 @@ int menu( db_formation *f, db_personne *p )
                         fprintf( fdat_p, "\n" );
                         tmpndbp = tmpndbp->next;
                     }
+                    tmpndbp = tmpdbp->head;
                     while ( tmpndbf != NULL )
                     {
                         int i;
                         formation *tmpf = tmpndbf->f;
-                        fprintf( fdat_f, "%d ", tmpf->nb_prerequis );
+                        fprintf( fdat_f, "%02d %d ", tmpf->id, tmpf->nb_prerequis );
                         if ( tmpf->nb_prerequis > 0 )
                         {
                             for ( i = 0; i < tmpf->nb_prerequis; i++ )
@@ -1603,9 +1604,12 @@ int menu( db_formation *f, db_personne *p )
                         fprintf( fdat_f, "%.2f %-s\n", tmpf->prix, tmpf->nom );
                         tmpndbf = tmpndbf->next;
                     }
+                    tmpndbf = tmpdbf->head;
                     fclose( fdat_f );
                     fclose( fdat_p );
                     printf( "Changements sauvegardes!\n" );
+                    printf( "Voici le planning complet après les changements\n" );
+                    afficher_db_formation( tmpdbf );
                 }
                 printf( "Fermeture du programme...\n" );
                 printf( "Au revoir!\n" );
@@ -1636,14 +1640,15 @@ int main( void )
     {
         char nom[25], prenom[25];
         int formateur;
-        fscanf( fdat_p, "%24s %24s %d", nom, prenom, &formateur );
+        int id;
+        fscanf( fdat_p, "%d %24s %24s %d", &id, nom, prenom, &formateur );
         if( feof( fdat_p ) )
         {
             break;
         }
         personne *tmp = creer_personne( nom, prenom, formateur );
         fscanf( fdat_p, "%d", &tmp->nb_formations );
-        tmp->id = i;
+        tmp->id = id;
         int j;
         for( j = 0; j < tmp->nb_formations; j++ )
         {
@@ -1673,10 +1678,11 @@ int main( void )
 
     while( !feof( fdat_f ) )
     {
+        int id;
         int nb_prerequis, nb_jours;
         float prix;
         char nom_formation[40];
-        fscanf( fdat_f, "%d", &nb_prerequis );
+        fscanf( fdat_f, "%d %d", &id, &nb_prerequis );
         int prerequis[ nb_prerequis ];
         int j;
         for( j = 0; j < nb_prerequis; j++ )
@@ -1685,11 +1691,11 @@ int main( void )
         }
         fscanf( fdat_f, "%d", &nb_jours );
         int jours[ nb_jours ];
-        int heures[ nb_jours ];
-        int durees[ nb_jours ];
+        float heures[ nb_jours ];
+        float durees[ nb_jours ];
         for( j = 0; j < nb_jours; j++ )
         {
-            fscanf( fdat_f, "%d %d %d", &jours[j], &heures[j], &durees[j] );
+            fscanf( fdat_f, "%d %f %f", &jours[j], &heures[j], &durees[j] );
         }
         fscanf( fdat_f, "%f ", &prix );
         fgets( nom_formation, 40, fdat_f );
@@ -1702,7 +1708,7 @@ int main( void )
             nom_formation[ strlen( nom_formation ) - 1 ] = '\0';
         }
         formation *tmp = creer_formation( nom_formation, prix );
-        tmp->id = i;
+        tmp->id = id;
         tmp->nb_prerequis = nb_prerequis;
         for( j = 0; j < tmp->nb_prerequis; j++ )
         {
