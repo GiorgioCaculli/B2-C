@@ -578,8 +578,8 @@ Analysons ce que le code fait:
     \draw[*->] let \p1 = (D.two), \p2 = (D.center) in (\x1,\y2) -- (E);
     \draw[*->] let \p1 = (E.two), \p2 = (E.center) in (\x1,\y2) -- (F);
   \end{tikzpicture}
-\item On supprimer le noeud avec la valeur 10.
-\item On supprimer le noeud avec la valeur 42.\\
+\item On supprime le noeud avec la valeur 10.
+\item On supprime le noeud avec la valeur 42.\\
   Au final la liste ressemblera à ça:\\\\
   \begin{tikzpicture}[list/.style={
         rectangle split,
@@ -602,7 +602,7 @@ Analysons ce que le code fait:
   \end{tikzpicture}
 \end{enumerate}
 
-Voilà comment la suppression a interagit avec la liste chaînée et le nombre 10:
+Voici comment la suppression interagit avec la liste chaînée et le nombre 10:
 \begin{enumerate}
 \item Est-ce que le liste est vide? (\texttt{tete == NULL} ?)
   \begin{enumerate}
@@ -610,7 +610,7 @@ Voilà comment la suppression a interagit avec la liste chaînée et le nombre 1
   \end{enumerate}
 \item Est-ce que la donnée \texttt{data} équivaut à la donnée \texttt{tete->donnee} ?
   \begin{enumerate}
-    \item Oui car \texttt{tete->donneee = 10} et \texttt{data = 10}.
+    \item Oui car \texttt{tete->donnee = 10} et \texttt{data = 10}.
   \end{enumerate}
 \item On fait un backup de \texttt{tete->suivant} dans un n\oe{}ud temporaire.
 \item On libére le n\oe{}ud \texttt{tete}.
@@ -638,7 +638,7 @@ A ce stade de la modification, la liste ressemble à ça:\\\\
   \end{tikzpicture}
 \end{enumerate}
 
-Voilà comment la suppression a interagit avec la liste chaînée et le nombre 42:
+Voici comment la suppression interagit avec la liste chaînée et le nombre 42:
 \begin{enumerate}
 \item Est-ce que le liste est vide? (\texttt{tete == NULL} ?)
   \begin{enumerate}
@@ -646,7 +646,7 @@ Voilà comment la suppression a interagit avec la liste chaînée et le nombre 4
   \end{enumerate}
 \item Est-ce que la donnée \texttt{data} équivaut à la donnée \texttt{tete->donnee} ?
   \begin{enumerate}
-    \item Non car \texttt{tete->donneee = 12} et \texttt{data = 42}.
+    \item Non car \texttt{tete->donnee = 12} et \texttt{data = 42}.
   \end{enumerate}
 \item On commence à parcourir toute la liste tant que \texttt{tete != NULL}.
 \item On vérifie si \texttt{tete->suivant->donnee == data}
@@ -655,7 +655,7 @@ Voilà comment la suppression a interagit avec la liste chaînée et le nombre 4
   \end{enumerate}
 \item Si c'est le cas, on fait un backup du suivant du suivant dans un n\oe{}ud temporaire.
 \item On libère \texttt{tete->suivant}.
-\item On attribue à \texttt{tete->suivant} le n\oe{}ud \texttt{tete->suivant->suivant} qui est stocké dans le n\oe{}ud temporaire.\\
+\item On attribue à \texttt{tete->suivant} le n\oe{}ud \texttt{tete->suivant->suivant} (on pivote la liste vers la gauche et on libère l'espace mémoire qui était occupée par le 42).\\
 A ce stade de la modification, la liste ressemble à ça:\\\\
   \begin{tikzpicture}[list/.style={
         rectangle split,
@@ -677,18 +677,171 @@ A ce stade de la modification, la liste ressemble à ça:\\\\
   \end{tikzpicture}
 \end{enumerate}
 
-Si la fonction a réussi, on obtiendra 1 comme résultat, si pas, on obtiendra 0.
+Si la fonction a réussi, on obtiendra 1 comme résultat, si non, on obtiendra 0.
 
 \subsection{Affichage d'une liste chaînée}
 
-Pour l'affichage d'une liste châinée, on parcourt l'entièreté de la base de données \texttt{db\_formation *dbf}. Tant que la tête n'est pas \texttt{NULL}, on affichera les informations que l'on souhaite afficher de chaque formation présente dans la base de données.
+Pour l'affichage d'une liste châinée, on parcourt l'entièreté de la liste chaînée \texttt{noeud}. Tant que la tête n'est pas \texttt{NULL}, on affichera les informations que l'on souhaite afficher de chaque n\oe{}ud présente dans la liste chaînée.\\
+Généralement, le code en langage \texttt{C} ressemblerait à ça:
+\begin{lstlisting}
+  void afficher_list( noeud *tete )
+  {
+    while( tete != NULL )
+    {
+      printf( "%d ", tete->donnee );
+      /* Affiche 12 99 37 de maniere recursive */
+      tete = tete->suivant;
+    }
+  }
+  afficher_list(tete);
+\end{lstlisting}
+
+Si on se base sur la liste chaînée:
+  \begin{tikzpicture}[list/.style={
+        rectangle split,
+        rectangle split parts=2,
+        draw,
+        rectangle split horizontal
+      },
+      >=stealth,
+      start chain]
+    \node[list,on chain] (A) {12};
+    \node[list,on chain] (B) {99};
+    \node[list,on chain] (C) {37};
+    \node[on chain,draw,inner sep=6pt] (D) {};
+    \draw (D.north east) -- (D.south west);
+    \draw (D.north west) -- (D.south east);
+    \draw[*->] let \p1 = (A.two), \p2 = (A.center) in (\x1,\y2) -- (B);
+    \draw[*->] let \p1 = (B.two), \p2 = (B.center) in (\x1,\y2) -- (C);
+    \draw[*->] let \p1 = (C.two), \p2 = (C.center) in (\x1,\y2) -- (D);
+  \end{tikzpicture}
+
+Ce qui se passe dans le code est la manipulation suivante:
+\begin{enumerate}
+\item On vérifie si \texttt{tete} est différent de \texttt{NULL}.
+\item Si c'est le cas, on affiche dans la console la valeur \texttt{tete->donnee}
+\item On continue à parcourir la liste, donc \texttt{tete} devient \texttt{tete->suivant}
+  \item Même procédure tant que \texttt{tete != NULL}.
+\end{enumerate}
+
+Donc, l'affichage sera: 12 99 37 dans la console.
 
 \newpage
 \section{Énoncé}
+Le centre de formations propose les diverses formations de domaines différents. 
+Chaque formation a un coût fixé néanmoins certaines personnes ont droit pour la remise (en raison de chômage ou handicap par exemple). S’il y a une remise l’utilisateur doit indiquer pourcentage de cette remise lors d’ajout d’étudiant. Il est aussi obligatoire d’indiquer les prérequis de la formation et son horaire hebdomadaire. Logiciel doit permettre également de supprimer les formations, les étudiants et retirer les étudiant d’une formation choisi. 
+Plan hebdomadière de cours sera généré à partir les informations de la base des données.
 
 \newpage
 \section{Programme}
+Utilisateur pourra naviguer le programme par la console où il choisira une des commandes parmi afficher, ajouter ou supprimer. Afin de sauvegarder les listes d’étudiants, formateurs et formations nous utiliseront les listes chaînes. Logiciel est codé en langage C.
 \subsection{Mode d'emploi}
+\subsubsection{Menu principale}
+Tous les traitements se feront dans la console du logiciel en lisant l'entrée du clavier.
+\begin{figure}[ht]
+  \centering
+  \includegraphics[trim=0 150 0 0, clip, width=\textwidth]{images/01.png}
+\end{figure}\\
+Pour naviguer dans le menu, il faut frapper entre 0 et 4 sur le clavier et confirmer avec Enter.
+
+\subsubsection{Menu affichage}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[trim=0 190 0 0, clip, width=\textwidth]{images/02.png}
+\end{figure}
+Choisissez une option parmi 1, 2 et 3 et confirmez avec Enter pour continuer.
+
+\newpage
+\subsubsection{Liste des personnes}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[trim=0 40 0 0, clip, width=\textwidth]{images/03.png}
+\end{figure}
+Affiche l'ID, le nom de famille, le prénom et le statut (étudiant ou formateur) sous la forme d'une liste.
+
+\subsubsection{Liste des formations}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[trim=0 60 0 0, clip, width=\textwidth]{images/04.png}
+\end{figure}
+Affiche l'ID, le nom et le prix de chaque formation disponible dans la base de données sous la forme d'une liste.
+
+\newpage
+\subsubsection{Planning de la semaine}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{images/05.png}
+\end{figure}
+Les informations sont groupées par jour suivi par le nom de la formation, les différents formateurs, les élèves qui y participent et l'horaiare. Les prérequis pour les cours sont dictés en bas, exemple Sociologie est un prérequis pour le cours de Microbiologie
+
+\newpage
+\subsubsection{Menu ajout}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[trim=0 210 0 0, clip, width=\textwidth]{images/06.png}
+\end{figure}
+Il est possible d'ajouter une nouvelle personne à la base de données ou ajouter une nouvelle formation à la base de données.
+
+\subsubsection{Ajout d'une personne}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{images/07.png}
+\end{figure}
+L'ajout d'une personne se passe de la manière suivante:
+\begin{enumerate}
+\item Il faut insérer son nom de famille.
+\item Il faut insérer son prénom.
+\item Il faut insérer son statut (étudiant ou formateur), "f" pour formateur, "e" pour étudiant.
+\item Il faut insérer le nombre de jours où le formateur est indisponible.
+\item Dépendamment du nombre de jour, il faudra attribuer le jour corréspondant à ceux dans la liste ( 1 - lundi, 2 - mardi, etc\ldots)
+  \item Il faut confirmer par "o" ou "n" (oui ou non) si l'on souhaite effectivement ajouter la nouvelle personne dans la base de données.
+\end{enumerate}
+
+\newpage
+\begin{figure}[ht]
+  \centering
+  \includegraphics[trim=0 180 0 10, clip, width=\textwidth]{images/08.png}
+\end{figure}
+Si la personne a été correctement ajoutée à la base de données, un message de confirmation apparaîtra en haut du menu.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[trim=0 110 0 0, clip, width=\textwidth]{images/09.png}
+\end{figure}
+Lorsqu'on ajout un étudiant, il faut indiquer son nom de famille, son prénom et la remise éventuelle.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[trim=0 180 0 0, clip, width=\textwidth]{images/10.png}
+\end{figure}
+Même message de confirmation pour l'étudiant.
+
+
+\newpage
+\subsubsection{Ajout d'une formation}
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\textwidth]{images/11.png}
+\end{figure}
+L'ajout d'une formation se passe de la manière suivante:
+\begin{enumerate}
+\item Il faut insérer son nom.
+\item Il faut insérer son prix.
+\item Il faut insérer insérer s'il y a des prérequis ou pas par "o" (oui) et "n" (non).
+\item Si oui, il faut insérer le nombre de prérequis et l'ID des cours qui seraient des prérequis.
+\item Ensuite il faut dire combiends de fois par semaine le cours a lieu.
+\item Dépendamment du nombre de jour, il faudra attribuer le jour corréspondant à ceux dans la liste ( 1 - lundi, 2 - mardi, etc\ldots)
+\item Il faut insérer vers quelle heure le cours commence. (En format HH.MM)
+\item Il faut insérer combien d'heures dure le cours. (En format HH.MM)
+\item Il faut confirmer par "o" ou "n" (oui ou non) si l'on souhaite effectivement ajouter la nouvelle personne dans la base de données.
+\end{enumerate}
+
+\newpage
+\begin{figure}[ht]
+  \centering
+  \includegraphics[trim=0 15 10 10, clip, width=\textwidth]{images/12.png}
+\end{figure}
+Un message de confirmation apparaîtra au dessus du menu.
 
 \newpage
 \section{Code}
