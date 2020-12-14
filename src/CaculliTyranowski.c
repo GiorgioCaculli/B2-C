@@ -633,6 +633,13 @@ void menu_creer_formation( db_formation *f )
         printf( "* Cout de la formation: " );
         scanf( "%f", &prix );
         getchar();
+        while( prix < 0 )
+        {
+            printf( "* Option %.2f - INVALIDE: Min 0\n", prix );
+            printf( "* Cout de la formation: " );
+            scanf( "%f", &prix );
+            getchar();
+        }
         formation *tmpf = creer_formation( nom, prix );
         tmpf->id = tmpdbf->head->f->id + 1;
         char choix_prerequis[4];
