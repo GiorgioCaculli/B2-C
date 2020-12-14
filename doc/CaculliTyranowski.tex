@@ -515,7 +515,7 @@ Cette procédure pourrait être écrite de la manière suivante:
       return 0;
     }
     noeud *temporaire = NULL;
-    if( tete->data == date )
+    if( tete->data == data )
     {
       temporaire = tete->suivant;
       free( tete );
@@ -536,11 +536,11 @@ Cette procédure pourrait être écrite de la manière suivante:
     return 0;
   }
   noeud *tete = NULL;
-  ajouter_noeud( tete, creer_noeud( 37 ) );
-  ajouter_noeud( tete, creer_noeud( 99 ) );
-  ajouter_noeud( tete, creer_noeud( 42 ) );
-  ajouter_noeud( tete, creer_noeud( 12 ) );
-  ajouter_noeud( tete, creer_noeud( 10 ) );
+  ajouter_noeud( tete, 37 );
+  ajouter_noeud( tete, 99 );
+  ajouter_noeud( tete, 42 );
+  ajouter_noeud( tete, 12 );
+  ajouter_noeud( tete, 10 );
   supprimer_noeud( tete, 10 );
   supprimer_noeud( tete, 42 );
 \end{lstlisting}
@@ -549,11 +549,11 @@ Analysons ce que le code fait:
 \begin{enumerate}
   \setcounter{enumi}{26}
 \item On crée la tête à NULL
-\item On ajouter dans la liste chaînée le noeud avec la donnée 37.
-\item On ajouter dans la liste chaînée le noeud avec la donnée 99.
-\item On ajouter dans la liste chaînée le noeud avec la donnée 42.
-\item On ajouter dans la liste chaînée le noeud avec la donnée 12.
-\item On ajouter dans la liste chaînée le noeud avec la donnée 10.\\
+\item On ajoute dans la liste chaînée la variable 37 qui sera stockée dans un n\oe{}ud.
+\item On ajoute dans la liste chaînée la variable 99 qui sera stockée dans un n\oe{}ud.
+\item On ajoute dans la liste chaînée la variable 42 qui sera stockée dans un n\oe{}ud.
+\item On ajoute dans la liste chaînée la variable 12 qui sera stockée dans un n\oe{}ud.
+\item On ajoute dans la liste chaînée la variable 10 qui sera stockée dans un n\oe{}ud.\\
   À l'état actuel des choses, la liste ressemble à ça:\\\\
   \begin{tikzpicture}[list/.style={
         rectangle split,
@@ -680,6 +680,8 @@ A ce stade de la modification, la liste ressemble à ça:\\\\
 Si la fonction a réussi, on obtiendra 1 comme résultat, si pas, on obtiendra 0.
 
 \subsection{Affichage d'une liste chaînée}
+
+Pour l'affichage d'une liste châinée, on parcourt l'entièreté de la base de données \texttt{db\_formation *dbf}. Tant que la tête n'est pas \texttt{NULL}, on affichera les informations que l'on souhaite afficher de chaque formation présente dans la base de données.
 
 \newpage
 \section{Énoncé}
