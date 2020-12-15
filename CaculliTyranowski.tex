@@ -739,29 +739,29 @@ Donc, l'affichage sera: 12 99 37 dans la console.
 Le centre de formations propose diverses formations dans différents domaines.\\\\
 Chaque \textbf{formation} est caractérisée par:
 \begin{itemize}
-  \item Un identifiant unique
-  \item Un nombre de prerequis
-  \item Les identifiants des formations qui seraient des prérequis
-  \item Le nombre de jours où la formations a lieu
-  \item Le jour précis (sous forme de int 1 - lundi, 2 - mardi, etc\ldots)
-  \item L'heure de début de la formation
-  \item La durée de la formation en heures
-  \item Un coût fixe
-  \item Un nom
+\item Un identifiant unique (un nombre entier)
+\item Un nombre de prérequis (Un nombre entier de 0 à 10)
+\item Les identifiants des formations qui seraient des prérequis (On suppose qu'une formation ne peut avoir que 10 prérequis maximum)
+\item Le nombre de jours où la formations a lieu (un entier de 1 à 7)
+\item Le jour précis (sous forme de int 1 - lundi, 2 - mardi, etc\ldots)
+\item L'heure de début de la formation (en format 08.15)
+\item La durée de la formation en heures (un nombre entier)
+\item Un coût fixe (Un float positif)
+\item Un nom (40 caractères maximum)
 \end{itemize}
 Le nombre de formations est indéfini.\\\\
 Un nombre indéfini de personnes peuvent participer à n'importe quelle formation, bien des formateurs que des étudiants.\\\\
 Une \textbf{personne} est caractérisée par:
 \begin{itemize}
-\item Un identifiant unique
-\item Un nom de famille
-\item Un prénom
+\item Un identifiant unique (Un nombre entier)
+\item Un nom de famille (25 caractères maximum)
+\item Un prénom (25 caractères maximum)
 \item S'il/elle est formateur ou pas (1 formateur, 0 étudiant)
 \item Le nombre de formations auquel il/elle participe (On suppose que dans une année, une personne quelconque ne puisse participer qu'à 30 formations maximum)
-\item Dans le cas d'un formateur, le nombre de jour où il/elle aurait des indisponibilités
+\item Dans le cas d'un formateur, le nombre de jour où il/elle aurait des indisponibilités (de 1 à 7)
 \item Suivi par le jours précis où il/elle aurait des indisponibilités (1 - lundi, 2 - mardi, etc\ldots) 
 \item Dans le cas d'un étudiant, il se peut qu'il/elle ait droit à une remise. (1 - oui, 0 - non)
-\item Si c'est le cas, le pourcentage de sa remise sera précisé
+\item Si c'est le cas, le pourcentage de sa remise sera précisé (de 0 à 100)
 \end{itemize}\leavevmode\newline
 Points importants à maîtriser :
 \begin{itemize}
