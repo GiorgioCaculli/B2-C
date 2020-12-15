@@ -20,7 +20,7 @@ char *clear = "clear";
  * int formations[30] : Vecteur qui stockera les identifiants des differentes formations auquel la personne participera
  * (On suppose dans une annee, une personne ne peut participer qu'a 30 formations maximum)
  * int nb_jours_indisponible : Si la personne est un formateur, il se peut qu'il/elle ait des jours d'indisponibile,
- * cette variable va stocker le nombre de jours où cette personne est indisponile (maximum 7)
+ * cette variable va stocker le nombre de jours ou cette personne est indisponile (maximum 7)
  * int jours_indisponibles[7] : Le vecteur qui stockera les jours auquel le formateur ne sera pas disponible
  * (1 - lundi, 2 - mardi, etc...)
  * int reduction : Si la personne est un etudiant, il se peut qu'il ait une reduction sur son minerval,
@@ -58,7 +58,7 @@ typedef struct noeud_db_personne
  * Cette structure sert a contenir tous les differentes noeuds noeud_db_personne.
  * C'est a partir de cette structure que l'on stockera les differentes noeuds qui eux-memes stockeront
  * leurs personnes respectives.
- * noeud_db_personne *head : La tete de la liste chaînee qui stockera toutes les personnes.
+ * noeud_db_personne *head : La tete de la liste chainee qui stockera toutes les personnes.
  */
 typedef struct db_personne
 {
@@ -81,15 +81,15 @@ typedef struct noeud_formation
  * Voici ce que chaque partie represente:
  * int id : L'identifiant unique de la formation.
  * char nom[40] : Le nom de la formation (40 caracteres maximum).
- * float prix : Le coût de la formation.
- * int nb_jours : Le nombre de jours par semaine où cette formation a cours.
- * int jours[7] : Vecteur contenant les jours où la formation a cours.
+ * float prix : Le cout de la formation.
+ * int nb_jours : Le nombre de jours par semaine ou cette formation a cours.
+ * int jours[7] : Vecteur contenant les jours ou la formation a cours.
  * float heures[24] : Le nombre d'heures du debut de la formation.
  * float durees[10] : Les differentes durees du cours lors de la semaine.
  * int nb_prerequis : Le nombre de prerequis pour avoir acces a cette formation.
  * int prerequis[10] : Vecteur contenant les identifiants des formations qui seraient des prerequis.
- * noeud_formation *head : Étant donne qu'une formation stocke des personnes,
- * elle-meme est une liste chaînee qui stockera un nombre indetermine de participants.
+ * noeud_formation *head : Etant donne qu'une formation stocke des personnes,
+ * elle-meme est une liste chainee qui stockera un nombre indetermine de participants.
  */
 typedef struct formation
 {
@@ -120,9 +120,9 @@ typedef struct noeud_db_formation
 
 /*
  * Cette structure aussi suit la meme logique que la structure db_formation.
- * Elle sert de tete pour la la liste chaînee et c'est a partir de cette structure-ci que l'on demarrera
+ * Elle sert de tete pour la la liste chainee et c'est a partir de cette structure-ci que l'on demarrera
  * les differentes interactions avec la base de donnees des formations.
- * noeud_db_formation *head : La tete de la liste chaînee qui stockera les differentes formations.
+ * noeud_db_formation *head : La tete de la liste chainee qui stockera les differentes formations.
  */
 typedef struct db_formation
 {
@@ -175,7 +175,7 @@ db_personne *creer_db_personne()
 /*
  * Cette fonction sert a initialiser un pointeur noeud_db_personne *ndb qui stockera personne *p
  * dans la base de donnees db_personne *db.
- * Ici, l'ajout dans la liste chaînee a lieu par le mecanisme suivant:
+ * Ici, l'ajout dans la liste chainee a lieu par le mecanisme suivant:
  * On initialise le noeud temporaire que l'on ajoutera a la base de donnees.
  * On associe p au pointeur p present dans la structure noeud_db_personne.
  * On initialise le prochain noeud de la liste *next a NULL.
@@ -208,7 +208,7 @@ void ajouter_db_personne( db_personne *db, personne *p )
  * On libere l'espace memoire occupe par head avec la fonction free(dbp->head).
  * On attribue a dbp->head le noeud temporaire que l'on avait cree.
  * On arrete la fonction.
- * Sinon, on parcourt l'entierete de la liste jusqu'au moment où l'on trouve la personne qui a le meme id que
+ * Sinon, on parcourt l'entierete de la liste jusqu'au moment ou l'on trouve la personne qui a le meme id que
  * l'id en parametre.
  * Si on le trouve, on pivote l'element qui suit vers l'element que l'on vient de supprimer.
  * On arrete la fonction, si reussite, on obtient 1, si pas, on obtient 0.
@@ -311,7 +311,7 @@ formation *creer_formation( char nom[], float prix )
 /*
  * Cette fonction sert a initialiser un pointeur noeud_formation *nf qui stockera personne *p qui participera
  * dans formation *f. Ici,
- * l'ajout dans la liste chaînee a lieu par le mecanisme suivant:
+ * l'ajout dans la liste chainee a lieu par le mecanisme suivant:
  * On initialise le noeud temporaire que l'on ajoutera dans la formation.
  * On associe p au pointeur p present dans la structure noeud_formation.
  * On initialise le prochain noeud de la liste *next a NULL.
@@ -353,7 +353,7 @@ int ajouter_formation( formation *f, personne *p )
  * On libere l'espace memoire occupe par head avec la fonction free(f->head).
  * On attribue a f->head le noeud temporaire que l'on avait cree.
  * On arrete la fonction.
- * Sinon, on parcourt l'entierete de la liste jusqu'au moment où l'on trouve la personne
+ * Sinon, on parcourt l'entierete de la liste jusqu'au moment ou l'on trouve la personne
  * qui a le meme id que l'id en parametre.
  * Si on le trouve, on pivote l'element qui suit vers l'element que l'on vient de supprimer.
  * On arrete la fonction, si reussite, on obtient 1, si pas, on obtient 0.
@@ -449,7 +449,7 @@ db_formation *creer_db_formation()
 /*
  * Cette fonction sert a initialiser un pointeur noeud_db_formation *ndb qui stockera formation *f dans
  * la base de donnees db_formation *db.
- * Ici, l'ajout dans la liste chaînee a lieu par le mecanisme suivant:
+ * Ici, l'ajout dans la liste chainee a lieu par le mecanisme suivant:
  * On initialise le noeud temporaire que l'on ajoutera a la base de donnees.
  * On associe f au pointeur f present dans la structure noeud_db_formation.
  * On initialise le prochain noeud de la liste *next a NULL.
@@ -482,7 +482,7 @@ void ajouter_db_formation( db_formation *db, formation *f )
  * On libere l'espace memoire occupe par head avec la fonction free(dbf->head).
  * On attribue a dbf->head le noeud temporaire que l'on avait cree.
  * On arrete la fonction.
- * Sinon, on parcourt l'entierete de la liste jusqu'au moment où l'on trouve la formation qui
+ * Sinon, on parcourt l'entierete de la liste jusqu'au moment ou l'on trouve la formation qui
  * a le meme id que l'id en parametre.
  * Si on le trouve, on pivote l'element qui suit vers l'element que l'on vient de supprimer.
  * On arrete la fonction, si reussite, on obtient 1, si pas, on obtient 0.
@@ -547,7 +547,7 @@ formation *get_formation( db_formation *dbf, char nom_formation[] )
 /*
  * Cette fonction sert a initialiser un pointeur noeud_db_formation *ndb qui stockera formation *f dans
  * la base de donnees db_formation *db.
- * Ici, l'ajout dans la liste chaînee a lieu par le mecanisme suivant:
+ * Ici, l'ajout dans la liste chainee a lieu par le mecanisme suivant:
  * On initialise le noeud temporaire que l'on ajoutera a la base de donnees.
  * On associe f au pointeur f present dans la structure noeud_db_formation.
  * On initialise le prochain noeud de la liste *next a NULL.
