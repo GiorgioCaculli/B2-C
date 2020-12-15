@@ -390,3 +390,4 @@ TSWLatexianTemp*
 #*Notes.bib
 texput.log
 config.h.in~
+*.ist
