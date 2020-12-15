@@ -703,11 +703,11 @@ void menu_creer_formation( db_formation *f )
             }
         }
         int nb_jours;
-        printf( "* Combien de fois par semaine a le cours lieu ? " );
+        printf( "* Combien de fois par semaine a la formation lieu ? " );
         while( scanf( "%d", &nb_jours ) != 1 )
         {
             printf( "Option %d - INVALIDE: Max 7 jours Min 1 jour\n", nb_jours );
-            printf( "* Combien de fois par semaine a le cours lieu ? " );
+            printf( "* Combien de fois par semaine a la formation lieu ? " );
             scanf( "%d", &nb_jours );
             getchar();
         }
@@ -715,7 +715,7 @@ void menu_creer_formation( db_formation *f )
         while( nb_jours > 7 || nb_jours <= 0 )
         {
             printf( "Option %d - INVALIDE: Max 7 jours Min 1 jour\n", nb_jours );
-            printf( "* Combien de fois par semaine a le cours lieu ? " );
+            printf( "* Combien de fois par semaine a laformation lieu ? " );
             scanf( "%d", &nb_jours );
             getchar();
         }
@@ -724,31 +724,31 @@ void menu_creer_formation( db_formation *f )
         for ( i = 0; i < tmpf->nb_jours; i++ )
         {
             int jour;
-            printf( "* A quel jour de la semain a le cours lieu N. %d ? ", i + 1 );
+            printf( "* Quel jour de la semaine a la formation N. %d lieu ? ", i + 1 );
             while( scanf( "%d", &jour ) != 1 || jour < 0 || jour > 7  )
             {
                 printf( "* Option %d - INVALIDE: Max 7 Min 1\n", i );
-                printf( "* A quel jour de la semain a le cours lieu N. %d ? ", i + 1 );
+                printf( "* Quel jour de la semaine a la formation N. %d lieu ? ", i + 1 );
                 scanf( "%d", &jour );
                 getchar();
             }
             tmpf->jours[i] = jour;
             float heure;
-            printf( "* A quelle heure a-t-il lieu (eg. 08.15) ? " );
+            printf( "* A quelle heure debute la formation (ex. 08.15) ? " );
             while( scanf( "%f", &heure ) != 1 || heure > 18 || heure < 6 )
             {
-                printf( "* Option %.2f - INVALIDE: MAX 18 MIN 6\n", heure );
-                printf( "* A quelle heure a-t-il lieu (eg. 08.15) ? " );
+                printf( "* Option %.2f - INVALIDE: MIN 6 MAX 18\n", heure );
+                printf( "* A quelle heure debute la formation (ex. 08.15) ? " );
                 scanf( "%f", &heure);
                 getchar();
             }
             tmpf->heures[i] = heure;
             float duree;
-            printf( "* Combien d'heures dure le cours ? " );
+            printf( "* Combien d'heures dure la formation ? " );
             while( scanf( "%f", &duree ) != 1 || duree > 8 || duree < 2 )
             {
-                printf( "* Option %.2f - INVALIDE: MAX 8 heures MIN 2 heures\n", duree );
-                printf( "* A quelle heure a-t-il lieu (eg. 08.15) ? " );
+                printf( "* Option %.2f - INVALIDE: MIN 2 heures MAX 8 heures\n", duree );
+                printf( "* Combien d'heures dure la formation ? " );
                 scanf( "%f", &duree);
                 getchar();
             }
