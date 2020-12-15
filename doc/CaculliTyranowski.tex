@@ -736,9 +736,45 @@ Donc, l'affichage sera: 12 99 37 dans la console.
 
 \newpage
 \section{Énoncé}
-Le centre de formations propose les diverses formations de domaines différents. 
-Chaque formation a un coût fixé néanmoins certaines personnes ont droit pour la remise (en raison de chômage ou handicap par exemple). S’il y a une remise l’utilisateur doit indiquer pourcentage de cette remise lors d’ajout d’étudiant. Il est aussi obligatoire d’indiquer les prérequis de la formation et son horaire hebdomadaire. Logiciel doit permettre également de supprimer les formations, les étudiants et retirer les étudiant d’une formation choisi. 
-Plan hebdomadière de cours sera généré à partir les informations de la base des données.
+Le centre de formations propose diverses formations dans différents domaines.\\ 
+Chaque \textbf{formation} est caractérisée par:
+\begin{itemize}
+  \item Un identifiant unique
+  \item Un nombre de prerequis
+  \item Les identifiants des formations qui seraient des prérequis
+  \item Le nombre de jours où la formations a lieu
+  \item Le jour précis (sous forme de int 1 - lundi, 2 - mardi, etc\ldots)
+  \item L'heure de début de la formation
+  \item La durée de la formation
+  \item Un coût fixe
+  \item Un nom
+\end{itemize}
+Le nombre de formations est indéfini.\\
+Un nombre indéfini de personnes peuvent participer à n'importe quelle formation, bien des formateurs que des étudiants.\\
+Une \textbf{personne} est caractérisée par:
+\begin{itemize}
+\item Un identifiant unique
+\item Un nom de famille
+\item Un prénom
+\item S'il/elle est formateur ou pas (1 formateur, 0 étudiant)
+\item Le nombre de formations auquel il/elle participe (On suppose que dans une année, une personne quelconque ne puisse participer qu'à 30 formations maximum)
+\item Dans le cas d'un formateur, le nombre de jour où il/elle aurait des indisponibilités
+\item Suivi par le jours précis où il/elle aurait des indisponibilités (1 - lundi, 2 - mardi, etc\ldots) 
+\item Dans le cas d'un étudiant, il se peut qu'il/elle ait droit à une remise. (1 - oui, 0 - non)
+\item Si c'est le cas, le pourcentage de sa remise sera précisé
+\end{itemize}
+
+Étant donné qu'il n'y a pas de nombre maximal de personnes qui peuvent être inscrits dans le centre de formations, et qu'il n'y a pas de nombre maximal de formations qu'un centre de formations puisse proposer, le stockage par vecteurs des diverses personnes et formations n'est pas permis. Dès lors il faut initialiser des listes chaînées qui stockeront les diverses informations.\\
+Il devra être possible de:
+\begin{itemize}
+\item Ajouter des nouvelles personnes ou formations dans leurs respectives bases de données
+\item Supprimer des personnes ou des formations entièrement de leurs respectives bases de données
+\item Supprimer une personne spécifique d'une formation spécifique
+\item Afficher les informations stockées dans les respectives bases de données.
+\item Afficher un planning de la semaine détaillé
+\item Sauvegarder toute modification faite
+\end{itemize}
+En résultat, il est demandé d'obtenir le planning détaillé de la semaine dans un fichier \texttt{CaculliTyraniwski.res}
 
 \newpage
 \section{Programme}
