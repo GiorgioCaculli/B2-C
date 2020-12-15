@@ -1011,13 +1011,13 @@ void menu_ajouter_formation( db_formation *f, db_personne *p )
     printf( "*  0 Retour                                                                    *\n" );
     printf( "********************************************************************************\n" );
     int cours;
-    printf( "* A quel cours voudriez vous attribuer une personne? " );
+    printf( "* A quelle formation voudriez vous attribuer une personne? " );
     scanf( "%d", &cours );
     getchar();
     while( cours < 0 && cours > tmpndbf->f->id )
     {
         printf( "* Valeur %d - INVALIDE! *\n", cours );
-        printf( "* A quel cours voudriez vous attribuer une personne? " );
+        printf( "* A quelle formation voudriez vous attribuer une personne? " );
         scanf( "%d", &cours );
         getchar();
     }
@@ -1033,19 +1033,19 @@ void menu_ajouter_formation( db_formation *f, db_personne *p )
             printf( "********************************************************************************\n" );
             printf( "* Liste des personnes                                                          *\n" );
             printf( "********************************************************************************\n" );
-            printf( "* Cours choisi: %-40s                       *\n", tmpndbf->f->nom );
+            printf( "* Formation choisie: %-40s                  *\n", tmpndbf->f->nom );
             printf( "********************************************************************************\n" );
             afficher_db_personne( tmpdbp );
             printf( "*  0 Retour                                                                    *\n" );
             printf( "********************************************************************************\n" );
             int p;
-            printf( "* Qui voudriez vous attribuer au cours de: %s ? ", tmpndbf->f->nom );
+            printf( "* Qui voudriez vous attribuer a la formation : %s ? ", tmpndbf->f->nom );
             scanf( "%d", &p );
             getchar();
             while( p < 0 && p > tmpndbp->p->id )
             {
                 printf( "* Valeur %d - INVALIDE\n", p );
-                printf( "* Qui voudriez vous attribuer au cours de: %s ? ", tmpndbf->f->nom );
+                printf( "* Qui voudriez vous attribuer a la formation : %s ? ", tmpndbf->f->nom );
                 scanf( "%d", &p );
                 getchar();
             }
@@ -1059,7 +1059,7 @@ void menu_ajouter_formation( db_formation *f, db_personne *p )
                 if ( p == tmpndbp->p->id )
                 {
                     char confirmation[4];
-                    printf( "* Etes vous sur de vouloir attribuer %s %s au cours de %s ? (o/n) ",
+                    printf( "* Etes vous sur de vouloir attribuer %s %s a la formation %s ? (o/n) ",
                             tmpndbp->p->nom, tmpndbp->p->prenom, tmpndbf->f->nom );
                     scanf( "%s", confirmation );
                     while( strcmp( confirmation, "o" ) != 0 && strcmp( confirmation, "oui" ) != 0 &&
@@ -1076,19 +1076,19 @@ void menu_ajouter_formation( db_formation *f, db_personne *p )
                             tmpndbp->p->nb_formations += 1;
                             tmpndbp->p->formations[ tmpndbp->p->nb_formations - 1 ] = tmpndbf->f->id;
                             system( clear );
-                            printf( "* %s %s a ete attribue(e) au cours de %s avec succes *\n",
+                            printf( "* %s %s a ete attribue(e) a la formation %s avec succes *\n",
                                     tmpndbp->p->nom, tmpndbp->p->prenom, tmpndbf->f->nom );
                             break;
                         }
                         system( clear );
-                        printf( "* %s %s est deja present dans le cours de %s *\n" ,
+                        printf( "* %s %s est deja present dans la formation %s *\n" ,
                                 tmpndbp->p->nom, tmpndbp->p->prenom, tmpndbf->f->nom );
                         break;
                     }
                     else
                     {
                         system( clear );
-                        printf( "* %s %s n'a PAS ete attribue(e) au cours de %s *\n" ,
+                        printf( "* %s %s n'a PAS ete attribue(e) a la formation %s *\n" ,
                                 tmpndbp->p->nom, tmpndbp->p->prenom, tmpndbf->f->nom );
                     }
                 }
@@ -1187,7 +1187,7 @@ void menu_supprimer_formation( db_formation *dbf, db_personne *dbp )
     db_personne *tmpdbp = dbp;
     noeud_db_personne *tmpndbp = tmpdbp->head;
     printf( "********************************************************************************\n" );
-    printf( "* MENU SUPPRESSION : Liste des cours                                           *\n" );
+    printf( "* MENU SUPPRESSION : Liste des formations                                      *\n" );
     printf( "********************************************************************************\n" );
     printf( "* %2s %-40s                                  *\n", "ID", "Nom" );
     printf( "* ---------------------------------------------------------------------------- *\n" );
@@ -1274,7 +1274,7 @@ int menu_supprimer_personne_de_formation( db_formation *dbf )
     db_formation *tmpdbf = dbf;
     noeud_db_formation *tmpndbf = tmpdbf->head;
     printf( "********************************************************************************\n" );
-    printf( "* MENU SUPPRESSION : Liste des cours                                           *\n" );
+    printf( "* MENU SUPPRESSION : Liste des formations                                      *\n" );
     printf( "********************************************************************************\n" );
     while ( tmpndbf != NULL )
     {
@@ -1322,13 +1322,13 @@ int menu_supprimer_personne_de_formation( db_formation *dbf )
             tmpnf = tmpf->head;
             printf( "*  0 Retour                                                                    *\n" );
             int idp;
-            printf( "* Quelle personne voudriez vous supprimer de ce cours ? " );
+            printf( "* Quelle personne voudriez vous supprimer de cette formation ? " );
             scanf( "%d", &idp );
             getchar();
             while( idp < 0 && idp > tmpnf->p->id )
             {
                 printf( "* Option %d - INVALIDE\n", idp );
-                printf( "* Quelle personne voudriez vous supprimer de ce cours ? " );
+                printf( "* Quelle personne voudriez vous supprimer de cette formation ? " );
                 scanf( "%d", &idp );
                 getchar();
             }
@@ -1343,7 +1343,7 @@ int menu_supprimer_personne_de_formation( db_formation *dbf )
                 if( tmpp->id == idp )
                 {
                     char confirmation[4];
-                    printf( "* Etes vous sur de vouloir supprimer %s %s du cours %s ? (o/n) ",
+                    printf( "* Etes vous sur de vouloir supprimer %s %s de la formation %s ? (o/n) ",
                             tmpp->nom, tmpp->prenom, tmpf->nom );
                     scanf( "%s", confirmation );
                     while( strcmp( confirmation, "o" ) != 0 && strcmp( confirmation, "oui" ) != 0 &&
@@ -1370,7 +1370,7 @@ int menu_supprimer_personne_de_formation( db_formation *dbf )
                             }
                         }
                         system( clear );
-                        printf( "* %s %s a ete supprime du cours %s avec succes *\n",
+                        printf( "* %s %s a ete supprime de la formation %s avec succes *\n",
                                 tmpp->nom, tmpp->prenom, tmpf->nom );
                         printf( "\n\n" );
                         afficher_formation( tmpf );
@@ -1379,7 +1379,7 @@ int menu_supprimer_personne_de_formation( db_formation *dbf )
                     else
                     {
                         system( clear );
-                        printf( "* %s %s n'a PAS ete supprime du cours %s *\n",
+                        printf( "* %s %s n'a PAS ete supprime de la formation %s *\n",
                                 tmpp->nom, tmpp->prenom, tmpf->nom );
                     }
                 }

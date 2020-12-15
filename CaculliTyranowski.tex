@@ -767,7 +767,7 @@ Points importants à maîtriser :
 \item Étant donné qu'il n'y a pas de nombre maximal de personnes qui peuvent être inscrits dans le centre de formations, et qu'il n'y a pas de nombre maximal de formations qu'un centre de formations puisse proposer, le stockage par vecteurs des diverses personnes et formations n'est pas permis. Dès lors il faut initialiser des listes chaînées qui stockeront les diverses informations.
 \item Le logiciel doit pouvoir afficher la liste des personnes ainsi que la liste des formations, et à partir de ces données, générer un planning pour la semaine.
 \item Il doit être également possible d'ajouter et de supprimer des nouvelles personne ou personnes dans leurs respectives bases de données.
-\item La possibilité de pouvoir attribuer une personne à un cours et de pouvoir la retirer d'un cours doit être prise en compte.
+\item La possibilité de pouvoir attribuer une personne à une formation et de pouvoir la retirer d'une formation doit être prise en compte.
 \item Toutes les opérations doivent être dynamiques, donc, toute manipulation doit être possible à partir du moment où le programme est lancé jusqu'au moment où il est arrêté.
 \end{itemize}
 
@@ -820,7 +820,7 @@ Affiche l'ID, le nom et le prix de chaque formation disponible dans la base de d
   \centering
   \includegraphics[scale=0.8]{images/05.png.png}
 \end{figure}
-Les informations sont groupées par jour suivi par le nom de la formation, les différents formateurs, les élèves qui y participent et l'horaiare. Les prérequis pour les cours sont dictés en bas, exemple Biologie est un prérequis pour le cours de Microbiologie
+Les informations sont groupées par jour suivi par le nom de la formation, les différents formateurs, les élèves qui y participent et l'horaiare. Les prérequis pour les formations sont dictées en bas, exemple Biologie est un prérequis pour la formation Microbiologie
 
 \newpage
 \subsubsection{Menu ajout}
@@ -874,11 +874,11 @@ L'ajout d'une formation se passe de la manière suivante:
 \item Il faut insérer son nom.
 \item Il faut insérer son prix.
 \item Il faut insérer insérer s'il y a des prérequis ou pas par "o" (oui) et "n" (non).
-\item Si oui, il faut insérer le nombre de prérequis et l'ID des cours qui seraient des prérequis.
-\item Ensuite il faut dire combiends de fois par semaine le cours a lieu.
+\item Si oui, il faut insérer le nombre de prérequis et l'ID des formations qui seraient des prérequis.
+\item Ensuite il faut dire combiends de fois par semaine la formation a lieu.
 \item Dépendamment du nombre de jour, il faudra attribuer le jour corréspondant à ceux dans la liste ( 1 - lundi, 2 - mardi, etc\ldots)
-\item Il faut insérer vers quelle heure le cours commence. (En format HH.MM)
-\item Il faut insérer combien d'heures dure le cours. (En format HH.MM)
+\item Il faut insérer vers quelle heure commence la formation. (En format HH.MM)
+\item Il faut insérer combien d'heures dure la formation. (En format HH.MM)
 \item Il faut confirmer par "o" ou "n" (oui ou non) si l'on souhaite effectivement ajouter la nouvelle personne dans la base de données.
 \end{enumerate}
 
@@ -894,7 +894,7 @@ Un message de confirmation apparaîtra au dessus du menu.
   \centering
   \includegraphics[trim=0 60 0 0, clip, scale=0.8]{images/13.png.png}
 \end{figure}
-Lorsqu'on rentre dans le menu d'attribution, il faudra séléctionner le cours dans lequel on souhaite attribuer une personne, formateur ou étudiant.
+Lorsqu'on rentre dans le menu d'attribution, il faudra séléctionner la formation dans lequelle on souhaite attribuer une personne, formateur ou étudiant.
 
 \newpage
 \begin{figure}[ht]
@@ -903,7 +903,7 @@ Lorsqu'on rentre dans le menu d'attribution, il faudra séléctionner le cours d
 \end{figure}
 L'attribution à une formation se passe de la manière suivante:
 \begin{enumerate}
-\item Il faut insérer l'ID du cours auquel on souhaite ajouter un personne quelconque.
+\item Il faut insérer l'ID de la formation à laquelle on souhaite ajouter un personne quelconque.
 \item Il faut insérer l'ID de la personne à rajouter.
 \item Il faut confirmer par "o" ou "n" (oui ou non) si l'on souhaite effectivement ajouter la nouvelle personne dans la base de données.
 \end{enumerate}
@@ -912,7 +912,7 @@ L'attribution à une formation se passe de la manière suivante:
   \centering
   \includegraphics[trim=0 60 0 0, clip, scale=0.8]{images/15.png.png}
 \end{figure}
-Lors de la réussite de l'attribution de la personne dans le cours, un message de confirmation apparaîtra.
+Lors de la réussite de l'attribution de la personne dans la formation, un message de confirmation apparaîtra.
 
 \newpage
 \subsubsection{Menu suppression}
@@ -923,7 +923,7 @@ Lors de la réussite de l'attribution de la personne dans le cours, un message d
 
 Voici à quoi ressemble l'interface par lequel il est possible de faire des suppressions.
 \begin{enumerate}
-\item Il est possible de supprimer entièrement une personne de la base de données. Par conséquent, la personne en question disparaîtra des cours aussi.
+\item Il est possible de supprimer entièrement une personne de la base de données. Par conséquent, la personne en question disparaîtra des formations aussi.
 \item Il est possible de supprimer entièrement une formation de la base de données. Par conséquents, les gens qui particiapaient à la formation en question ne pourront plus y participer.
 \item Il est possible de supprimer une personne précise d'une formation précise, bien la formation que la personne apparaîtront dans leurs respectives bases de données, mais ils ne seront plus liés ensemble.
 \end{enumerate}
@@ -933,7 +933,7 @@ Voici à quoi ressemble l'interface par lequel il est possible de faire des supp
   \centering
   \includegraphics[trim=0 0 0 0, clip, scale=0.8]{images/17.png.png}
 \end{figure}
-Dans le cas d'une suppression d'une personne de la base de données, il suffit d'insérer l'ID de la personne à supprimer et la personne ne sera plus visible dans aucun cours. Comme toute manipulation, des messages de confirmation apparîtront à la fin de la manipulation.
+Dans le cas d'une suppression d'une personne de la base de données, il suffit d'insérer l'ID de la personne à supprimer et la personne ne sera plus visible dans aucune formation. Comme toute manipulation, des messages de confirmation apparîtront à la fin de la manipulation.
 
 \newpage
 \subsubsection{Suppression d'une formation}
@@ -1062,10 +1062,10 @@ Voici ce que chaque partie représente:
 \item \texttt{int id} : L'identifiant unique de la formation.
 \item \texttt{char nom[40]} : Le nom de la formation (40 caractères maximum).
 \item \texttt{float prix} : Le coût de la formation.
-\item \texttt{int nb\_jours} : Le nombre de jours par semaine où cette formation à cours.
-\item \texttt{int jours[7]} : Vecteur contenant les jours où la formation a cours.
+\item \texttt{int nb\_jours} : Le nombre de jours par semaine où cette formation a lieu.
+\item \texttt{int jours[7]} : Vecteur contenant les jours où la formation a lieu.
 \item \texttt{float heures[24]} : Le nombre d'heures du début de la formation.
-\item \texttt{float durees[10]} : Les différentes durées du cours lors de la semaine.
+\item \texttt{float durees[10]} : Les différentes durées de la formation lors de la semaine.
 \item \texttt{int nb\_prerequis} : Le nombre de prérequis pour avoir accès à cette formation.
 \item \texttt{int prerequis[10]} : Vecteur contenant les identifiants des formations qui seraient des prérequis.
 \item \texttt{noeud\_formation *head} : Étant donné qu'une formation stocke des personnes, elle-même est une liste chaînée qui stockera un nombre indéterminé de participants.
