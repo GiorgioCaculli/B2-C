@@ -646,7 +646,14 @@ void menu_creer_formation( db_formation *f )
             getchar();
         }
         formation *tmpf = creer_formation( nom, prix );
-        tmpf->id = tmpdbf->head->f->id + 1;
+        if( tmpdbf->head == NULL )
+        {
+            tmpf->id = 1;
+        }
+        else
+        {
+            tmpf->id = tmpdbf->head->f->id + 1;
+        }
         char choix_prerequis[4];
         printf( "* Est-ce que la formation a des prerequis ? (o/n) " );
         scanf( "%s", choix_prerequis );
@@ -884,7 +891,7 @@ void menu_creer_personne( db_personne *p )
             getchar();
             while ( pourcent_reduction > 100 || pourcent_reduction < 0 )
             {
-                printf( "* Option %d - INVALIDE: Max 100 jours - Min 0                                  *\n",
+                printf( "* Option %d - INVALIDE: Max 100 pourcent - Min 0                               *\n",
                         nb_jours_indisponible );
                 printf( "* Combien de pourcentage de reduction beneficie cet etudiant ? " );
                 scanf( "%d", &pourcent_reduction );
@@ -896,7 +903,14 @@ void menu_creer_personne( db_personne *p )
         }
     }
     personne *tmpp = creer_personne( nom, prenom, formateur );
-    tmpp->id = tmpdbp->head->p->id + 1;
+    if( tmpdbp->head == NULL )
+    {
+        tmpp->id = 1;
+    }
+    else
+    {
+        tmpp->id = tmpdbp->head->p->id + 1;
+    }
     if( tmpp->formateur == 0 )
     {
         tmpp->reduction = reduction;
@@ -1450,7 +1464,7 @@ int menu_affichage( db_formation *f, db_personne *p )
                 printf( "* ---------------------------------------------------------------------------- *\n" );
                 while( tmpndbf != NULL )
                 {
-                    printf( "* %d %-40s %6.2f                            *\n",
+                    printf( "* %2d %-40s %6.2f                           *\n",
                             tmpndbf->f->id, tmpndbf->f->nom, tmpndbf->f->prix );
                     tmpndbf = tmpndbf->next;
                 }
