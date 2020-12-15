@@ -16,12 +16,11 @@ AC_CONFIG_HEADERS([config.h])
 
 AC_CONFIG_FILES([
     Makefile
-    src/Makefile
 ])
 
 AC_CONFIG_LINKS([
-    formation.dat:formation.dat
-    personne.dat:personne.dat
+    CaculliTyranowskiFormation.dat:CaculliTyranowskiFormation.dat
+    CaculliTyranowskiPersonne.dat:CaculliTyranowskiPersonne.dat
 ])
 
 AC_OUTPUT
