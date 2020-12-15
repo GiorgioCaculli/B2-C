@@ -752,9 +752,9 @@ void menu_creer_formation( db_formation *f )
             tmpf->heures[i] = heure;
             float duree;
             printf( "* Combien d'heures dure la formation ? " );
-            while( scanf( "%f", &duree ) != 1 || duree > 8 || duree < 2 )
+            while( scanf( "%f", &duree ) != 1 || duree > 8 || duree < 1 )
             {
-                printf( "* Option %.2f - INVALIDE: MIN 2 heures MAX 8 heures\n", duree );
+                printf( "* Option %.2f - INVALIDE: MIN 1 heures MAX 8 heures\n", duree );
                 printf( "* Combien d'heures dure la formation ? " );
                 scanf( "%f", &duree);
                 getchar();
