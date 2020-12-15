@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/VoidLinux) (preloaded format=pdflatex 2020.11.28)  15 DEC 2020 11:04
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/VoidLinux) (preloaded format=pdflatex 2020.11.28)  15 DEC 2020 11:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1086,13 +1086,17 @@ Underfull \hbox (badness 10000) in paragraph at lines 666--686
  []
 
 [10]
-Overfull \hbox (36.27649pt too wide) in paragraph at lines 777--778
+Underfull \hbox (badness 10000) in paragraph at lines 767--768
+
+ []
+
+[11]
+Overfull \hbox (36.27649pt too wide) in paragraph at lines 781--782
 \OT1/cmr/m/n/10.95 En r^^Sesultat, il est de-mand^^Se d'ob-te-nir le plan-ning 
 d^^Setaill^^Se de la se-maine dans un fi-chier \OT1/cmtt/m/n/10.95 CaculliTyran
 owski.res 
  []
 
-[11]
 <images/01.png.png, id=551, 485.815pt x 304.13625pt>
 File: images/01.png.png Graphic file (type png)
 <use images/01.png.png>
@@ -1103,7 +1107,7 @@ File: images/02.png.png Graphic file (type png)
 <use images/02.png.png>
 Package pdftex.def Info: images/02.png.png  used on input line 794.
 (pdftex.def)             Requested size: 388.65253pt x 101.17775pt.
- [12 <./images/01.png.png> <./images/02.png.png>]
+[12 <./images/01.png.png> <./images/02.png.png>]
 <images/03.png.png, id=561, 485.815pt x 317.185pt>
 File: images/03.png.png Graphic file (type png)
 <use images/03.png.png>
@@ -1248,7 +1252,7 @@ usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texmf
 -dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-dist/fonts/type
 1/public/amsfonts/cm/cmtt10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfo
 nts/cm/cmtt8.pfb>
-Output written on CaculliTyranowski.pdf (29 pages, 267512 bytes).
+Output written on CaculliTyranowski.pdf (29 pages, 267181 bytes).
 PDF statistics:
  1019 PDF objects out of 1200 (max. 8388607)
  930 compressed objects within 10 object streams
