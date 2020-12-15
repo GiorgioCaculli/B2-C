@@ -1692,8 +1692,8 @@ int main( void )
     system( clear );
     printf( "Projet par Giorgio Caculli et Jedrzej Tyranowski\n" );
 
-    FILE *fdat_f = fopen( "formation.dat", "r" );
-    FILE *fdat_p = fopen( "personne.dat", "r" );
+    FILE *fdat_f = fopen( "CaculliTyranowskiFormation.dat", "r" );
+    FILE *fdat_p = fopen( "CaculliTyranowskiPersonne.dat", "r" );
 
     db_personne *dbp = creer_db_personne();
     db_formation *dbf = creer_db_formation();

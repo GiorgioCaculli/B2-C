@@ -1,7 +1,6 @@
 bin_PROGRAMS = CaculliTyranowski
 
-CaculliTyranowski_SOURCES = \
-    src/CaculliTyranowski.c src/CaculliTyranowski.h
+CaculliTyranowski_SOURCES = CaculliTyranowski.c
 
 CaculliTyranowski_CFLAGS =
 CaculliTyranowski_CFLAGS += -W

@@ -20,8 +20,8 @@ AC_CONFIG_FILES([
 ])
 
 AC_CONFIG_LINKS([
-    formation.dat:data/formation.dat
-    personne.dat:data/personne.dat
+    formation.dat:formation.dat
+    personne.dat:personne.dat
 ])
 
 AC_OUTPUT
