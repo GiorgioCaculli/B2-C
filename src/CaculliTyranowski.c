@@ -5,7 +5,7 @@
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 char *clear = "cls";
-#elif __unix__
+#elif __unix__ || __APPLE__ && __MACH__
 char *clear = "clear";
 #endif
 
