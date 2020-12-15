@@ -736,7 +736,7 @@ Donc, l'affichage sera: 12 99 37 dans la console.
 
 \newpage
 \section{Énoncé}
-Le centre de formations propose diverses formations dans différents domaines.\\ 
+Le centre de formations propose diverses formations dans différents domaines.\\\\
 Chaque \textbf{formation} est caractérisée par:
 \begin{itemize}
   \item Un identifiant unique
@@ -749,8 +749,8 @@ Chaque \textbf{formation} est caractérisée par:
   \item Un coût fixe
   \item Un nom
 \end{itemize}
-Le nombre de formations est indéfini.\\
-Un nombre indéfini de personnes peuvent participer à n'importe quelle formation, bien des formateurs que des étudiants.\\
+Le nombre de formations est indéfini.\\\\
+Un nombre indéfini de personnes peuvent participer à n'importe quelle formation, bien des formateurs que des étudiants.\\\\
 Une \textbf{personne} est caractérisée par:
 \begin{itemize}
 \item Un identifiant unique
@@ -762,7 +762,7 @@ Une \textbf{personne} est caractérisée par:
 \item Suivi par le jours précis où il/elle aurait des indisponibilités (1 - lundi, 2 - mardi, etc\ldots) 
 \item Dans le cas d'un étudiant, il se peut qu'il/elle ait droit à une remise. (1 - oui, 0 - non)
 \item Si c'est le cas, le pourcentage de sa remise sera précisé
-\end{itemize}
+\end{itemize}\leavevmode\newline
 Points importants à maîtriser :
 \begin{itemize}
 \item Étant donné qu'il n'y a pas de nombre maximal de personnes qui peuvent être inscrits dans le centre de formations, et qu'il n'y a pas de nombre maximal de formations qu'un centre de formations puisse proposer, le stockage par vecteurs des diverses personnes et formations n'est pas permis. Dès lors il faut initialiser des listes chaînées qui stockeront les diverses informations.
