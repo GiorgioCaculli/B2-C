@@ -692,7 +692,7 @@ Si la fonction a réussi, on obtiendra 1 comme résultat, si non, on obtiendra 0
 Pour l'affichage d'une liste châinée, on parcourt l'entièreté de la liste chaînée \texttt{noeud}. Tant que la tête n'est pas \texttt{NULL}, on affichera les informations que l'on souhaite afficher de chaque n\oe{}ud présente dans la liste chaînée.\\
 Généralement, le code en langage \texttt{C} ressemblerait à ça:
 \begin{lstlisting}
-  void afficher_list( noeud *tete )
+  void afficher_liste( noeud *tete )
   {
     while( tete != NULL )
     {
@@ -701,7 +701,7 @@ Généralement, le code en langage \texttt{C} ressemblerait à ça:
       tete = tete->suivant;
     }
   }
-  afficher_list(tete);
+  afficher_liste(tete);
 \end{lstlisting}
 
 Si on se base sur la liste chaînée:
@@ -765,7 +765,7 @@ Une \textbf{personne} est caractérisée par:
 \end{itemize}
 
 Étant donné qu'il n'y a pas de nombre maximal de personnes qui peuvent être inscrits dans le centre de formations, et qu'il n'y a pas de nombre maximal de formations qu'un centre de formations puisse proposer, le stockage par vecteurs des diverses personnes et formations n'est pas permis. Dès lors il faut initialiser des listes chaînées qui stockeront les diverses informations.\\
-Le logiciel doit pouvoir afficher la liste des personnes ainsi que la liste des formations, et à partir de ces données, générer un planning pour la semaine.
+Le logiciel doit pouvoir afficher la liste des personnes ainsi que la liste des formations, et à partir de ces données, générer un planning pour la semaine. Il doit être également possible d'ajouter et de supprimer des nouvelles personne ou personnes dans leurs respectives bases de données. La possibilité de pouvoir attribuer une personne à un cours et de pouvoir la retirer d'un cours doit être prise en compte. Toutes les opérations doivent être dynamiques, donc, toute manipulation doit être possible à partir du moment où le programme est lancé jusqu'au moment où il est arrêté.
 
 \newpage
 \section{Programme}
